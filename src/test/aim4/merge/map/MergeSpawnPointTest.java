@@ -1,7 +1,8 @@
-package aim4.map.merge;
+package aim4.merge.map;
 
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
+import aim4.map.merge.MergeSpawnPoint;
 import org.junit.Before;
 import org.junit.Test;
 

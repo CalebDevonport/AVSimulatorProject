@@ -1,8 +1,10 @@
-package aim4.map.merge;
+package aim4.merge.map;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
+import aim4.map.merge.MergeMap;
+import aim4.map.merge.MergeSpawnPoint;
 import aim4.util.HashMapRegistry;
 import aim4.util.Registry;
 import com.sun.scenario.effect.Merge;

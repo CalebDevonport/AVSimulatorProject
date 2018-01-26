@@ -1,9 +1,11 @@
-package aim4.map.merge;
+package aim4.merge.map;
 
 import aim4.config.SimConfig;
 import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
+import aim4.map.merge.MergeMapUtil;
+import aim4.map.merge.S2SMergeMap;
 import org.junit.Test;
 
 import java.util.ArrayList;
