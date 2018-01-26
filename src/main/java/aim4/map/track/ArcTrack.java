@@ -92,9 +92,9 @@ public class ArcTrack implements Track {
     @Override
     public double getTangentSlope() {
       if (thetaDiff >= 0) {
-        return GeomMath.canonicalAngle(thetaStart + theta + GeomMath.HALF_PI);
+        return GeomMath.canonicalAngle(thetaStart + theta + GeomMath.HALF_PI_90_DEGREES);
       } else {
-        return GeomMath.canonicalAngle(thetaStart + theta - GeomMath.HALF_PI);
+        return GeomMath.canonicalAngle(thetaStart + theta - GeomMath.HALF_PI_90_DEGREES);
       }
     }
 
