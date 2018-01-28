@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.util;
 
+import aim4.Main;
+
 import java.awt.geom.*;
 import java.awt.Shape;
 import java.util.ArrayList;
@@ -638,7 +640,17 @@ public final class GeomMath {
 
         return angleBetweenStartAndPoint <= angleBetweenStartAndEndPoint &&
                 angleBetweenStartAndPoint >= 0.0 &&
-                arc.getWidth() / 2 == Math.sqrt(Math.pow(point.getX()-origin.getX(), 2) + Math.pow(origin.getY()-point.getY(), 2));
+                arc.getWidth() / 2.0 == Math.sqrt(Math.pow(point.getX()-origin.getX(), 2) + Math.pow(origin.getY()-point.getY(), 2));
+    }
+
+    /**
+     * Calculates the length of an arc
+     *
+     * @param arc   the arc
+     * @return the length of the arc
+     */
+    public static double calculateArcLength(Arc2D arc) {
+        return (GeomMath.PI * arc.getWidth() / 2.0 * Math.abs(arc.getAngleExtent())) / Math.toDegrees(GeomMath.PI);
     }
 
 

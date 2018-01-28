@@ -32,6 +32,7 @@ package aim4.map.lane;
 
 import aim4.map.aim.lane.LaneIM;
 import aim4.map.merge.LaneMM;
+import aim4.map.rim.LaneRIM;
 
 import java.awt.Shape;
 import java.awt.geom.Line2D;
@@ -74,6 +75,9 @@ public abstract class AbstractLane implements Lane {
   /** The LaneMM object that helps to locate the merge managers. */
   private LaneMM laneMM;
 
+  /** The LaneRIM object that helps to locate the rim managers. */
+  private LaneRIM laneRIM;
+
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
@@ -85,6 +89,7 @@ public abstract class AbstractLane implements Lane {
     this.speedLimit = speedLimit;
     this.laneIM = new LaneIM(this);
     this.laneMM = new LaneMM(this);
+    this.laneRIM = new LaneRIM(this);
   }
 
 
@@ -130,6 +135,14 @@ public abstract class AbstractLane implements Lane {
   @Override
   public LaneMM getLaneMM() {
     return laneMM;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LaneRIM getLaneRIM() {
+    return laneRIM;
   }
 
 

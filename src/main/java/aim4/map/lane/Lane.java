@@ -32,6 +32,7 @@ package aim4.map.lane;
 
 import aim4.map.aim.lane.LaneIM;
 import aim4.map.merge.LaneMM;
+import aim4.map.rim.LaneRIM;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -84,6 +85,13 @@ public interface Lane {
    * @retrun the LaneMM object
    */
   LaneMM getLaneMM();
+
+  /**
+   * Get the LaneRIM object that helps located the Rim managers on a lane.
+   *
+   * @retrun the LaneRIM object
+   */
+  LaneRIM getLaneRIM();
 
 
   /////////////////////////////////
