@@ -5,7 +5,6 @@ import aim4.util.GeomMath;
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -70,24 +69,9 @@ public class ArcSegmentLane {
         this.arc = arc;
         this.width = width;
         this.halfWidth = width / 2;
-        length = GeomMath.calculateArcLength(arc);
-        leftBorder = new Arc2D.Double(
-                arc.getX(),
-                arc.getY(),
-                arc.getWidth() + width,
-                arc.getHeight() + width,
-                arc.getAngleStart(),
-                arc.getAngleExtent(),
-                arc.getArcType());
-        rightBorder = new Arc2D.Double(
-                arc.getX(),
-                arc.getY(),
-                arc.getWidth() - width,
-                arc.getHeight() - width,
-                arc.getAngleStart(),
-                arc.getAngleExtent(),
-                arc.getArcType());
-        laneShape = calculateLaneShape(leftBorder, rightBorder);
+        this.length = GeomMath.calculateArcLength(arc);
+        calculateLaneBorders(arc);
+        this.laneShape = calculateLaneShape(this.leftBorder, this.rightBorder);
     }
 
     /////////////////////////////////
@@ -107,7 +91,7 @@ public class ArcSegmentLane {
     /**
      * {@inheritDoc}
      */
-   // @Override
+    // @Override
     public Point2D getStartPoint() {
         return arc.getStartPoint();
     }
@@ -115,7 +99,7 @@ public class ArcSegmentLane {
     /**
      * {@inheritDoc}
      */
-   // @Override
+    // @Override
     public Point2D getEndPoint() {
         return arc.getEndPoint();
     }
@@ -167,6 +151,17 @@ public class ArcSegmentLane {
     /////////////////////////////////
 
     /**
+     * Calculate lane left and right borders based on lane's width.
+     */
+    private void calculateLaneBorders(Arc2D arc) {
+        Point2D origin = new Point2D.Double(arc.getX() + arc.getWidth() / 2, arc.getY() + arc.getWidth() / 2);
+        this.leftBorder = new Arc2D.Double();
+        this.rightBorder = new Arc2D.Double();
+        leftBorder.setArcByCenter(origin.getX(), origin.getY(), arc.getWidth() / 2 + width / 2, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+        rightBorder.setArcByCenter(origin.getX(), origin.getY(), arc.getWidth() / 2 - width / 2, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+    }
+
+    /**
      * Calculate lane shape, including the width of the lane.
      *
      * @return a Shape describing the lane, including its width.
@@ -174,19 +169,22 @@ public class ArcSegmentLane {
     private Shape calculateLaneShape(Arc2D leftBorder, Arc2D rightBorder) {
         GeneralPath result = new GeneralPath();
 
+        //Move left of arc to start point of left border
         result.moveTo((float) (leftBorder.getStartPoint().getX()),
                 (float) (leftBorder.getStartPoint().getY()));
-        result.append(leftBorder, true);
+        //Shape the left arc
+        result.append(leftBorder, false);
+        //Line to end of right border
         result.lineTo(rightBorder.getEndPoint().getX(), rightBorder.getEndPoint().getY());
-        result.append(new Arc2D.Double(
-                        rightBorder.getEndPoint().getX(),
-                        rightBorder.getEndPoint().getY(),
-                        rightBorder.getWidth(),
-                        rightBorder.getHeight(),
-                        rightBorder.getAngleStart() - Math.abs(rightBorder.getAngleExtent()),
-                        -rightBorder.getAngleExtent(),
-                        rightBorder.getArcType()),
-                true);
+        //Move start of right border
+        result.moveTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
+        //Shape the right arc
+        result.append(rightBorder, false);
+        //Move back again to start of right border
+        result.moveTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
+        //Close the path by connecting the ends
+        result.lineTo(leftBorder.getStartPoint().getX(), leftBorder.getStartPoint().getY());
+        //Fully close the path in case of missing precision
         result.closePath();
         return result;
     }
