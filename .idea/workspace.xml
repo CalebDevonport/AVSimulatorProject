@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" afterPath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,12 +30,12 @@
       <file leaf-file-name="ArcSegmentLane.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="81" column="21" lean-forward="true" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
+            <state relative-caret-position="323">
+              <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3210#3211#0" expanded="true" />
-                <element signature="e#3242#3243#0" expanded="true" />
+                <element signature="e#3181#3182#0" expanded="true" />
+                <element signature="e#3213#3214#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -47,7 +45,7 @@
         <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1371">
-              <caret line="91" column="44" lean-forward="false" selection-start-line="91" selection-start-column="44" selection-end-line="91" selection-end-column="44" />
+              <caret line="89" column="44" lean-forward="false" selection-start-line="89" selection-start-column="44" selection-end-line="89" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -665,7 +663,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517180958191</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Get the shape of a lane depending on arc and width">
+      <created>1517242099411</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1517242099411</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -777,7 +782,9 @@
     <MESSAGE value="change project name in git" />
     <MESSAGE value="added the notion of arc and dataCollectionArc" />
     <MESSAGE value="introduce RIM Lane using an arc" />
-    <option name="LAST_COMMIT_MESSAGE" value="introduce RIM Lane using an arc" />
+    <MESSAGE value="Get the shape of a lane depending on arc and width" />
+    <option name="LAST_COMMIT_MESSAGE" value="Get the shape of a lane depending on arc and width" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -790,7 +797,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java</url>
-          <line>110</line>
+          <line>108</line>
           <properties />
           <option name="timeStamp" value="43" />
         </line-breakpoint>
@@ -1163,7 +1170,7 @@
     <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1371">
-          <caret line="91" column="44" lean-forward="false" selection-start-line="91" selection-start-column="44" selection-end-line="91" selection-end-column="44" />
+          <caret line="89" column="44" lean-forward="false" selection-start-line="89" selection-start-column="44" selection-end-line="89" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1188,12 +1195,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="81" column="21" lean-forward="true" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
+        <state relative-caret-position="323">
+          <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3210#3211#0" expanded="true" />
-            <element signature="e#3242#3243#0" expanded="true" />
+            <element signature="e#3181#3182#0" expanded="true" />
+            <element signature="e#3213#3214#0" expanded="true" />
           </folding>
         </state>
       </provider>
