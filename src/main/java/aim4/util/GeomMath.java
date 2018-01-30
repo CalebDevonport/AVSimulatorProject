@@ -30,10 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.util;
 
-import aim4.Main;
-
+import java.awt.*;
 import java.awt.geom.*;
-import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,6 +151,38 @@ public final class GeomMath {
         double angle1 = Math.atan2(point1.getY() - fixed.getY(), point1.getX() - fixed.getX());
         double angle2 = Math.atan2(point2.getY() - fixed.getY(), point2.getX() - fixed.getX());
 
+        return angle1 - angle2;
+    }
+
+    /**
+     * Similar version to angleBetweenTwoPointsWithFixedPoint, but in case atan2 returns a negative number,
+     * it transforms into positive by doing the following algorithm:
+     * Positive: 1 to 180
+     If you mod any positive number between 1 and 180 by 360, you will get the exact same number you put in. Mod here just ensures these positive numbers are returned as the same value.
+     * Negative: -180 to -1
+     Using mod here will return values in the range of 180 and 359 degrees.
+     * Special cases: 0 and 360
+     Using mod means that 0 is returned, making this a safe 0-359 degrees solution.
+     *
+     * @param point1
+     * @param point2
+     * @param fixed
+     * @return angle in radians
+     */
+    public static double angleBetweenTwoPointsWithFixedPointTakingIntoAccountAtanPositive(Point2D point1,
+                                                             Point2D point2,
+                                                             Point2D fixed) {
+
+        double angle1 = Math.atan2(point1.getY() - fixed.getY(), point1.getX() - fixed.getX());
+        double angle2 = Math.atan2(point2.getY() - fixed.getY(), point2.getX() - fixed.getX());
+
+        if (angle1 < 0){
+            angle1 = (angle1 + Math.toDegrees(2 * Math.PI)) % Math.toDegrees(2 * Math.PI);
+        }
+
+        if (angle2 < 0){
+            angle2 = (angle2 + Math.toDegrees(2 * Math.PI)) % Math.toDegrees(2 * Math.PI);
+        }
         return angle1 - angle2;
     }
 
@@ -633,14 +663,14 @@ public final class GeomMath {
      * @return true if point is on arc, false otherwise
      */
     public static boolean isPointIntersectingArc(Point2D point, Arc2D arc) {
-        Point2D origin = new Point2D.Double(arc.getX() + arc.getWidth() / 2, arc.getY() + arc.getWidth() / 2);
+        Point2D origin = new Point2D.Double(arc.getX() + arc.getWidth() / 2.0, arc.getY() + arc.getWidth() / 2.0);
+        Point2D startPoint = arc.getStartPoint();
+        Point2D endPoint = arc.getEndPoint();
+        double angleBetweenStartAndPoint = angleBetweenTwoPointsWithFixedPointTakingIntoAccountAtanPositive(startPoint, point, origin);
+        double angleBetweenStartAndEndPoint = angleBetweenTwoPointsWithFixedPointTakingIntoAccountAtanPositive(startPoint, endPoint, origin);
 
-        double angleBetweenStartAndPoint = angleBetweenTwoPointsWithFixedPoint(point, arc.getStartPoint(), origin);
-        double angleBetweenStartAndEndPoint = angleBetweenTwoPointsWithFixedPoint(arc.getEndPoint(), arc.getStartPoint(), origin);
-
-        return angleBetweenStartAndPoint <= angleBetweenStartAndEndPoint &&
-                angleBetweenStartAndPoint >= 0.0 &&
-                arc.getWidth() / 2.0 == Math.sqrt(Math.pow(point.getX()-origin.getX(), 2) + Math.pow(origin.getY()-point.getY(), 2));
+        return Math.abs(angleBetweenStartAndPoint) <= Math.abs(angleBetweenStartAndEndPoint) &&
+                (float)Math.pow(arc.getWidth() / 2.0, 2) == (float)(Math.pow(point.getX() - origin.getX(), 2) + Math.pow(origin.getY() - point.getY(), 2));
     }
 
     /**
@@ -649,7 +679,7 @@ public final class GeomMath {
      * @param arc   the arc
      * @return the length of the arc
      */
-    public static double calculateArcLength(Arc2D arc) {
+    public static double calculateArcLaneLength(Arc2D arc) {
         return (GeomMath.PI * arc.getWidth() / 2.0 * Math.abs(arc.getAngleExtent())) / Math.toDegrees(GeomMath.PI);
     }
 

@@ -30,12 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map.lane;
 
+import aim4.util.GeomMath;
+
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.Shape;
-
-import aim4.util.GeomMath;
 
 /**
  * A lane class that can be represented by a directed line segment.
@@ -441,6 +441,32 @@ public class LineSegmentLane extends AbstractLane {
    */
   public Line2D getLine() {
     return line;
+  }
+
+  /**
+   * Get the line that represents the left border of this Lane.
+   */
+  public Line2D getLeftBorder() {
+    return leftBorder;
+  }
+
+  /**
+   * Get the line that represents the right border of this Lane.
+   */
+  public Line2D getRightBorder() {
+    return rightBorder;
+  }
+
+  /**
+   * Sets the line that represents the left border of this Lane.
+   */
+  public void setLeftBorder(Line2D leftBorder) { this.leftBorder = leftBorder; }
+
+  /**
+   * Sets the line that represents the right border of this Lane.
+   */
+  public void setRightBorder(Line2D rightBorder) {
+    this.rightBorder = rightBorder;
   }
 
   /////////////////////////////////

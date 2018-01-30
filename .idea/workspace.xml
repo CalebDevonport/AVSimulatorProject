@@ -3,6 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" afterPath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,54 +20,63 @@
     <favorites_list name="AIM4" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="LineSegmentLane.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="198" column="8" lean-forward="false" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ArcSegmentLane.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3181#3182#0" expanded="true" />
-                <element signature="e#3213#3214#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ArcSegmentLaneTests.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1371">
-              <caret line="89" column="44" lean-forward="false" selection-start-line="89" selection-start-column="44" selection-end-line="89" selection-end-column="44" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataCollectionArcTests.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/DataCollectionArcTests.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="23" column="5" lean-forward="false" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.47453085">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="LineSegmentLane.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="272">
+                  <caret line="420" column="32" lean-forward="false" selection-start-line="420" selection-start-column="32" selection-end-line="420" selection-end-column="32" />
+                  <folding>
+                    <element signature="e#12572#12573#0" expanded="true" />
+                    <element signature="e#12600#12601#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="RoadBasedIntersection.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/aim4/im/aim/RoadBasedIntersection.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="218">
+                  <caret line="283" column="33" lean-forward="false" selection-start-line="283" selection-start-column="33" selection-end-line="283" selection-end-column="33" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ArcSegmentLaneTests.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1139">
+                  <caret line="67" column="61" lean-forward="false" selection-start-line="67" selection-start-column="61" selection-end-line="67" selection-end-column="61" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="ArcSegmentLane.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="204">
+                  <caret line="390" column="27" lean-forward="false" selection-start-line="390" selection-start-column="27" selection-end-line="390" selection-end-column="27" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -74,9 +87,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>contains</find>
       <find>intersects</find>
-      <find>length</find>
       <find>shape</find>
       <find>interse</find>
       <find>append</find>
@@ -85,6 +96,12 @@
       <find>cubic</find>
       <find>curve</find>
       <find>cubi</find>
+      <find>dist</find>
+      <find>contains</find>
+      <find>length</find>
+      <find>heading</find>
+      <find>halfwi</find>
+      <find>leftborder</find>
     </findStrings>
     <dirStrings>
       <dir>D:\RIM\AVSimulatorProject\src\main\java\aim4\map</dir>
@@ -127,13 +144,13 @@
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/Lane.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/rim/LaneRIM.java" />
-        <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java" />
         <option value="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTeSTS.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/gui/screen/aim/AIMCanvas.java" />
-        <option value="$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java" />
         <option value="$PROJECT_DIR$/src/test/aim4/rim/map/DataCollectionArcTests.java" />
-        <option value="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
+        <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java" />
+        <option value="$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" />
+        <option value="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
       </list>
     </option>
   </component>
@@ -174,7 +191,8 @@
     <option name="jreName" value="9" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
+    <option name="x" value="13" />
+    <option name="y" value="5" />
     <option name="width" value="782" />
     <option name="height" value="831" />
   </component>
@@ -194,10 +212,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -290,18 +307,11 @@
               <item name="aim4" type="462c0819:PsiDirectoryNode" />
               <item name="map" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="AIM4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AVSimulatorProject" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="aim4" type="462c0819:PsiDirectoryNode" />
-              <item name="map" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -310,7 +320,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/aim4/map/merge" />
-    <property name="SearchEverywhereHistoryKey" value="aim&#9;FILE&#9;file://D:/RIM/AVSimulatorProject/src/main/java/aim4/gui/screen/aim/AIMCanvas.java&#10;area&#9;FILE&#9;jar://D:/JDK8/jre/lib/rt.jar!/java/awt/geom/Area.class&#10;fc&#9;PSI&#9;JAVA://aim4.im.aim.v2i.RequestHandler.FCFSRequestHandler&#10;buffer&#9;PSI&#9;JAVA://java.nio.Buffer&#10;simula&#9;FILE&#9;file://D:/RIM/AVSimulatorProject/src/main/java/aim4/sim/simulator/merge/V2IMergeSimulator.java" />
+    <property name="SearchEverywhereHistoryKey" value="point2d&#9;FILE&#9;jar://D:/JDK8/src.zip!/java/awt/geom/Point2D.java&#10;aim&#9;FILE&#9;file://D:/RIM/AVSimulatorProject/src/main/java/aim4/gui/screen/aim/AIMCanvas.java&#10;area&#9;FILE&#9;jar://D:/JDK8/jre/lib/rt.jar!/java/awt/geom/Area.class&#10;fc&#9;PSI&#9;JAVA://aim4.im.aim.v2i.RequestHandler.FCFSRequestHandler&#10;buffer&#9;PSI&#9;JAVA://java.nio.Buffer&#10;simula&#9;FILE&#9;file://D:/RIM/AVSimulatorProject/src/main/java/aim4/sim/simulator/merge/V2IMergeSimulator.java" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -329,7 +339,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.DataCollectionArcTests">
+  <component name="RunManager" selected="JUnit.ArcSegmentLaneTests">
     <configuration name="ArcSegmentLaneTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -355,7 +365,7 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="aim4.rim.map.*" />
@@ -367,7 +377,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="aim4.rim.map" />
       <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="calculateLaneShape_withValidPoints_returnsLaneShape" />
+      <option name="METHOD_NAME" value="calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -380,7 +390,7 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceOutsideTheArc_returnsPointOnArc" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="aim4.rim.map.*" />
@@ -392,7 +402,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="aim4.rim.map" />
       <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="getPointAtNormalizedDistance_withDistanceOutsideTheArc_returnsPointOnArc" />
+      <option name="METHOD_NAME" value="calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -405,7 +415,7 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinTheArc_returnsPointOnArc" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="aim4.rim.map.*" />
@@ -417,7 +427,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="aim4.rim.map" />
       <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="getPointAtNormalizedDistance_withDistanceWithinTheArc_returnsPointOnArc" />
+      <option name="METHOD_NAME" value="calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -430,7 +440,7 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="DataCollectionArcTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinArc_returnsPointOnArc" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="aim4.rim.map.*" />
@@ -441,9 +451,9 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.DataCollectionArcTests" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
+      <option name="METHOD_NAME" value="getPointAtNormalizedDistance_withDistanceWithinArc_returnsPointOnArc" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -605,19 +615,19 @@
       <item index="0" class="java.lang.String" itemvalue="Application.Run" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.Unnamed" />
       <item index="2" class="java.lang.String" itemvalue="Maven.Maven Compile" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinTheArc_returnsPointOnArc" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.DataCollectionArcTests" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceOutsideTheArc_returnsPointOnArc" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinArc_returnsPointOnArc" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.DataCollectionArcTests" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinTheArc_returnsPointOnArc" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceOutsideTheArc_returnsPointOnArc" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.getPointAtNormalizedDistance_withDistanceWithinArc_returnsPointOnArc" />
       </list>
     </recent_temporary>
   </component>
@@ -670,39 +680,46 @@
       <option name="project" value="LOCAL" />
       <updated>1517242099411</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Get the shape of a lane depending on arc and width">
+      <created>1517242112734</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1517242112734</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ArcSegmentLaneTests - 2018.01.29 at 16h 04m 54s.xml">
+    <history-entry file="ArcSegmentLaneTests - 2018.01.30 at 16h 56m 56s.xml">
       <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests - 2018.01.29 at 16h 07m 37s.xml">
+    <history-entry file="ArcSegmentLaneTests - 2018.01.30 at 17h 03m 33s.xml">
       <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 15h 56m 48s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests - 2018.01.30 at 17h 52m 32s.xml">
+      <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 15h 58m 31s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests - 2018.01.30 at 17h 54m 55s.xml">
+      <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 16h 01m 31s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane - 2018.01.30 at 17h 54m 32s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 16h 02m 28s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane - 2018.01.30 at 17h 54m 50s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 16h 03m 01s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes - 2018.01.30 at 17h 07m 35s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 16h 04m 35s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes - 2018.01.30 at 17h 07m 54s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withPositiveSplitFactor_returnsLineSegmentLanes" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPoints_returnsLaneShape - 2018.01.29 at 16h 04m 48s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPoints_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes - 2018.01.30 at 16h 55m 58s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="DataCollectionArcTests - 2018.01.29 at 16h 07m 39s.xml">
-      <configuration name="DataCollectionArcTests" configurationId="JUnit" />
+    <history-entry file="ArcSegmentLaneTests_calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes - 2018.01.30 at 16h 56m 13s.xml">
+      <configuration name="ArcSegmentLaneTests.calculateLineSegmentLanes_withSplitFactor_returnsLineSegmentLanes" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -726,17 +743,17 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40969163" sideWeight="0.53351206" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22788204" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27900147" sideWeight="0.43632707" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18061674" sideWeight="0.43632707" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.49731904" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2191689" sideWeight="0.4909091" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.4909091" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4801762" sideWeight="0.46648794" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43024963" sideWeight="0.46648794" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2533512" sideWeight="0.5090909" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -790,72 +807,21 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java</url>
-          <line>640</line>
-          <properties />
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java</url>
-          <line>108</line>
+          <line>154</line>
           <properties />
           <option name="timeStamp" value="43" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="65" />
+      <option name="time" value="118" />
     </breakpoint-manager>
     <watches-manager />
   </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/msg/aim/v2i/V2IMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1758">
-          <caret line="37" column="22" lean-forward="false" selection-start-line="37" selection-start-column="22" selection-end-line="37" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="37" column="13" lean-forward="false" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/aim4/cpm/map/CarParkWithStatusRecordTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/aim4/merge/map/MergeMapTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="28" column="13" lean-forward="false" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="65" lean-forward="false" selection-start-line="0" selection-start-column="65" selection-end-line="0" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="63" column="16" lean-forward="false" selection-start-line="63" selection-start-column="16" selection-end-line="63" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Rectangle2D.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-496">
@@ -891,13 +857,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/connections/BasicConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="200" column="41" lean-forward="false" selection-start-line="200" selection-start-column="41" selection-end-line="200" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/aim4/merge/map/LaneMMTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-438">
@@ -919,13 +878,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/lane/LaneIM.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="51" column="13" lean-forward="false" selection-start-line="51" selection-start-column="13" selection-end-line="51" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/LaneMM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
@@ -944,7 +896,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="401">
           <caret line="124" column="0" lean-forward="true" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -952,7 +903,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-11220">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -967,7 +917,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="524">
           <caret line="113" column="13" lean-forward="false" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -982,7 +931,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-9431">
           <caret line="53" column="13" lean-forward="false" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1004,10 +952,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="107" column="15" lean-forward="false" selection-start-line="107" selection-start-column="15" selection-end-line="107" selection-end-column="15" />
-          <folding>
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3788#3789#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1015,7 +959,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="186">
           <caret line="530" column="16" lean-forward="true" selection-start-line="530" selection-start-column="16" selection-end-line="530" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1037,7 +980,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
           <caret line="50" column="26" lean-forward="false" selection-start-line="50" selection-start-column="26" selection-end-line="50" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1045,7 +987,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1053,34 +994,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2465">
           <caret line="46" column="17" lean-forward="false" selection-start-line="46" selection-start-column="17" selection-end-line="46" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="47" column="48" lean-forward="true" selection-start-line="47" selection-start-column="48" selection-end-line="47" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Point2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="245" column="27" lean-forward="false" selection-start-line="245" selection-start-column="27" selection-end-line="245" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Line2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-649">
-          <caret line="277" column="15" lean-forward="false" selection-start-line="277" selection-start-column="15" selection-end-line="277" selection-end-column="15" />
-          <folding>
-            <element signature="e#7221#7222#0" expanded="false" />
-            <element signature="e#7260#7261#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1088,15 +1001,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="173">
           <caret line="508" column="23" lean-forward="false" selection-start-line="508" selection-start-column="23" selection-end-line="508" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/JDK8/src.zip!/java/lang/Math.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1511">
-          <caret line="122" column="31" lean-forward="false" selection-start-line="122" selection-start-column="31" selection-end-line="122" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1104,18 +1008,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="310" column="19" lean-forward="false" selection-start-line="310" selection-start-column="19" selection-end-line="310" selection-end-column="19" />
-          <folding>
-            <element signature="e#10065#10066#0" expanded="false" />
-            <element signature="e#10116#10117#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Arc2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="853" column="16" lean-forward="false" selection-start-line="853" selection-start-column="16" selection-end-line="853" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1131,7 +1023,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="57" column="6" lean-forward="false" selection-start-line="57" selection-start-column="6" selection-end-line="57" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1139,7 +1030,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="109">
           <caret line="50" column="41" lean-forward="false" selection-start-line="50" selection-start-column="41" selection-end-line="50" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1147,15 +1037,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="143">
           <caret line="498" column="50" lean-forward="true" selection-start-line="498" selection-start-column="50" selection-end-line="498" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="652" column="82" lean-forward="false" selection-start-line="652" selection-start-column="62" selection-end-line="652" selection-end-column="82" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1163,17 +1044,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1744">
           <caret line="36" column="62" lean-forward="false" selection-start-line="36" selection-start-column="58" selection-end-line="36" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
+    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Line2D.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1371">
-          <caret line="89" column="44" lean-forward="false" selection-start-line="89" selection-start-column="44" selection-end-line="89" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="313">
+          <caret line="828" column="18" lean-forward="false" selection-start-line="828" selection-start-column="18" selection-end-line="828" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1181,26 +1059,151 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="23" column="5" lean-forward="false" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Arc2D.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3170">
+          <caret line="1423" column="24" lean-forward="false" selection-start-line="1423" selection-start-column="24" selection-end-line="1423" selection-end-column="24" />
+          <folding>
+            <element signature="e#47385#47386#0" expanded="false" />
+            <element signature="e#47433#47434#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/driver/BasicPilot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="83" column="35" lean-forward="false" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/lane/LaneIM.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="269" column="24" lean-forward="false" selection-start-line="269" selection-start-column="24" selection-end-line="269" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/driver/aim/pilot/V2IPilot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1615">
+          <caret line="139" column="39" lean-forward="false" selection-start-line="139" selection-start-column="39" selection-end-line="139" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AutoDriverOnlySimulator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4216">
+          <caret line="318" column="32" lean-forward="false" selection-start-line="318" selection-start-column="32" selection-end-line="318" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/vehicle/VehicleUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4420">
+          <caret line="307" column="76" lean-forward="false" selection-start-line="307" selection-start-column="76" selection-end-line="307" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/JDK8/src.zip!/java/lang/Double.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="998" column="22" lean-forward="false" selection-start-line="998" selection-start-column="22" selection-end-line="998" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/JDK8/src.zip!/java/util/ArrayList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="289" column="19" lean-forward="false" selection-start-line="289" selection-start-column="19" selection-end-line="289" selection-end-column="19" />
+          <folding>
+            <element signature="e#10570#10571#0" expanded="false" />
+            <element signature="e#10602#10603#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Point2D.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="245" column="31" lean-forward="false" selection-start-line="245" selection-start-column="31" selection-end-line="245" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/connections/BasicConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="203" column="50" lean-forward="false" selection-start-line="203" selection-start-column="50" selection-end-line="203" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="671" column="110" lean-forward="false" selection-start-line="671" selection-start-column="110" selection-end-line="671" selection-end-column="110" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/JDK8/src.zip!/java/lang/Math.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="515" column="25" lean-forward="false" selection-start-line="515" selection-start-column="25" selection-end-line="515" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="119" column="16" lean-forward="false" selection-start-line="119" selection-start-column="16" selection-end-line="119" selection-end-column="16" />
+          <folding>
+            <element signature="e#3634#3635#0" expanded="true" />
+            <element signature="e#3661#3662#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/im/aim/RoadBasedIntersection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="283" column="33" lean-forward="false" selection-start-line="283" selection-start-column="33" selection-end-line="283" selection-end-column="33" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="198" column="8" lean-forward="false" selection-start-line="198" selection-start-column="8" selection-end-line="198" selection-end-column="8" />
-          <folding />
+        <state relative-caret-position="272">
+          <caret line="420" column="32" lean-forward="false" selection-start-line="420" selection-start-column="32" selection-end-line="420" selection-end-column="32" />
+          <folding>
+            <element signature="e#12572#12573#0" expanded="true" />
+            <element signature="e#12600#12601#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+        <state relative-caret-position="204">
+          <caret line="390" column="27" lean-forward="false" selection-start-line="390" selection-start-column="27" selection-end-line="390" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3181#3182#0" expanded="true" />
-            <element signature="e#3213#3214#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1139">
+          <caret line="67" column="61" lean-forward="false" selection-start-line="67" selection-start-column="61" selection-end-line="67" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -33,6 +33,52 @@ public class ArcSegmentLaneTests {
     }
 
     @Test
+    public void calculateArcLaneDecomposition_withPositiveSplitFactor_returnsLineSegmentLanes(){
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS *Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+
+        //assert
+        assertFalse(lane.getArcLaneDecomposition().isEmpty());
+        assertEquals(lane.getArcLaneDecomposition().size(), 4);
+        lane.getArcLaneDecomposition().forEach(
+                line -> {
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP1(), arc));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP2(), arc));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP1(), lane.leftBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP2(), lane.leftBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getRightBorder().getP1(), lane.rightBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getRightBorder().getP2(), lane.rightBorder()));
+
+                });
+    }
+
+    @Test
+    public void calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane(){
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS *Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 0);
+
+        //assert
+        assertFalse(lane.getArcLaneDecomposition().isEmpty());
+        assertEquals(lane.getArcLaneDecomposition().size(), 1);
+        lane.getArcLaneDecomposition().forEach(
+                line -> {
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP1(), arc));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP2(), arc));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP1(), lane.leftBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP2(), lane.leftBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getRightBorder().getP1(), lane.rightBorder()));
+                    assertTrue(GeomMath.isPointIntersectingArc(line.getRightBorder().getP2(), lane.rightBorder()));
+
+                });
+    }
+
+    @Test
     public void calculateLaneShape_withValidPoints_returnsLaneShape(){
         //arrange
         Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS *Math.sqrt(3));
@@ -42,7 +88,7 @@ public class ArcSegmentLaneTests {
         Arc2D rightArc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS -WIDTH/2, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
 
         //act
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT,0);
 
         //assert
         double[] coords = new double[6];
@@ -102,22 +148,22 @@ public class ArcSegmentLaneTests {
         Arc2D halfArc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.SIXTH_PI_30_DEGREES);
 
         //act
-        double lengthFullArc = GeomMath.calculateArcLength(arc);
-        double lengthHalfArc = GeomMath.calculateArcLength(halfArc);
+        double lengthFullArc = GeomMath.calculateArcLaneLength(arc);
+        double lengthHalfArc = GeomMath.calculateArcLaneLength(halfArc);
 
         //assert
         assertEquals(lengthHalfArc, lengthFullArc/2, DELTA);
     }
 
     @Test
-    public void getPointAtNormalizedDistance_withDistanceWithinTheArc_returnsPointOnArc(){
+    public void getPointAtNormalizedDistance_withDistanceWithinArc_returnsPointOnArc(){
         //arrange
         Arc2D arc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT);
-        double arcLength = GeomMath.calculateArcLength(arc);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 0);
+        double arcLength = GeomMath.calculateArcLaneLength(arc);
 
         Arc2D halfArc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.SIXTH_PI_30_DEGREES);
-        double halfArcLength = GeomMath.calculateArcLength(halfArc);
+        double halfArcLength = GeomMath.calculateArcLaneLength(halfArc);
         Point2D expectedPoint = halfArc.getEndPoint();
 
         //act
@@ -130,16 +176,48 @@ public class ArcSegmentLaneTests {
     }
 
     @Test
-    public void getPointAtNormalizedDistance_withDistanceOutsideTheArc_returnsPointOnArc(){
+    public void getPointAtNormalizedDistance_withDistanceOutsideArc_returnsPointOnArc(){
         //arrange
         Arc2D arc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT);
-        double arcLength = GeomMath.calculateArcLength(arc);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 0);
+        double arcLength = GeomMath.calculateArcLaneLength(arc);
 
         //act
         Point2D pointOnArc = lane.getPointAtNormalizedDistance(arcLength+1);
 
         //assert
         assertFalse(GeomMath.isPointIntersectingArc(pointOnArc, arc));
+    }
+
+    @Test
+    public void normalizedDistanceAlongLane_withPointOnArc_returnsNormalizedDistance(){
+        //arrange
+        Arc2D arc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 0);
+        double arcLength = GeomMath.calculateArcLaneLength(arc);
+
+        Arc2D halfArc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.SIXTH_PI_30_DEGREES);
+        double expectedLength1 = GeomMath.calculateArcLaneLength(halfArc);
+
+        //act
+        double actualLength1 = lane.normalizedDistanceAlongLane(halfArc.getEndPoint());
+        double actualLength2 = lane.normalizedDistanceAlongLane(halfArc.getStartPoint());
+
+        //assert
+        assertEquals(expectedLength1,actualLength1, DELTA);
+        assertEquals(0,actualLength2, DELTA);
+    }
+
+    @Test
+    public void nearestDistance_withPointOnArc_returns0(){
+        //arrange
+        Arc2D arc = createArc2D(ROUNDABOUT_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 0);
+
+        //act
+        double actualDistance = lane.nearestDistance(arc.getEndPoint());
+
+        //assert
+        assertEquals(actualDistance, 0, DELTA);
     }
 }
