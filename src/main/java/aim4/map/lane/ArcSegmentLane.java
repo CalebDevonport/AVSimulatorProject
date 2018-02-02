@@ -95,10 +95,10 @@ public class ArcSegmentLane extends AbstractLane{
         this.splitFactor = splitFactor;
         length = GeomMath.calculateArcLaneLength(arc);
         calculateLaneBorders(arc);
-        arcLaneDecomposition = calculateArcLaneDecomposition(this.arc, this.splitFactor);
+        arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor);
         lengthArcLaneDecomposition = calculateLengthArcLaneDecomposition(arcLaneDecomposition);
-        laneShape = calculateLaneShape(this.leftBorder, this.rightBorder);
-        //todo: calculate laneDecompositionShape
+        laneShape = calculateLaneShape(leftBorder, rightBorder);
+        laneDecompositionShape = calculateLaneDecompositionShape(arcLaneDecomposition);
     }
 
     /////////////////////////////////
@@ -295,6 +295,19 @@ public class ArcSegmentLane extends AbstractLane{
         return laneShape;
     }
 
+    @Override
+    public Shape getShape(double startFraction, double endFraction) {
+        // not needed as Arc Lane is decomposed in Line Lanes
+        return null;
+    }
+
+    /**
+     * Get the shape of the arc lane based on the line lanes that made the arc.
+     */
+    public Shape getLaneDecompositionShape() {
+        return laneDecompositionShape;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -303,37 +316,6 @@ public class ArcSegmentLane extends AbstractLane{
         return width;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Shape getShape(double startFraction, double endFraction) {
-//        if(startFraction < 0 || endFraction < 0 ||
-//                startFraction > 1 || endFraction > 1) {
-//            throw new IllegalArgumentException("Normalized distances must be" +
-//                    " between 0 and 1! Got: " +
-//                    "startFraction = " + startFraction +
-//                    ", endFraction = " + endFraction +
-//                    ".");
-//        }
-//        // This is cute in that it works even if startFraction > endFraction
-//        GeneralPath result = new GeneralPath();
-//        double xDifferential = halfWidth * Math.cos(heading + Math.PI/2);
-//        double yDifferential = halfWidth * Math.sin(heading + Math.PI/2);
-//        Point2D p1 = getPointAtNormalizedDistance(startFraction);
-//        Point2D p2 = getPointAtNormalizedDistance(endFraction);
-//        result.moveTo((float) (p1.getX() + xDifferential),
-//                (float) (p1.getY() + yDifferential));
-//        result.lineTo((float) (p2.getX() + xDifferential),
-//                (float) (p2.getY() + yDifferential));
-//        result.lineTo((float) (p2.getX() - xDifferential),
-//                (float) (p2.getY() - yDifferential));
-//        result.lineTo((float) (p1.getX() - xDifferential),
-//                (float) (p1.getY() - yDifferential));
-//        result.closePath();
-//        return result;
-        return null;
-    }
 
     /**
      * {@inheritDoc}
@@ -484,6 +466,36 @@ public class ArcSegmentLane extends AbstractLane{
         //Close the path by connecting the ends
         result.lineTo(leftBorder.getStartPoint().getX(), leftBorder.getStartPoint().getY());
         //Fully close the path in case of missing precision
+        result.closePath();
+        return result;
+    }
+
+    /**
+     * Calculate lane shape, including the width of the lane based on the line lanes that made the arc.
+     *
+     * @return a Shape describing the lane, including its width.
+     */
+    private Shape calculateLaneDecompositionShape(ArrayList<LineSegmentLane> arcLaneDecomposition) {
+        GeneralPath result = new GeneralPath();
+
+        //Start on left border (down left)
+        result.moveTo((float) (arcLaneDecomposition.get(0).getLeftBorder().getX1()),
+                (float) (arcLaneDecomposition.get(0).getLeftBorder().getY1()));
+        //Shape the left border till up left
+        for (LineSegmentLane lineLane : arcLaneDecomposition){
+            result.lineTo(lineLane.getLeftBorder().getX2(), lineLane.getLeftBorder().getY2());
+        }
+        //Shape the right border till down right
+        for (int index = arcLaneDecomposition.size()-1; index >= 0; index--){
+            result.lineTo(arcLaneDecomposition.get(index).getRightBorder().getX2(), arcLaneDecomposition.get(index).getRightBorder().getY2());
+        }
+        // Shape case of last line right border
+        result.lineTo(arcLaneDecomposition.get(0).getRightBorder().getX1(), arcLaneDecomposition.get(0).getRightBorder().getY1());
+
+        // Close the shape
+        result.lineTo(arcLaneDecomposition.get(0).getLeftBorder().getX1(), arcLaneDecomposition.get(0).getLeftBorder().getY1());
+
+        //Close path (ensures path is closed)
         result.closePath();
         return result;
     }

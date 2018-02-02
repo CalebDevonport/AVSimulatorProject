@@ -141,6 +141,130 @@ public class ArcSegmentLaneTests {
         assertEquals(areaPoints.get(7)[1], leftArc.getStartPoint().getX(), DELTA);
         assertEquals(areaPoints.get(7)[2], leftArc.getStartPoint().getY(), DELTA);
     }
+
+    @Test
+    public void calculateLaneDecompositionShape_withMoreThanOneLaneDecomposition_returnsLaneShape(){
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS *Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 3);
+
+        //assert
+        double[] coords = new double[6];
+        ArrayList<double[]> areaPoints = new ArrayList<double[]>();
+        for (PathIterator pi = lane.getLaneDecompositionShape().getPathIterator(null); !pi.isDone(); pi.next()) {
+            // The type will be SEG_MOVETO = 0, SEG_LINETO = 1, SEG_CUBICTO = 3 or SEG_CLOSE = 4
+            // Because the Area is composed of points, lines and curves
+            int type = pi.currentSegment(coords);
+            // We record a double array of {segment type, x coord, y coord}
+            // The last two point with coordinates only needed for curves
+            double[] pathIteratorCoords = {type, coords[0], coords[1]};
+            areaPoints.add(pathIteratorCoords);
+        }
+        // Fist we MOVE TO left of the left border
+        assertEquals(areaPoints.get(0)[0], 0, DELTA);
+        assertEquals(areaPoints.get(0)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(0)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+
+        //Then LINE TO till end of first line lane left border
+        assertEquals(areaPoints.get(1)[0], 1, DELTA);
+        assertEquals(areaPoints.get(1)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(1)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY2(), DELTA);
+
+        //Then LINE TO till end of second line lane left border
+        assertEquals(areaPoints.get(2)[0], 1, DELTA);
+        assertEquals(areaPoints.get(2)[1], lane.getArcLaneDecomposition().get(1).getLeftBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(2)[2], lane.getArcLaneDecomposition().get(1).getLeftBorder().getY2(), DELTA);
+
+        //Then LINE TO  till end of third line lane left border
+        assertEquals(areaPoints.get(3)[0], 1, DELTA);
+        assertEquals(areaPoints.get(3)[1], lane.getArcLaneDecomposition().get(2).getLeftBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(3)[2], lane.getArcLaneDecomposition().get(2).getLeftBorder().getY2(), DELTA);
+
+        //Then LINE TO right till end of third line lane right border
+        assertEquals(areaPoints.get(4)[0], 1, DELTA);
+        assertEquals(areaPoints.get(4)[1], lane.getArcLaneDecomposition().get(2).getRightBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(4)[2], lane.getArcLaneDecomposition().get(2).getRightBorder().getY2(), DELTA);
+
+        //Then LINE TO till end of second line lane right border
+        assertEquals(areaPoints.get(5)[0], 1, DELTA);
+        assertEquals(areaPoints.get(5)[1], lane.getArcLaneDecomposition().get(1).getRightBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(5)[2], lane.getArcLaneDecomposition().get(1).getRightBorder().getY2(), DELTA);
+
+        //Then LINE TO right till end of first line lane right border
+        assertEquals(areaPoints.get(6)[0], 1, DELTA);
+        assertEquals(areaPoints.get(6)[1], lane.getArcLaneDecomposition().get(0).getRightBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(6)[2], lane.getArcLaneDecomposition().get(0).getRightBorder().getY2(), DELTA);
+
+        //Then LINE TO till start of first line lane right border
+        assertEquals(areaPoints.get(7)[0], 1, DELTA);
+        assertEquals(areaPoints.get(7)[1], lane.getArcLaneDecomposition().get(0).getRightBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(7)[2], lane.getArcLaneDecomposition().get(0).getRightBorder().getY1(), DELTA);
+
+        //Then LINE TO left till start of first line lane right border to close the shape
+        assertEquals(areaPoints.get(8)[0], 1, DELTA);
+        assertEquals(areaPoints.get(8)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(8)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+
+        //Then CLOSE Path (should close in itself)
+        assertEquals(areaPoints.get(9)[0], 4, DELTA);
+        assertEquals(areaPoints.get(9)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(9)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+    }
+
+    @Test
+    public void calculateLaneDecompositionShape_withOneLaneDecomposition_returnsLaneShape(){
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS *Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 1);
+
+        //assert
+        double[] coords = new double[6];
+        ArrayList<double[]> areaPoints = new ArrayList<double[]>();
+        for (PathIterator pi = lane.getLaneDecompositionShape().getPathIterator(null); !pi.isDone(); pi.next()) {
+            // The type will be SEG_MOVETO = 0, SEG_LINETO = 1, SEG_CUBICTO = 3 or SEG_CLOSE = 4
+            // Because the Area is composed of points, lines and curves
+            int type = pi.currentSegment(coords);
+            // We record a double array of {segment type, x coord, y coord}
+            // The last two point with coordinates only needed for curves
+            double[] pathIteratorCoords = {type, coords[0], coords[1]};
+            areaPoints.add(pathIteratorCoords);
+        }
+        // Fist we MOVE TO left of the left border
+        assertEquals(areaPoints.get(0)[0], 0, DELTA);
+        assertEquals(areaPoints.get(0)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(0)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+
+        //Then LINE TO till end of first line lane left border
+        assertEquals(areaPoints.get(1)[0], 1, DELTA);
+        assertEquals(areaPoints.get(1)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(1)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY2(), DELTA);
+
+        //Then LINE TO right till end of third line lane right border
+        assertEquals(areaPoints.get(2)[0], 1, DELTA);
+        assertEquals(areaPoints.get(2)[1], lane.getArcLaneDecomposition().get(0).getRightBorder().getX2(), DELTA);
+        assertEquals(areaPoints.get(2)[2], lane.getArcLaneDecomposition().get(0).getRightBorder().getY2(), DELTA);
+
+        //Then LINE TO right till start of first line lane right border
+        assertEquals(areaPoints.get(3)[0], 1, DELTA);
+        assertEquals(areaPoints.get(3)[1], lane.getArcLaneDecomposition().get(0).getRightBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(3)[2], lane.getArcLaneDecomposition().get(0).getRightBorder().getY1(), DELTA);
+
+        //Then LINE TO left till start of first line lane right border to close the shape
+        assertEquals(areaPoints.get(4)[0], 1, DELTA);
+        assertEquals(areaPoints.get(4)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(4)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+
+        //Then CLOSE Path (should close in itself)
+        assertEquals(areaPoints.get(5)[0], 4, DELTA);
+        assertEquals(areaPoints.get(5)[1], lane.getArcLaneDecomposition().get(0).getLeftBorder().getX1(), DELTA);
+        assertEquals(areaPoints.get(5)[2], lane.getArcLaneDecomposition().get(0).getLeftBorder().getY1(), DELTA);
+    }
     @Test
     public void calculateArcLength_withHalfArc_returnsArcLength(){
         //arrange
