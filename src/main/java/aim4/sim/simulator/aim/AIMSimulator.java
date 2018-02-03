@@ -1,6 +1,6 @@
 package aim4.sim.simulator.aim;
 
-import aim4.map.aim.BasicIntersectionMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.sim.Simulator;
 import aim4.sim.results.AIMResult;
 import aim4.vehicle.aim.AIMVehicleSimModel;

@@ -30,13 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map.aim.destination;
 
-import java.util.List;
-
 import aim4.config.Debug;
-import aim4.map.aim.BasicIntersectionMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
+
+import java.util.List;
 
 /**
  * The RandomDestinationSelector selects Roads uniformly at random, but will

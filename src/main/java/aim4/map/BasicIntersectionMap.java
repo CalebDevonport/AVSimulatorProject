@@ -28,14 +28,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.aim;
-
-import java.util.List;
+package aim4.map;
 
 import aim4.im.aim.IntersectionManager;
-import aim4.map.BasicMap;
-import aim4.map.Road;
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.util.Registry;
+
+import java.util.List;
 
 /**
  * Essentially a structured grouping of Roads and IntersectionManagers that
@@ -76,7 +75,7 @@ public interface BasicIntersectionMap extends BasicMap {
   /**
    * Get the list of spawn points.
    *
-   * @return the lkist of spawn points
+   * @return the list of spawn points
    */
   List<AIMSpawnPoint> getSpawnPoints();
 

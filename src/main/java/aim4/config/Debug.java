@@ -30,14 +30,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.config;
 
-import java.awt.Color;
+import aim4.gui.ViewerDebugView;
+import aim4.map.BasicIntersectionMap;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import aim4.gui.ViewerDebugView;
-import aim4.map.aim.BasicIntersectionMap;
 
 /**
  * The configuration for debugging purposes.

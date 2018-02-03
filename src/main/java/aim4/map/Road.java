@@ -30,12 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map;
 
+import aim4.map.lane.Lane;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import aim4.map.aim.BasicIntersectionMap;
-import aim4.map.lane.Lane;
 
 /**
  * A group of lanes with a name.
@@ -50,6 +49,8 @@ public class Road {
   private String name;
   /** The lanes that make up this road, from left to right. */
   private List<Lane> lanes;
+  /** The individual that make up this road, from down to up. */
+  private List<Lane> continuousLanes;
   /** The Road that follows this one in the opposite direction. */
   private Road dual;
   /** The Layout of which the Road is a part. */
@@ -89,6 +90,34 @@ public class Road {
     }
   }
 
+  /**
+   * Create a new Road with the given Lanes, ordered from left to right and from down to up.
+   *
+   * @param name   the name of the Road
+   * @param leftRightLanes  the Lanes from which to make the Road left to right
+   * @param upDownLanes  the Lanes from which to make the Road down to up
+   * @param map    the Layout of which the Road is a part
+   */
+  public Road(String name, List<Lane> leftRightLanes, List<Lane> upDownLanes, BasicMap map) {
+    this.name = name;
+    this.lanes = new ArrayList<Lane>(leftRightLanes);
+    this.continuousLanes = new ArrayList<Lane>(upDownLanes);
+    this.map = map;
+    // Now set up the proper relationships between them
+    if(leftRightLanes.size() > 1) {
+      for(int i = 0; i < leftRightLanes.size() - 1; i++) {
+        leftRightLanes.get(i).setRightNeighbor(leftRightLanes.get(i + 1));
+        leftRightLanes.get(i + 1).setLeftNeighbor(leftRightLanes.get(i));
+      }
+    }
+    if(upDownLanes.size() > 1) {
+      for(int i = 0; i < upDownLanes.size() - 1; i++) {
+        upDownLanes.get(i).setNextLane(upDownLanes.get(i + 1));
+        upDownLanes.get(i + 1).setPrevLane(upDownLanes.get(i));
+      }
+    }
+  }
+
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////
@@ -110,6 +139,15 @@ public class Road {
    */
   public List<Lane> getLanes() {
     return Collections.unmodifiableList(lanes);
+  }
+
+  /**
+   * Get the Lanes that make up this Road, in order from down to up.
+   *
+   * @return the Lanes that make up this Road, in order from down to up
+   */
+  public List<Lane> getContinuousLanes() {
+    return Collections.unmodifiableList(continuousLanes);
   }
 
   /**
@@ -178,6 +216,20 @@ public class Road {
       lane.setLeftNeighbor(rightmost);
     }
     lanes.add(lane);
+  }
+
+  /**
+   * Add a down most lane to this Road.
+   *
+   * @param lane the Lane to add
+   */
+  public void addTheUpMostLane(Lane lane) {
+    if(!continuousLanes.isEmpty()) {
+      Lane upMost = continuousLanes.get(lanes.size() - 1);
+      upMost.setNextLane(lane);
+      lane.setPrevLane(upMost);
+    }
+    continuousLanes.add(lane);
   }
 
   /**

@@ -41,6 +41,7 @@ import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.batch.RoadBasedReordering;
 import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;

@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.map.aim.BasicIntersectionMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;

@@ -79,7 +79,7 @@ public class ArcSegmentLane extends AbstractLane{
     /////////////////////////////////
 
     /**
-     * Constructs an arc-segment lane using an Arc.
+     * Constructs an arc-segment lane using an Arc. Assumes Line lanes same direction as the arc.
      *
      * @param arc        the arc segment representing the center of the Lane
      * @param width      the width of the Lane, in meters
@@ -94,8 +94,31 @@ public class ArcSegmentLane extends AbstractLane{
         this.halfWidth = width / 2;
         this.splitFactor = splitFactor;
         length = GeomMath.calculateArcLaneLength(arc);
-        calculateLaneBorders(arc);
-        arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor);
+        calculateLaneBorders(arc, true); // by default arc same direction as lines
+        arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor, true);
+        lengthArcLaneDecomposition = calculateLengthArcLaneDecomposition(arcLaneDecomposition);
+        laneShape = calculateLaneShape(leftBorder, rightBorder);
+        laneDecompositionShape = calculateLaneDecompositionShape(arcLaneDecomposition);
+    }
+
+    /**
+     * Constructs an arc-segment lane using an Arc. Does not assume Line lanes go int the same direction as the arc.
+     * True direction means arc same direction as line lanes, false means opposite direction.
+     *
+     * @param arc        the arc segment representing the center of the Lane
+     * @param width      the width of the Lane, in meters
+     * @param speedLimit the speed limit of the Lane, in meters per second
+     * @param splitFactor the number by which the extent angle of the arc Lane is divided.
+     */
+    public ArcSegmentLane(Arc2D arc, double width, double speedLimit, int splitFactor, boolean direction) {
+        super(speedLimit);
+        this.arc = arc;
+        this.width = width;
+        this.halfWidth = width / 2;
+        this.splitFactor = splitFactor;
+        length = GeomMath.calculateArcLaneLength(arc);
+        calculateLaneBorders(arc, direction);
+        arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor, direction);
         lengthArcLaneDecomposition = calculateLengthArcLaneDecomposition(arcLaneDecomposition);
         laneShape = calculateLaneShape(leftBorder, rightBorder);
         laneDecompositionShape = calculateLaneDecompositionShape(arcLaneDecomposition);
@@ -368,7 +391,7 @@ public class ArcSegmentLane extends AbstractLane{
      * Calculate list of lines that make up the arc lane based on
      * a split factor.
      */
-    private ArrayList<LineSegmentLane> calculateArcLaneDecomposition(Arc2D arc, int splitFactor) {
+    private ArrayList<LineSegmentLane> calculateArcLaneDecomposition(Arc2D arc, int splitFactor, boolean direction) {
         ArrayList<LineSegmentLane> lineSegmentLanes = new ArrayList<>();
         double splitAngle;
         // If the split factor is negative or zero, we consider the arc is not divided at all.
@@ -376,29 +399,58 @@ public class ArcSegmentLane extends AbstractLane{
             splitFactor = 1;
         }
         splitAngle = arc.getAngleExtent() / splitFactor;
-        // For each split (inner arc)
-        for (int split = 0; split < splitFactor; split++) {
-            // Calculate inner arc based on split (order from left to right) and splitAngle
-            Arc2D arcSegment = calculateArcSegment(arc, split, splitAngle);
-            Point2D startPoint = arcSegment.getStartPoint();
-            Point2D endPoint = arcSegment.getEndPoint();
+        if (direction) {
+            // For each split (inner arc)
+            for (int split = 0; split < splitFactor; split++) {
+                // Calculate inner arc based on split (order from left to right) and splitAngle
+                Arc2D arcSegment = calculateArcSegment(arc, split, splitAngle);
+                Point2D startPoint = arcSegment.getStartPoint();
+                Point2D endPoint = arcSegment.getEndPoint();
 
-            // Create a LineSegmentLane with the start point = start point of arc and end point = end point of arc)
-            LineSegmentLane lineSegmentLane = new LineSegmentLane(startPoint,endPoint,width,getSpeedLimit());
+                // Create a LineSegmentLane with the start point = start point of arc and end point = end point of arc)
+                LineSegmentLane lineSegmentLane = new LineSegmentLane(startPoint, endPoint, width, getSpeedLimit());
 
-            // Re-calculate the left border of the LineSegment to intersect the leftBorder arc.
-            Arc2D arcSegmentLeftBorder = calculateArcSegment(leftBorder, split, splitAngle);
-            Point2D leftBorderStartPoint = arcSegmentLeftBorder.getStartPoint();
-            Point2D leftBorderEndPoint = arcSegmentLeftBorder.getEndPoint();
-            lineSegmentLane.setLeftBorder(new Line2D.Double(leftBorderStartPoint, leftBorderEndPoint));
+                // Re-calculate the left border of the LineSegment to intersect the leftBorder arc.
+                Arc2D arcSegmentLeftBorder = calculateArcSegment(leftBorder, split, splitAngle);
+                Point2D leftBorderStartPoint = arcSegmentLeftBorder.getStartPoint();
+                Point2D leftBorderEndPoint = arcSegmentLeftBorder.getEndPoint();
+                lineSegmentLane.setLeftBorder(new Line2D.Double(leftBorderStartPoint, leftBorderEndPoint));
 
-            // Re-calculate the right border of the LineSegment to intersect the rightBorder arc.
-            Arc2D arcSegmentRightBorder = calculateArcSegment(rightBorder, split, splitAngle);
-            Point2D rightBorderStartPoint = arcSegmentRightBorder.getStartPoint();
-            Point2D rightBorderEndPoint = arcSegmentRightBorder.getEndPoint();
-            lineSegmentLane.setRightBorder(new Line2D.Double(rightBorderStartPoint, rightBorderEndPoint));
+                // Re-calculate the right border of the LineSegment to intersect the rightBorder arc.
+                Arc2D arcSegmentRightBorder = calculateArcSegment(rightBorder, split, splitAngle);
+                Point2D rightBorderStartPoint = arcSegmentRightBorder.getStartPoint();
+                Point2D rightBorderEndPoint = arcSegmentRightBorder.getEndPoint();
+                lineSegmentLane.setRightBorder(new Line2D.Double(rightBorderStartPoint, rightBorderEndPoint));
 
-            lineSegmentLanes.add(lineSegmentLane);
+                lineSegmentLanes.add(lineSegmentLane);
+            }
+        }
+        else {
+            // For each split (inner arc)
+            for (int split = splitFactor - 1; split >= 0; split--) {
+                // Calculate inner arc based on split (order from left to right) and splitAngle
+                Arc2D arcSegment = calculateArcSegment(arc, split, splitAngle);
+                Point2D startPoint = arcSegment.getStartPoint();
+                Point2D endPoint = arcSegment.getEndPoint();
+
+                // Create a LineSegmentLane with the start point = end point of arc and end point = start point of arc)
+                LineSegmentLane lineSegmentLane = new LineSegmentLane(endPoint, startPoint, width, getSpeedLimit());
+
+                // Re-calculate the left border of the LineSegment to intersect the leftBorder arc.
+                Arc2D arcSegmentLeftBorder = calculateArcSegment(leftBorder, split, splitAngle);
+                Point2D leftBorderStartPoint = arcSegmentLeftBorder.getStartPoint();
+                Point2D leftBorderEndPoint = arcSegmentLeftBorder.getEndPoint();
+                lineSegmentLane.setLeftBorder(new Line2D.Double(leftBorderEndPoint, leftBorderStartPoint));
+
+                // Re-calculate the right border of the LineSegment to intersect the rightBorder arc.
+                Arc2D arcSegmentRightBorder = calculateArcSegment(rightBorder, split, splitAngle);
+                Point2D rightBorderStartPoint = arcSegmentRightBorder.getStartPoint();
+                Point2D rightBorderEndPoint = arcSegmentRightBorder.getEndPoint();
+                lineSegmentLane.setRightBorder(new Line2D.Double(rightBorderEndPoint, rightBorderStartPoint));
+
+                lineSegmentLanes.add(lineSegmentLane);
+            }
+
         }
         return lineSegmentLanes;
     }
@@ -434,12 +486,22 @@ public class ArcSegmentLane extends AbstractLane{
     /**
      * Calculate lane left and right borders based on lane's width.
      */
-    private void calculateLaneBorders(Arc2D arc) {
+    private void calculateLaneBorders(Arc2D arc, boolean direction) {
         Point2D origin = new Point2D.Double(arc.getX() + arc.getWidth() / 2, arc.getY() + arc.getWidth() / 2);
         this.leftBorder = new Arc2D.Double();
         this.rightBorder = new Arc2D.Double();
-        leftBorder.setArcByCenter(origin.getX(), origin.getY(), arc.getWidth() / 2 + halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
-        rightBorder.setArcByCenter(origin.getX(), origin.getY(), arc.getWidth() / 2 - halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+        if (direction) {
+            leftBorder.setArcByCenter(origin.getX(), origin.getY(),
+                    arc.getWidth() / 2 + halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+            rightBorder.setArcByCenter(origin.getX(), origin.getY(),
+                    arc.getWidth() / 2 - halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+        }
+        else {
+            leftBorder.setArcByCenter(origin.getX(), origin.getY(),
+                    arc.getWidth() / 2 - halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+            rightBorder.setArcByCenter(origin.getX(), origin.getY(),
+                    arc.getWidth() / 2 + halfWidth, arc.getAngleStart(), arc.getAngleExtent(), arc.getArcType());
+        }
     }
 
     /**

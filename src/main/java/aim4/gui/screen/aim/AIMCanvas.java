@@ -3,16 +3,16 @@ package aim4.gui.screen.aim;
 import aim4.config.Debug;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator;
-import aim4.gui.*;
+import aim4.gui.Viewer;
 import aim4.gui.viewer.AIMSimViewer;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.RequestHandler.TrafficSignalRequestHandler;
 import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.im.aim.v2i.policy.Policy;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.BasicMap;
 import aim4.map.Road;
-import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.map.track.*;
 import aim4.msg.aim.v2i.Request;
@@ -26,7 +26,8 @@ import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Created by Callum on 28/11/2016.
