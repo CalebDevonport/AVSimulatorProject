@@ -1,30 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="Complete the arc segment lane (including shape based on line lanes)">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" />
+    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/config/Debug.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/config/Debug.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/AIMAutoDriver.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/AIMAutoDriver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/AutoV2VDriver.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/AutoV2VDriver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/ProxyDriver.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/ProxyDriver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/coordinator/V2ICoordinator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/coordinator/V2ICoordinator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/navigator/BasicNavigator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/driver/aim/navigator/BasicNavigator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/screen/aim/AIMCanvas.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/screen/aim/AIMCanvas.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridIntersectionMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridIntersectionMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/RandomDestinationSelector.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/RandomDestinationSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/RatioDestinationSelector.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/RatioDestinationSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/TurnBasedDestinationSelector.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/destination/TurnBasedDestinationSelector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/UdpListener.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/UdpListener.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AIMSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AIMSimulator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AutoDriverOnlySimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AutoDriverOnlySimulator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" afterPath="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/BasicIntersectionMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,15 +20,15 @@
       <file leaf-file-name="RimIntersectionMap.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="785" column="24" lean-forward="false" selection-start-line="785" selection-start-column="24" selection-end-line="785" selection-end-column="24" />
+            <state relative-caret-position="199">
+              <caret line="783" column="7" lean-forward="true" selection-start-line="783" selection-start-column="7" selection-end-line="783" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1703#1709#0" expanded="true" />
-                <element signature="e#1814#1820#0" expanded="true" />
-                <element signature="e#2914#2920#0" expanded="true" />
-                <element signature="e#3051#3072#0" expanded="true" />
-                <element signature="e#3193#3205#0" expanded="true" />
+                <element signature="e#1680#1686#0" expanded="true" />
+                <element signature="e#1791#1797#0" expanded="true" />
+                <element signature="e#2891#2897#0" expanded="true" />
+                <element signature="e#3028#3049#0" expanded="true" />
+                <element signature="e#3170#3182#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,7 +38,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="453">
-              <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+              <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -70,7 +48,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="106">
-              <caret line="54" column="50" lean-forward="false" selection-start-line="54" selection-start-column="50" selection-end-line="54" selection-end-column="50" />
+              <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -100,11 +78,11 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="50" column="51" lean-forward="true" selection-start-line="50" selection-start-column="51" selection-end-line="50" selection-end-column="51" />
+              <caret line="49" column="51" lean-forward="true" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1207#1208#0" expanded="true" />
-                <element signature="e#1253#1254#0" expanded="true" />
+                <element signature="e#1172#1173#0" expanded="true" />
+                <element signature="e#1218#1219#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -820,7 +798,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517576972085</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Add a map for RIM and spawn points. Introduce the idea of a road to be constructed of multiple continuous lanes.">
+      <created>1517697275882</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1517697275882</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -935,7 +920,8 @@
     <MESSAGE value="Get the shape of a lane depending on arc and width" />
     <MESSAGE value="Decompose an Arc Lane in smaller Line Lanes" />
     <MESSAGE value="Complete the arc segment lane (including shape based on line lanes)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Complete the arc segment lane (including shape based on line lanes)" />
+    <MESSAGE value="Add a map for RIM and spawn points. Introduce the idea of a road to be constructed of multiple continuous lanes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add a map for RIM and spawn points. Introduce the idea of a road to be constructed of multiple continuous lanes." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1340,11 +1326,11 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="50" column="51" lean-forward="true" selection-start-line="50" selection-start-column="51" selection-end-line="50" selection-end-column="51" />
+          <caret line="49" column="51" lean-forward="true" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1207#1208#0" expanded="true" />
-            <element signature="e#1253#1254#0" expanded="true" />
+            <element signature="e#1172#1173#0" expanded="true" />
+            <element signature="e#1218#1219#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1360,7 +1346,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="106">
-          <caret line="54" column="50" lean-forward="false" selection-start-line="54" selection-start-column="50" selection-end-line="54" selection-end-column="50" />
+          <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
           <folding />
         </state>
       </provider>
@@ -1368,22 +1354,22 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="453">
-          <caret line="83" column="0" lean-forward="true" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+          <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="785" column="24" lean-forward="false" selection-start-line="785" selection-start-column="24" selection-end-line="785" selection-end-column="24" />
+        <state relative-caret-position="199">
+          <caret line="783" column="7" lean-forward="true" selection-start-line="783" selection-start-column="7" selection-end-line="783" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1703#1709#0" expanded="true" />
-            <element signature="e#1814#1820#0" expanded="true" />
-            <element signature="e#2914#2920#0" expanded="true" />
-            <element signature="e#3051#3072#0" expanded="true" />
-            <element signature="e#3193#3205#0" expanded="true" />
+            <element signature="e#1680#1686#0" expanded="true" />
+            <element signature="e#1791#1797#0" expanded="true" />
+            <element signature="e#2891#2897#0" expanded="true" />
+            <element signature="e#3028#3049#0" expanded="true" />
+            <element signature="e#3170#3182#0" expanded="true" />
           </folding>
         </state>
       </provider>
