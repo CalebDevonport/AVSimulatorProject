@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimMapUtil.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,58 +21,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="GridMapUtil.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="470" column="37" lean-forward="false" selection-start-line="470" selection-start-column="37" selection-end-line="470" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="RimIntersectionMap.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="783" column="7" lean-forward="true" selection-start-line="783" selection-start-column="7" selection-end-line="783" selection-end-column="7" />
+            <state relative-caret-position="319">
+              <caret line="103" column="7" lean-forward="true" selection-start-line="103" selection-start-column="7" selection-end-line="103" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1680#1686#0" expanded="true" />
                 <element signature="e#1791#1797#0" expanded="true" />
-                <element signature="e#2891#2897#0" expanded="true" />
-                <element signature="e#3028#3049#0" expanded="true" />
-                <element signature="e#3170#3182#0" expanded="true" />
+                <element signature="e#2865#2871#0" expanded="true" />
+                <element signature="e#3002#3023#0" expanded="true" />
+                <element signature="e#3144#3156#0" expanded="true" />
+                <element signature="e#38647#38653#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BasicIntersectionMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java">
+      <file leaf-file-name="GeomMath.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+            <state relative-caret-position="78">
+              <caret line="171" column="25" lean-forward="false" selection-start-line="171" selection-start-column="25" selection-end-line="171" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BasicMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java">
+      <file leaf-file-name="RimIntersectionMapTests.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="106">
-              <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
+            <state relative-caret-position="202">
+              <caret line="263" column="54" lean-forward="false" selection-start-line="263" selection-start-column="54" selection-end-line="263" selection-end-column="54" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Lane.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/Lane.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="46" column="17" lean-forward="false" selection-start-line="46" selection-start-column="17" selection-end-line="46" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MergeMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/MergeMap.java">
+      <file leaf-file-name="ArcSegmentLane.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="88" column="26" lean-forward="false" selection-start-line="88" selection-start-column="26" selection-end-line="88" selection-end-column="26" />
+            <state relative-caret-position="119">
+              <caret line="14" column="39" lean-forward="false" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GridMapUtil.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java">
+      <file leaf-file-name="AbstractLane.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6834">
-              <caret line="470" column="37" lean-forward="true" selection-start-line="470" selection-start-column="37" selection-end-line="470" selection-end-column="37" />
+            <state relative-caret-position="124">
+              <caret line="47" column="22" lean-forward="false" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ArcSegmentLaneTests.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-867">
+              <caret line="19" column="89" lean-forward="true" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="89" />
               <folding />
             </state>
           </provider>
@@ -77,33 +114,11 @@
       <file leaf-file-name="RIMSpawnPoint.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="49" column="51" lean-forward="true" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
+            <state relative-caret-position="599">
+              <caret line="49" column="51" lean-forward="false" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1172#1173#0" expanded="true" />
-                <element signature="e#1218#1219#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MergeMapUtil.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/MergeMapUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MergeSpawnPoint.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/MergeSpawnPoint.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -194,12 +209,13 @@
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/Lane.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java" />
         <option value="$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java" />
-        <option value="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/aim/AIMSpawnPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpwanPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/BasicMap.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java" />
+        <option value="$PROJECT_DIR$/src/main/java/aim4/map/Road.java" />
+        <option value="$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java" />
         <option value="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" />
       </list>
     </option>
@@ -242,7 +258,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
-    <option name="width" value="914" />
+    <option name="width" value="841" />
     <option name="height" value="831" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -262,9 +278,8 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
       <pane id="Scope" />
-      <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -409,6 +424,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -436,132 +452,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.ArcSegmentLaneTests">
-    <configuration name="ArcSegmentLaneTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="aim4.rim.map.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="AIM4" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="aim4.rim.map.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="AIM4" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="ArcSegmentLaneTests.calculateLaneBorders_withOppositeDirection_returnsLeftBorderToTheRightOfStartPoint" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="aim4.rim.map.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="AIM4" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="calculateLaneBorders_withOppositeDirection_returnsLeftBorderToTheRightOfStartPoint" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="ArcSegmentLaneTests.calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="aim4.rim.map.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="AIM4" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="aim4.rim.map.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="AIM4" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="aim4.rim.map" />
-      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.ArcSegmentLaneTests" />
-      <option name="METHOD_NAME" value="calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
+  <component name="RunManager" selected="JUnit.RimIntersectionMapTests">
     <configuration name="Maven Compile" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
         <option name="myGeneralSettings" />
@@ -584,6 +475,131 @@
           </MavenRunnerParameters>
         </option>
       </MavenSettings>
+    </configuration>
+    <configuration name="RimIntersectionMapTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="aim4.rim.map.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="AIM4" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="aim4.rim.map" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.RimIntersectionMapTests" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="aim4.rim.map.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="AIM4" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="aim4.rim.map" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.RimIntersectionMapTests" />
+      <option name="METHOD_NAME" value="mapConstructionEastRoad_withFields_returnsRimIntersectionMap" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="RimIntersectionMapTests.mapConstructionNorthRoad_withFields_returnsRimIntersectionMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="aim4.rim.map.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="AIM4" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="aim4.rim.map" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.RimIntersectionMapTests" />
+      <option name="METHOD_NAME" value="mapConstructionNorthRoad_withFields_returnsRimIntersectionMap" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="RimIntersectionMapTests.mapConstructionSouthRoad_withFields_returnsRimIntersectionMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="aim4.rim.map.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="AIM4" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="aim4.rim.map" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.RimIntersectionMapTests" />
+      <option name="METHOD_NAME" value="mapConstructionSouthRoad_withFields_returnsRimIntersectionMap" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration name="RimIntersectionMapTests.rimIntersectionMapConstructor_withFields_returnsRimIntersectionMap" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="aim4.rim.map.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="AIM4" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="aim4.rim.map" />
+      <option name="MAIN_CLASS_NAME" value="aim4.rim.map.RimIntersectionMapTests" />
+      <option name="METHOD_NAME" value="rimIntersectionMapConstructor_withFields_returnsRimIntersectionMap" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
     </configuration>
     <configuration name="Run" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -712,19 +728,19 @@
       <item index="0" class="java.lang.String" itemvalue="Application.Run" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.Unnamed" />
       <item index="2" class="java.lang.String" itemvalue="Maven.Maven Compile" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneBorders_withOppositeDirection_returnsLeftBorderToTheRightOfStartPoint" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.rimIntersectionMapConstructor_withFields_returnsRimIntersectionMap" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionNorthRoad_withFields_returnsRimIntersectionMap" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionSouthRoad_withFields_returnsRimIntersectionMap" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.ArcSegmentLaneTests.calculateLaneBorders_withOppositeDirection_returnsLeftBorderToTheRightOfStartPoint" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionSouthRoad_withFields_returnsRimIntersectionMap" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.mapConstructionNorthRoad_withFields_returnsRimIntersectionMap" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.RimIntersectionMapTests.rimIntersectionMapConstructor_withFields_returnsRimIntersectionMap" />
       </list>
     </recent_temporary>
   </component>
@@ -805,39 +821,46 @@
       <option name="project" value="LOCAL" />
       <updated>1517697275882</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Add a map for RIM and spawn points. Introduce the idea of a road to be constructed of multiple continuous lanes.">
+      <created>1517697289965</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1517697289965</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ArcSegmentLaneTests - 2018.02.03 at 16h 17m 56s.xml">
-      <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests - 2018.02.05 at 18h 43m 03s.xml">
+      <configuration name="RimIntersectionMapTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests - 2018.02.03 at 21h 52m 58s.xml">
-      <configuration name="ArcSegmentLaneTests" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests - 2018.02.05 at 18h 43m 11s.xml">
+      <configuration name="RimIntersectionMapTests" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes - 2018.02.03 at 16h 09m 02s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 36m 20s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes - 2018.02.03 at 16h 11m 00s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 37m 52s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes - 2018.02.03 at 16h 11m 13s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 38m 59s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes - 2018.02.03 at 16h 11m 19s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 40m 08s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes - 2018.02.03 at 16h 12m 39s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 41m 21s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape - 2018.02.03 at 16h 19m 33s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneDecompositionShape_withMoreThanOneLaneDecompositionAndOppositeDirection_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 41m 26s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape - 2018.02.03 at 16h 16m 29s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionEastRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 41m 39s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionEastRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ArcSegmentLaneTests_calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape - 2018.02.03 at 16h 17m 35s.xml">
-      <configuration name="ArcSegmentLaneTests.calculateLaneShape_withValidPointsAndOppositeDirection_returnsLaneShape" configurationId="JUnit" />
+    <history-entry file="RimIntersectionMapTests_mapConstructionSouthRoad_withFields_returnsRimIntersectionMap - 2018.02.05 at 18h 34m 09s.xml">
+      <configuration name="RimIntersectionMapTests.mapConstructionSouthRoad_withFields_returnsRimIntersectionMap" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -856,29 +879,29 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20704846" sideWeight="0.49463806" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40969163" sideWeight="0.53351206" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22788204" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40969163" sideWeight="0.43632707" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22788204" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4082232" sideWeight="0.43632707" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32892805" sideWeight="0.49731904" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31769437" sideWeight="0.4909091" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.68135095" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.030831099" sideWeight="0.4909091" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43005952" sideWeight="0.46648794" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34801763" sideWeight="0.46648794" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2533512" sideWeight="0.5090909" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.68135095" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -933,8 +956,32 @@
           <properties />
           <option name="timeStamp" value="121" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java</url>
+          <line>664</line>
+          <properties />
+          <option name="timeStamp" value="124" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java</url>
+          <line>703</line>
+          <properties />
+          <option name="timeStamp" value="125" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java</url>
+          <line>85</line>
+          <properties />
+          <option name="timeStamp" value="138" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java</url>
+          <line>184</line>
+          <properties />
+          <option name="timeStamp" value="149" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="124" />
+      <option name="time" value="150" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -943,20 +990,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://D:/JDK8/src.zip!/java/awt/geom/Arc2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3170">
-          <caret line="1423" column="24" lean-forward="false" selection-start-line="1423" selection-start-column="24" selection-end-line="1423" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/driver/BasicPilot.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="83" column="35" lean-forward="false" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/lane/LaneIM.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="218">
@@ -1011,25 +1044,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="119" column="16" lean-forward="false" selection-start-line="119" selection-start-column="16" selection-end-line="119" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/im/aim/RoadBasedIntersection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3927">
           <caret line="283" column="33" lean-forward="false" selection-start-line="283" selection-start-column="33" selection-end-line="283" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/RoadNames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1055,7 +1073,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1649">
           <caret line="42" column="13" lean-forward="false" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1063,15 +1080,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="833">
           <caret line="57" column="6" lean-forward="false" selection-start-line="57" selection-start-column="6" selection-end-line="57" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="89" column="25" lean-forward="false" selection-start-line="89" selection-start-column="25" selection-end-line="89" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1079,7 +1087,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
           <caret line="89" column="9" lean-forward="false" selection-start-line="89" selection-start-column="9" selection-end-line="89" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1087,7 +1094,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1343">
           <caret line="121" column="37" lean-forward="false" selection-start-line="121" selection-start-column="37" selection-end-line="121" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1095,7 +1101,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="918">
           <caret line="71" column="41" lean-forward="false" selection-start-line="71" selection-start-column="41" selection-end-line="71" selection-end-column="41" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1103,7 +1108,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3349">
           <caret line="240" column="20" lean-forward="false" selection-start-line="240" selection-start-column="20" selection-end-line="240" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1149,46 +1153,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="129">
           <caret line="15" column="26" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/Lane.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="240" column="10" lean-forward="false" selection-start-line="240" selection-start-column="10" selection-end-line="240" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5490">
-          <caret line="114" column="23" lean-forward="true" selection-start-line="114" selection-start-column="23" selection-end-line="114" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/Road.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="228" column="17" lean-forward="true" selection-start-line="228" selection-start-column="17" selection-end-line="228" selection-end-column="17" />
           <folding>
-            <element signature="e#2551#2552#0" expanded="true" />
-            <element signature="e#2599#2600#0" expanded="true" />
-            <element signature="e#4973#4974#0" expanded="true" />
-            <element signature="e#5025#5026#0" expanded="true" />
-            <element signature="e#5227#5228#0" expanded="true" />
-            <element signature="e#5289#5290#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="201" column="17" lean-forward="false" selection-start-line="201" selection-start-column="17" selection-end-line="201" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1212,18 +1179,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1517">
           <caret line="176" column="16" lean-forward="false" selection-start-line="176" selection-start-column="16" selection-end-line="176" selection-end-column="16" />
-          <folding>
-            <element signature="e#4363#4364#0" expanded="true" />
-            <element signature="e#4390#4391#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5389">
-          <caret line="327" column="76" lean-forward="true" selection-start-line="327" selection-start-column="76" selection-end-line="327" selection-end-column="76" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1231,7 +1186,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="218">
           <caret line="164" column="9" lean-forward="false" selection-start-line="164" selection-start-column="9" selection-end-line="164" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1239,7 +1193,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="48" column="11" lean-forward="true" selection-start-line="48" selection-start-column="11" selection-end-line="48" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1247,7 +1200,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1255,7 +1207,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1271,15 +1222,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/MergeMapUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1287,7 +1229,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="14" column="46" lean-forward="false" selection-start-line="14" selection-start-column="46" selection-end-line="14" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1303,7 +1244,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="25" lean-forward="true" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1311,27 +1251,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6834">
-          <caret line="470" column="37" lean-forward="true" selection-start-line="470" selection-start-column="37" selection-end-line="470" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="49" column="51" lean-forward="true" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1172#1173#0" expanded="true" />
-            <element signature="e#1218#1219#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1339,7 +1258,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="279">
           <caret line="88" column="26" lean-forward="false" selection-start-line="88" selection-start-column="26" selection-end-line="88" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1347,29 +1265,135 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="106">
           <caret line="53" column="50" lean-forward="false" selection-start-line="53" selection-start-column="50" selection-end-line="53" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/BasicIntersectionMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
+        <state relative-caret-position="480">
           <caret line="80" column="0" lean-forward="true" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/RoadNames.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/merge/MergeMapUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimMapUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="23" lean-forward="false" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/aim/GridMapUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="470" column="37" lean-forward="false" selection-start-line="470" selection-start-column="37" selection-end-line="470" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RIMSpawnPoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="599">
+          <caret line="49" column="51" lean-forward="false" selection-start-line="49" selection-start-column="51" selection-end-line="49" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/Road.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="233" column="3" lean-forward="true" selection-start-line="233" selection-start-column="3" selection-end-line="233" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/util/GeomMath.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="171" column="25" lean-forward="false" selection-start-line="171" selection-start-column="25" selection-end-line="171" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/Lane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="46" column="17" lean-forward="false" selection-start-line="46" selection-start-column="17" selection-end-line="46" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/LineSegmentLane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="42" column="40" lean-forward="false" selection-start-line="42" selection-start-column="40" selection-end-line="42" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/AbstractLane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="47" column="22" lean-forward="false" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/lane/ArcSegmentLane.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="14" column="39" lean-forward="false" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/ArcSegmentLaneTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-867">
+          <caret line="19" column="89" lean-forward="true" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="89" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="263" column="54" lean-forward="false" selection-start-line="263" selection-start-column="54" selection-end-line="263" selection-end-column="54" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="783" column="7" lean-forward="true" selection-start-line="783" selection-start-column="7" selection-end-line="783" selection-end-column="7" />
+        <state relative-caret-position="319">
+          <caret line="103" column="7" lean-forward="true" selection-start-line="103" selection-start-column="7" selection-end-line="103" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1680#1686#0" expanded="true" />
             <element signature="e#1791#1797#0" expanded="true" />
-            <element signature="e#2891#2897#0" expanded="true" />
-            <element signature="e#3028#3049#0" expanded="true" />
-            <element signature="e#3170#3182#0" expanded="true" />
+            <element signature="e#2865#2871#0" expanded="true" />
+            <element signature="e#3002#3023#0" expanded="true" />
+            <element signature="e#3144#3156#0" expanded="true" />
+            <element signature="e#38647#38653#0" expanded="true" />
           </folding>
         </state>
       </provider>

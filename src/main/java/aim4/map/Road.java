@@ -80,6 +80,7 @@ public class Road {
   public Road(String name, List<Lane> lanes, BasicMap map) {
     this.name = name;
     this.lanes = new ArrayList<Lane>(lanes);
+    this.continuousLanes = new ArrayList<Lane>();
     this.map = map;
     // Now set up the proper relationships between them
     if(lanes.size() > 1) {
@@ -225,7 +226,7 @@ public class Road {
    */
   public void addTheUpMostLane(Lane lane) {
     if(!continuousLanes.isEmpty()) {
-      Lane upMost = continuousLanes.get(lanes.size() - 1);
+      Lane upMost = continuousLanes.get(continuousLanes.size() - 1);
       upMost.setNextLane(lane);
       lane.setPrevLane(upMost);
     }

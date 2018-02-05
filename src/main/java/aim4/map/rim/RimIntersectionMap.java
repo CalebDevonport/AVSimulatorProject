@@ -69,7 +69,6 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * The set of vertical roads
      */
     private List<Road> verticalRoads = new ArrayList<Road>();
-    //todo: rim intersection manager
     /**
      * The list of intersection managers
      */
@@ -78,7 +77,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * The array of intersection managers
      */
     private IntersectionManager[][] intersectionManagerGrid;
-    /** The maximum speed limit  */
+    /**
+     * The maximum speed limit
+     */
     private double memoMaximumSpeedLimit = -1;
     /**
      * The maximum lane speed limit
@@ -166,8 +167,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
-        // 2 per sets of roads, one at either end.
-        dataCollectionLines = new ArrayList<DataCollectionLine>(2 * (columns + rows));
+        dataCollectionLines = new ArrayList<DataCollectionLine>();
 
         // Create roundabout path. Detailed map available here: http..
         // Calculate roundabout width (should be bigger than lane width)
@@ -178,24 +178,45 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // Calculate a,b,c,d parameters to construct the roundabout
         double a = entranceExitRadius + laneWidth / 2;
         double b = Math.sqrt(Math.pow(roundaboutRadius + entranceExitRadius, 2) - Math.pow(entranceExitRadius + laneWidth / 2, 2));
-        double c = roundaboutRadius * a / (roundaboutRadius + entranceExitRadius);
-        double d = roundaboutRadius * b / (roundaboutRadius + entranceExitRadius);
-        double alpha = Math.toDegrees(Math.asin(a/(entranceExitRadius+roundaboutRadius)));
+        double c = (roundaboutRadius / (roundaboutRadius + entranceExitRadius)) * a;
+        double d = (roundaboutRadius / (roundaboutRadius + entranceExitRadius)) * b;
+        double alpha = Math.toDegrees(Math.asin(a / (entranceExitRadius + roundaboutRadius)));
         double beta = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - 2 * alpha;
 
         // Setup map centre (all coordinates are positive):
         Point2D mapOrigin = new Point2D.Double(height / 2, width / 2);
 
         // Calculate origins of roundabout entrance/exit circles
-        Point2D o1 = new Point2D.Double(mapOrigin.getX() + a, mapOrigin.getY() + b);
-        Point2D o2 = new Point2D.Double(mapOrigin.getX() - a, mapOrigin.getY() + b);
-        Point2D o3 = new Point2D.Double(mapOrigin.getX() - a, mapOrigin.getY() - b);
-        Point2D o4 = new Point2D.Double(mapOrigin.getX() + a, mapOrigin.getY() - b);
-        Point2D o5 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() - a);
-        Point2D o6 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() + a);
-        Point2D o7 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() + a);
-        Point2D o8 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() - a);
-        Point2D o = new Point2D.Double(mapOrigin.getX(), mapOrigin.getY());
+        Point2D O1 = new Point2D.Double(mapOrigin.getX() + a, mapOrigin.getY() + b);
+        Point2D O2 = new Point2D.Double(mapOrigin.getX() - a, mapOrigin.getY() + b);
+        Point2D O3 = new Point2D.Double(mapOrigin.getX() - a, mapOrigin.getY() - b);
+        Point2D O4 = new Point2D.Double(mapOrigin.getX() + a, mapOrigin.getY() - b);
+        Point2D O5 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() - a);
+        Point2D O6 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() + a);
+        Point2D O7 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() + a);
+        Point2D O8 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() - a);
+        Point2D O = new Point2D.Double(mapOrigin.getX(), mapOrigin.getY());
+
+        // Calculate approach points
+        Point2D B1 = new Point2D.Double(mapOrigin.getX() + laneWidth /2, mapOrigin.getY() + b);
+        Point2D B2 = new Point2D.Double(mapOrigin.getX() - laneWidth /2, mapOrigin.getY() + b);
+        Point2D B3 = new Point2D.Double(mapOrigin.getX() - laneWidth /2, mapOrigin.getY() - b);
+        Point2D B4 = new Point2D.Double(mapOrigin.getX() + laneWidth /2, mapOrigin.getY() - b);
+        Point2D B5 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() - laneWidth /2);
+        Point2D B6 = new Point2D.Double(mapOrigin.getX() + b, mapOrigin.getY() + laneWidth /2);
+        Point2D B7 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() + laneWidth /2);
+        Point2D B8 = new Point2D.Double(mapOrigin.getX() - b, mapOrigin.getY() - laneWidth /2);
+
+        // Calculate enter/exit points
+        Point2D C1 = new Point2D.Double(mapOrigin.getX() + c, mapOrigin.getY() + d);
+        Point2D C2 = new Point2D.Double(mapOrigin.getX() - c, mapOrigin.getY() + d);
+        Point2D C3 = new Point2D.Double(mapOrigin.getX() - c, mapOrigin.getY() - d);
+        Point2D C4 = new Point2D.Double(mapOrigin.getX() + c, mapOrigin.getY() - d);
+        Point2D C5 = new Point2D.Double(mapOrigin.getX() + d, mapOrigin.getY() - c);
+        Point2D C6 = new Point2D.Double(mapOrigin.getX() + d, mapOrigin.getY() + c);
+        Point2D C7 = new Point2D.Double(mapOrigin.getX() - d, mapOrigin.getY() + c);
+        Point2D C8 = new Point2D.Double(mapOrigin.getX() - d, mapOrigin.getY() - c);
+
 
         // ------------------------------------------------------------------------------------------------------------
         // Create the north vertical road
@@ -206,7 +227,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
                 mapOrigin.getX() + laneWidth / 2,
                 height,
                 mapOrigin.getX() + laneWidth / 2,
-                height - b,
+                mapOrigin.getY() + b,
                 laneWidth,
                 laneSpeedLimit
         );
@@ -217,8 +238,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // Second arc Lane entering roundabout B1-C1
         Arc2D arcNorth2 = new Arc2D.Double();
         double arcNorth2ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
-        double arcNorth2StartAngle = Math.toDegrees(Math.PI) - arcNorth2ExtentAngle;
-        arcNorth2.setArcByCenter(o1.getX(), o1.getY(), entranceExitRadius, arcNorth2StartAngle, - arcNorth2ExtentAngle, 0);
+        double arcNorth2StartAngle = Math.toDegrees(GeomMath.angleBetweenTwoPointsWithFixedPointTakingIntoAccountAtanPositive(B1, O1, O1));
+        arcNorth2.setArcByCenter(O1.getX(), O1.getY(), entranceExitRadius, arcNorth2StartAngle, -arcNorth2ExtentAngle, 0);
         ArcSegmentLane arcLaneNorth2 = new ArcSegmentLane(arcNorth2, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneNorth2.setId(laneRegistry.register(arcLaneNorth2));
         right.addTheUpMostLane(arcLaneNorth2);
@@ -228,7 +249,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcNorth3 = new Arc2D.Double();
         double arcNorth3ExtentAngle = beta;
         double arcNorth3StartAngle = Math.toDegrees(GeomMath.TWO_PI) - alpha;
-        arcNorth3.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcNorth3StartAngle, - arcNorth3ExtentAngle, 0);
+        arcNorth3.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcNorth3StartAngle, -arcNorth3ExtentAngle, 0);
         ArcSegmentLane arcLaneNorth3 = new ArcSegmentLane(arcNorth3, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneNorth3.setId(laneRegistry.register(arcLaneNorth3));
         right.addTheUpMostLane(arcLaneNorth3);
@@ -238,7 +259,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcNorth4 = new Arc2D.Double();
         double arcNorth4ExtentAngle = 2 * alpha;
         double arcNorth4StartAngle = Math.toDegrees(GeomMath.TWO_PI) + alpha;
-        arcNorth4.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcNorth4StartAngle, - arcNorth4ExtentAngle, 0);
+        arcNorth4.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcNorth4StartAngle, -arcNorth4ExtentAngle, 0);
         ArcSegmentLane arcLaneNorth4 = new ArcSegmentLane(arcNorth4, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneNorth4.setId(laneRegistry.register(arcLaneNorth4));
         right.addTheUpMostLane(arcLaneNorth4);
@@ -248,7 +269,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcNorth5 = new Arc2D.Double();
         double arcNorth5ExtentAngle = beta;
         double arcNorth5StartAngle = alpha + beta;
-        arcNorth4.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcNorth5StartAngle, - arcNorth5ExtentAngle, 0);
+        arcNorth5.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcNorth5StartAngle, -arcNorth5ExtentAngle, 0);
         ArcSegmentLane arcLaneNorth5 = new ArcSegmentLane(arcNorth5, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneNorth5.setId(laneRegistry.register(arcLaneNorth5));
         right.addTheUpMostLane(arcLaneNorth5);
@@ -258,7 +279,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcNorth6 = new Arc2D.Double();
         double arcNorth6ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcNorth6StartAngle = Math.toDegrees(Math.PI) + arcNorth6ExtentAngle;
-        arcNorth4.setArcByCenter(o4.getX(), o4.getY(), entranceExitRadius, arcNorth6StartAngle, - arcNorth6ExtentAngle, 0);
+        arcNorth6.setArcByCenter(O4.getX(), O4.getY(), entranceExitRadius, arcNorth6StartAngle, - arcNorth6ExtentAngle, 0);
         ArcSegmentLane arcLaneNorth6 = new ArcSegmentLane(arcNorth6, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneNorth6.setId(laneRegistry.register(arcLaneNorth6));
         right.addTheUpMostLane(arcLaneNorth6);
@@ -318,7 +339,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcSouth2 = new Arc2D.Double();
         double arcSouth2ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcSouth2StartAngle = Math.toDegrees(GeomMath.TWO_PI);
-        arcSouth2.setArcByCenter(o3.getX(), o3.getY(), entranceExitRadius, arcSouth2StartAngle, - arcSouth2ExtentAngle, 0);
+        arcSouth2.setArcByCenter(O3.getX(), O3.getY(), entranceExitRadius, arcSouth2StartAngle, -arcSouth2ExtentAngle, 0);
         ArcSegmentLane arcLaneSouth2 = new ArcSegmentLane(arcSouth2, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneSouth2.setId(laneRegistry.register(arcLaneSouth2));
         left.addTheUpMostLane(arcLaneSouth2);
@@ -328,7 +349,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcSouth3 = new Arc2D.Double();
         double arcSouth3ExtentAngle = beta;
         double arcSouth3StartAngle = Math.toDegrees(GeomMath.PI) - alpha;
-        arcSouth3.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcSouth3StartAngle, - arcSouth3ExtentAngle, 0);
+        arcSouth3.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcSouth3StartAngle, -arcSouth3ExtentAngle, 0);
         ArcSegmentLane arcLaneSouth3 = new ArcSegmentLane(arcSouth3, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneSouth3.setId(laneRegistry.register(arcLaneSouth3));
         left.addTheUpMostLane(arcLaneSouth3);
@@ -338,7 +359,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcSouth4 = new Arc2D.Double();
         double arcSouth4ExtentAngle = 2 * alpha;
         double arcSouth4StartAngle = Math.toDegrees(GeomMath.PI) + alpha;
-        arcSouth4.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcSouth4StartAngle, - arcSouth4ExtentAngle, 0);
+        arcSouth4.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcSouth4StartAngle, -arcSouth4ExtentAngle, 0);
         ArcSegmentLane arcLaneSouth4 = new ArcSegmentLane(arcSouth4, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneSouth4.setId(laneRegistry.register(arcLaneSouth4));
         left.addTheUpMostLane(arcLaneSouth4);
@@ -348,7 +369,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcSouth5 = new Arc2D.Double();
         double arcSouth5ExtentAngle = beta;
         double arcSouth5StartAngle = Math.toDegrees(GeomMath.PI) + alpha + beta;
-        arcSouth5.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcSouth5StartAngle, - arcSouth5ExtentAngle, 0);
+        arcSouth5.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcSouth5StartAngle, -arcSouth5ExtentAngle, 0);
         ArcSegmentLane arcLaneSouth5 = new ArcSegmentLane(arcSouth5, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneSouth5.setId(laneRegistry.register(arcLaneSouth5));
         left.addTheUpMostLane(arcLaneSouth5);
@@ -357,8 +378,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // Sixth arc Lane exiting roundabout C2-B2
         Arc2D arcSouth6 = new Arc2D.Double();
         double arcSouth6ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
-        double arcSouth6StartAngle = Math.toDegrees(GeomMath.TWO_PI) + arcSouth6ExtentAngle;
-        arcSouth6.setArcByCenter(o2.getX(), o2.getY(), entranceExitRadius, arcSouth6StartAngle, - arcSouth6ExtentAngle, 0);
+        double arcSouth6StartAngle = arcSouth6ExtentAngle;
+        arcSouth6.setArcByCenter(O2.getX(), O2.getY(), entranceExitRadius, arcSouth6StartAngle, -arcSouth6ExtentAngle, 0);
         ArcSegmentLane arcLaneSouth6 = new ArcSegmentLane(arcSouth6, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneSouth6.setId(laneRegistry.register(arcLaneSouth6));
         left.addTheUpMostLane(arcLaneSouth6);
@@ -408,9 +429,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // First line Lane going East A7-B7
         LineSegmentLane lineLaneEast1 = new LineSegmentLane(
                 0,
-                mapOrigin.getY() + laneWidth/2,
+                mapOrigin.getY() + laneWidth / 2,
                 mapOrigin.getX() - b,
-                mapOrigin.getY() + laneWidth/2,
+                mapOrigin.getY() + laneWidth / 2,
                 laneWidth,
                 laneSpeedLimit
         );
@@ -422,7 +443,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcEast2 = new Arc2D.Double();
         double arcEast2ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcEast2StartAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES);
-        arcEast2.setArcByCenter(o7.getX(), o7.getY(), entranceExitRadius, arcEast2StartAngle, - arcEast2ExtentAngle, 0);
+        arcEast2.setArcByCenter(O7.getX(), O7.getY(), entranceExitRadius, arcEast2StartAngle, -arcEast2ExtentAngle, 0);
         ArcSegmentLane arcLaneEast2 = new ArcSegmentLane(arcEast2, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneEast2.setId(laneRegistry.register(arcLaneEast2));
         lower.addTheUpMostLane(arcLaneEast2);
@@ -432,7 +453,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcEast3 = new Arc2D.Double();
         double arcEast3ExtentAngle = beta;
         double arcEast3StartAngle = Math.toDegrees(GeomMath.PI) + alpha + beta;
-        arcEast3.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcEast3StartAngle, - arcEast3ExtentAngle, 0);
+        arcEast3.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcEast3StartAngle, -arcEast3ExtentAngle, 0);
         ArcSegmentLane arcLaneEast3 = new ArcSegmentLane(arcEast3, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneEast3.setId(laneRegistry.register(arcLaneEast3));
         lower.addTheUpMostLane(arcLaneEast3);
@@ -442,7 +463,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcEast4 = new Arc2D.Double();
         double arcEast4ExtentAngle = 2 * alpha;
         double arcEast4StartAngle = Math.toDegrees(GeomMath.TWO_PI) - beta - alpha;
-        arcEast4.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcEast4StartAngle, - arcEast4ExtentAngle, 0);
+        arcEast4.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcEast4StartAngle, -arcEast4ExtentAngle, 0);
         ArcSegmentLane arcLaneEast4 = new ArcSegmentLane(arcEast4, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneEast4.setId(laneRegistry.register(arcLaneEast4));
         lower.addTheUpMostLane(arcLaneEast4);
@@ -452,7 +473,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcEast5 = new Arc2D.Double();
         double arcEast5ExtentAngle = beta;
         double arcEast5StartAngle = Math.toDegrees(GeomMath.TWO_PI) - alpha;
-        arcEast5.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcEast5StartAngle, - arcEast5ExtentAngle, 0);
+        arcEast5.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcEast5StartAngle, -arcEast5ExtentAngle, 0);
         ArcSegmentLane arcLaneEast5 = new ArcSegmentLane(arcEast5, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneEast5.setId(laneRegistry.register(arcLaneEast5));
         lower.addTheUpMostLane(arcLaneEast5);
@@ -462,7 +483,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcEast6 = new Arc2D.Double();
         double arcEast6ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcEast6StartAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) + arcNorth6ExtentAngle;
-        arcEast6.setArcByCenter(o6.getX(), o6.getY(), entranceExitRadius, arcEast6StartAngle, - arcEast6ExtentAngle, 0);
+        arcEast6.setArcByCenter(O6.getX(), O6.getY(), entranceExitRadius, arcEast6StartAngle, -arcEast6ExtentAngle, 0);
         ArcSegmentLane arcLaneEast6 = new ArcSegmentLane(arcEast6, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneEast6.setId(laneRegistry.register(arcLaneEast6));
         lower.addTheUpMostLane(arcLaneEast6);
@@ -523,7 +544,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcWest2 = new Arc2D.Double();
         double arcWest2ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcWest2StartAngle = 3 * Math.toDegrees(GeomMath.HALF_PI_90_DEGREES);
-        arcWest2.setArcByCenter(o5.getX(), o5.getY(), entranceExitRadius, arcWest2StartAngle, - arcWest2ExtentAngle, 0);
+        arcWest2.setArcByCenter(O5.getX(), O5.getY(), entranceExitRadius, arcWest2StartAngle, -arcWest2ExtentAngle, 0);
         ArcSegmentLane arcLaneWest2 = new ArcSegmentLane(arcWest2, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneWest2.setId(laneRegistry.register(arcLaneWest2));
         upper.addTheUpMostLane(arcLaneWest2);
@@ -533,7 +554,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcWest3 = new Arc2D.Double();
         double arcWest3ExtentAngle = beta;
         double arcWest3StartAngle = alpha + beta;
-        arcWest3.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcWest3StartAngle, - arcWest3ExtentAngle, 0);
+        arcWest3.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcWest3StartAngle, -arcWest3ExtentAngle, 0);
         ArcSegmentLane arcLaneWest3 = new ArcSegmentLane(arcWest3, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneWest3.setId(laneRegistry.register(arcLaneWest3));
         upper.addTheUpMostLane(arcLaneWest3);
@@ -543,7 +564,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcWest4 = new Arc2D.Double();
         double arcWest4ExtentAngle = 2 * alpha;
         double arcWest4StartAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) + alpha;
-        arcWest4.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcWest4StartAngle, - arcWest4ExtentAngle, 0);
+        arcWest4.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcWest4StartAngle, -arcWest4ExtentAngle, 0);
         ArcSegmentLane arcLaneWest4 = new ArcSegmentLane(arcWest4, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneWest4.setId(laneRegistry.register(arcLaneWest4));
         upper.addTheUpMostLane(arcLaneWest4);
@@ -553,7 +574,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcWest5 = new Arc2D.Double();
         double arcWest5ExtentAngle = beta;
         double arcWest5StartAngle = Math.toDegrees(GeomMath.PI) - alpha;
-        arcWest5.setArcByCenter(o.getX(), o.getY(), roundaboutRadius, arcWest5StartAngle, - arcWest5ExtentAngle, 0);
+        arcWest5.setArcByCenter(O.getX(), O.getY(), roundaboutRadius, arcWest5StartAngle, -arcWest5ExtentAngle, 0);
         ArcSegmentLane arcLaneWest5 = new ArcSegmentLane(arcWest5, roundaboutWidth, roundaboutSpeedLimit, splitFactor, false);
         arcLaneWest5.setId(laneRegistry.register(arcLaneWest5));
         upper.addTheUpMostLane(arcLaneWest5);
@@ -563,7 +584,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Arc2D arcWest6 = new Arc2D.Double();
         double arcWest6ExtentAngle = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - alpha;
         double arcWest6StartAngle = 3 * Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) + arcWest6ExtentAngle;
-        arcWest6.setArcByCenter(o8.getX(), o8.getY(), entranceExitRadius, arcWest6StartAngle, - arcWest6ExtentAngle, 0);
+        arcWest6.setArcByCenter(O8.getX(), O8.getY(), entranceExitRadius, arcWest6StartAngle, -arcWest6ExtentAngle, 0);
         ArcSegmentLane arcLaneWest6 = new ArcSegmentLane(arcWest6, roundaboutWidth, roundaboutSpeedLimit, splitFactor);
         arcLaneWest6.setId(laneRegistry.register(arcLaneWest6));
         upper.addTheUpMostLane(arcLaneWest6);
@@ -616,8 +637,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
 
         initializeSpawnPoints(initTime);
     }
+
     public RimIntersectionMap(RimIntersectionMap map, double laneWidth, double roundaboutDiameter, double entranceExitRadius,
-                               int splitFactor, double widthBetweenOppositeRoads, double distanceBetween) {
+                              int splitFactor, double widthBetweenOppositeRoads, double distanceBetween) {
         this(0, map.getColumns(), map.getRows(), roundaboutDiameter, entranceExitRadius, splitFactor,
                 laneWidth, map.getMaximumLaneSpeedLimit(), map.getMaximumRoundaboutSpeedLimit(),
                 map.getRoads().get(0).getLanes().size(),
@@ -627,18 +649,19 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     /**
      * Initialize spawn points.
      *
-     * @param initTime  the initial time
+     * @param initTime the initial time
      */
     private void initializeSpawnPoints(double initTime) {
-        spawnPoints = new ArrayList<RIMSpawnPoint>(columns+rows);
+        spawnPoints = new ArrayList<RIMSpawnPoint>(columns + rows);
         horizontalSpawnPoints = new ArrayList<RIMSpawnPoint>(rows);
         verticalSpawnPoints = new ArrayList<RIMSpawnPoint>(columns);
 
-        for(Road road : horizontalRoads) {
+        // Make spawn points only on the first line lane of each road
+        for (Road road : horizontalRoads) {
             horizontalSpawnPoints.add(makeSpawnPoint(initTime, road.getContinuousLanes().get(0)));
         }
 
-        for(Road road : verticalRoads) {
+        for (Road road : verticalRoads) {
             verticalSpawnPoints.add(makeSpawnPoint(initTime, road.getContinuousLanes().get(0)));
         }
 
@@ -653,10 +676,10 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * Added this method so we can follow one driver agent when debugging.
      * Useful to understand more how their driver agent works.
      *
-     * @param initTime  the initial time
+     * @param initTime the initial time
      */
     private void initializeOneSpawnPoint(double initTime) {
-        if(rows > 1 || columns > 1) {
+        if (rows > 1 || columns > 1) {
             throw new IllegalArgumentException("Undefined behaviour with one spawn point");
         }
         spawnPoints = new ArrayList<RIMSpawnPoint>(1);
@@ -673,8 +696,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     /**
      * Make spawn points.
      *
-     * @param initTime  the initial time
-     * @param lane      the lane
+     * @param initTime the initial time
+     * @param lane     the lane
      * @return the spawn point
      */
     private RIMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
@@ -726,10 +749,10 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      */
     @Override
     public double getMaximumSpeedLimit() {
-        if(memoMaximumSpeedLimit < 0) {
-            for(Road r : getRoads()) {
-                for(Lane l : r.getLanes()) {
-                    if(l.getSpeedLimit() > memoMaximumSpeedLimit) {
+        if (memoMaximumSpeedLimit < 0) {
+            for (Road r : getRoads()) {
+                for (Lane l : r.getLanes()) {
+                    if (l.getSpeedLimit() > memoMaximumSpeedLimit) {
                         memoMaximumSpeedLimit = l.getSpeedLimit();
                     }
                 }
@@ -742,7 +765,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * Get the maximum speed limit in the lane.
      */
     public double getMaximumLaneSpeedLimit() {
-        if(memoMaximumLaneSpeedLimit < 0) {
+        if (memoMaximumLaneSpeedLimit < 0) {
             memoMaximumLaneSpeedLimit = getRoads().get(0).getContinuousLanes().get(0).getSpeedLimit();
         }
         return memoMaximumLaneSpeedLimit;
@@ -752,7 +775,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * Get the maximum speed limit in the roundabout.
      */
     public double getMaximumRoundaboutSpeedLimit() {
-        if(memoMaximumRoundaboutSpeedLimit < 0) {
+        if (memoMaximumRoundaboutSpeedLimit < 0) {
             memoMaximumRoundaboutSpeedLimit = getRoads().get(0).getContinuousLanes().get(1).getSpeedLimit();
         }
         return memoMaximumRoundaboutSpeedLimit;
@@ -834,13 +857,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     /**
      * Get the list of all roads that enter a particular intersection.
      *
-     * @param column  the column of the intersection
-     * @param row     the row of the intersection
+     * @param column the column of the intersection
+     * @param row    the row of the intersection
      * @return the list of roads that enter the intersection at (column, row)
      */
     public List<Road> getRoads(int column, int row) {
         // First some error checking
-        if(row >= rows || column >= columns || row < 0 || column < 0) {
+        if (row >= rows || column >= columns || row < 0 || column < 0) {
             throw new ArrayIndexOutOfBoundsException("(" + column + "," + row +
                     " are not valid indices. " +
                     "This GridLayout only has " +
@@ -908,8 +931,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     /**
      * Get the intersection manager of a particular intersection.
      *
-     * @param column  the column of the intersection
-     * @param row     the row of the intersection
+     * @param column the column of the intersection
+     * @param row    the row of the intersection
      */
     public IntersectionManager getManager(int column, int row) {
         return intersectionManagerGrid[column][row];
@@ -933,8 +956,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * Remove managers in all intersections.
      */
     public void removeAllManagers() {
-        for(int column = 0; column < columns; column++) {
-            for(int row = 0; row < rows; row++) {
+        for (int column = 0; column < columns; column++) {
+            for (int row = 0; row < rows; row++) {
                 intersectionManagerGrid[column][row] = null;
             }
         }
@@ -957,7 +980,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         outfile.printf("VIN,Time,DCLname,vType,startLaneId,destRoad\n");
         for (DataCollectionLine line : dataCollectionLines) {
             for (int vin : line.getAllVIN()) {
-                for(double time : line.getTimes(vin)) {
+                for (double time : line.getTimes(vin)) {
                     outfile.printf("%d,%.4f,%s,%s,%d,%s\n",
                             vin, time, line.getName(),
                             VinRegistry.getVehicleSpecFromVIN(vin).getName(),
