@@ -1,6 +1,7 @@
 package aim4.rim.map;
 
 import aim4.map.Road;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.rim.RimIntersectionMap;
 import org.junit.Test;
@@ -88,6 +89,24 @@ public class RimIntersectionMapTests {
         assert northArc4.getNextLane() == northArc5;
         assert northArc5.getNextLane() == northArc6;
         assert northArc6.getNextLane() == northLine7;
+
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getPrevLane() == northLine1;
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getNextLane() == northArc3;
+
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getPrevLane() == northArc2;
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1).getPrevLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2).getPrevLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3).getPrevLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2);
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3).getNextLane() == northArc4;
 
         assertEquals(northLine1.getEndPoint().getX(),northArc2.getStartPoint().getX(), DELTA);
         assertEquals(northLine1.getEndPoint().getY(),northArc2.getStartPoint().getY(), DELTA);

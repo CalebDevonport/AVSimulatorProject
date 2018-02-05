@@ -98,6 +98,7 @@ public class ArcSegmentLane extends AbstractLane{
         arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor, true);
         lengthArcLaneDecomposition = calculateLengthArcLaneDecomposition(arcLaneDecomposition);
         laneShape = calculateLaneShape(leftBorder, rightBorder);
+        setContinuousLanes();
         laneDecompositionShape = calculateLaneDecompositionShape(arcLaneDecomposition);
     }
 
@@ -121,6 +122,7 @@ public class ArcSegmentLane extends AbstractLane{
         arcLaneDecomposition = calculateArcLaneDecomposition(arc, splitFactor, direction);
         lengthArcLaneDecomposition = calculateLengthArcLaneDecomposition(arcLaneDecomposition);
         laneShape = calculateLaneShape(leftBorder, rightBorder);
+        setContinuousLanes();
         laneDecompositionShape = calculateLaneDecompositionShape(arcLaneDecomposition);
     }
 
@@ -560,5 +562,29 @@ public class ArcSegmentLane extends AbstractLane{
         //Close path (ensures path is closed)
         result.closePath();
         return result;
+    }
+
+    /**
+     * Set previous and next lanes.
+     *
+     */
+    public void setContinuousLanes() {
+        for (int index = 0; index < arcLaneDecomposition.size() ; index++){
+            if (index == 0) {
+                arcLaneDecomposition.get(index).setPrevLane(this.getPrevLane());
+                if (arcLaneDecomposition.size() > 1) {
+                    arcLaneDecomposition.get(index).setNextLane(arcLaneDecomposition.get(index+1));
+                } else {
+                    arcLaneDecomposition.get(index).setNextLane(this.getNextLane());
+                }
+            }
+            else if (index < arcLaneDecomposition.size() - 1){
+                arcLaneDecomposition.get(index).setPrevLane(arcLaneDecomposition.get(index - 1));
+                arcLaneDecomposition.get(index).setNextLane(arcLaneDecomposition.get(index + 1));
+            }  else {
+                arcLaneDecomposition.get(index).setPrevLane(arcLaneDecomposition.get(index - 1));
+                arcLaneDecomposition.get(index).setNextLane(this.getNextLane());
+            }
+        }
     }
 }

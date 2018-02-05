@@ -298,6 +298,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         right.addTheUpMostLane(lineLaneNorth7);
         laneToRoad.put(lineLaneNorth7, right);
 
+        // Set continuous lanes for all arc lanes
+        arcLaneNorth2.setContinuousLanes();
+        arcLaneNorth3.setContinuousLanes();
+        arcLaneNorth4.setContinuousLanes();
+        arcLaneNorth5.setContinuousLanes();
+        arcLaneNorth6.setContinuousLanes();
+
         verticalRoads.add(right);
         // generate the data collection lines
         dataCollectionLines.add(
@@ -397,6 +404,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneSouth7.setId(laneRegistry.register(lineLaneSouth7));
         left.addTheUpMostLane(lineLaneSouth7);
         laneToRoad.put(lineLaneSouth7, left);
+
+        // Set continuous lanes for all arc lanes
+        arcLaneSouth2.setContinuousLanes();
+        arcLaneSouth3.setContinuousLanes();
+        arcLaneSouth4.setContinuousLanes();
+        arcLaneSouth5.setContinuousLanes();
+        arcLaneSouth6.setContinuousLanes();
 
         verticalRoads.add(left);
         // generate the data collection lines
@@ -502,6 +516,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lower.addTheUpMostLane(lineLaneEast7);
         laneToRoad.put(lineLaneEast7, lower);
 
+        // Set continuous lanes for all arc lanes
+        arcLaneEast2.setContinuousLanes();
+        arcLaneEast3.setContinuousLanes();
+        arcLaneEast4.setContinuousLanes();
+        arcLaneEast5.setContinuousLanes();
+        arcLaneEast6.setContinuousLanes();
+
         horizontalRoads.add(lower);
         // generate the data collection lines
         dataCollectionLines.add(
@@ -602,6 +623,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneWest7.setId(laneRegistry.register(lineLaneWest7));
         upper.addTheUpMostLane(lineLaneWest7);
         laneToRoad.put(lineLaneWest7, upper);
+
+        // Set continuous lanes for all arc lanes
+        arcLaneWest2.setContinuousLanes();
+        arcLaneWest3.setContinuousLanes();
+        arcLaneWest4.setContinuousLanes();
+        arcLaneWest5.setContinuousLanes();
+        arcLaneWest6.setContinuousLanes();
 
         horizontalRoads.add(upper);
         // generate the data collection lines

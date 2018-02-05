@@ -123,6 +123,50 @@ public class ArcSegmentLaneTests {
     }
 
     @Test
+    public void setContinuousLanes_withPositiveSplitFactor_returnsLineSegmentLanes() {
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS * Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        ArcSegmentLane nextLane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+        ArcSegmentLane previousLane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+        lane.setNextLane(nextLane);
+        lane.setPrevLane(previousLane);
+        lane.setContinuousLanes();
+        //assert
+        assertFalse(lane.getArcLaneDecomposition().isEmpty());
+        assertEquals(lane.getArcLaneDecomposition().size(), 4);
+        assert lane.getArcLaneDecomposition().get(0).getPrevLane() == previousLane;
+        assert lane.getArcLaneDecomposition().get(0).getNextLane() == lane.getArcLaneDecomposition().get(1);
+        assert lane.getArcLaneDecomposition().get(3).getNextLane() == nextLane;
+        assert lane.getArcLaneDecomposition().get(3).getPrevLane() == lane.getArcLaneDecomposition().get(2);
+        for (int index = 1; index <= 2; index ++){
+            assert lane.getArcLaneDecomposition().get(index).getPrevLane() == lane.getArcLaneDecomposition().get(index-1);
+            assert lane.getArcLaneDecomposition().get(index).getNextLane() == lane.getArcLaneDecomposition().get(index+1);
+        }
+    }
+
+    @Test
+    public void setContinuousLanes_withOneSplitFactor_returnsLineSegmentLanes() {
+        //arrange
+        Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS * Math.sqrt(3));
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
+        ArcSegmentLane nextLane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+        ArcSegmentLane previousLane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
+        //act
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 1);
+        lane.setNextLane(nextLane);
+        lane.setPrevLane(previousLane);
+        lane.setContinuousLanes();
+        //assert
+        assertFalse(lane.getArcLaneDecomposition().isEmpty());
+        assertEquals(lane.getArcLaneDecomposition().size(), 1);
+        assert lane.getArcLaneDecomposition().get(0).getPrevLane() == previousLane;
+        assert lane.getArcLaneDecomposition().get(0).getNextLane() == nextLane;
+    }
+
+    @Test
     public void calculateArcLaneDecomposition_withNegativeOrZeroSplitFactor_returnsOneLineSegmentLane() {
         //arrange
         Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS * Math.sqrt(3));
