@@ -110,14 +110,14 @@ public class RimIntersectionMapTests {
 
         assertEquals(northLine1.getEndPoint().getX(),northArc2.getStartPoint().getX(), DELTA);
         assertEquals(northLine1.getEndPoint().getY(),northArc2.getStartPoint().getY(), DELTA);
-        assertEquals(northArc2.getEndPoint().getX(),northArc3.getEndPoint().getX(), DELTA);
-        assertEquals(northArc2.getEndPoint().getY(),northArc3.getEndPoint().getY(), DELTA);
-        assertEquals(northArc3.getStartPoint().getX(),northArc4.getEndPoint().getX(), DELTA);
-        assertEquals(northArc3.getStartPoint().getY(),northArc4.getEndPoint().getY(), DELTA);
-        assertEquals(northArc4.getStartPoint().getX(),northArc5.getEndPoint().getX(), DELTA);
-        assertEquals(northArc4.getStartPoint().getY(),northArc5.getEndPoint().getY(), DELTA);
-        assertEquals(northArc5.getStartPoint().getX(),northArc6.getStartPoint().getX(), DELTA);
-        assertEquals(northArc5.getStartPoint().getY(),northArc6.getStartPoint().getY(), DELTA);
+        assertEquals(northArc2.getEndPoint().getX(),northArc3.getStartPoint().getX(), DELTA);
+        assertEquals(northArc2.getEndPoint().getY(),northArc3.getStartPoint().getY(), DELTA);
+        assertEquals(northArc3.getEndPoint().getX(),northArc4.getStartPoint().getX(), DELTA);
+        assertEquals(northArc3.getEndPoint().getY(),northArc4.getStartPoint().getY(), DELTA);
+        assertEquals(northArc4.getEndPoint().getX(),northArc5.getStartPoint().getX(), DELTA);
+        assertEquals(northArc4.getEndPoint().getY(),northArc5.getStartPoint().getY(), DELTA);
+        assertEquals(northArc5.getEndPoint().getX(),northArc6.getStartPoint().getX(), DELTA);
+        assertEquals(northArc5.getEndPoint().getY(),northArc6.getStartPoint().getY(), DELTA);
         assertEquals(northArc6.getEndPoint().getX(),northLine7.getStartPoint().getX(), DELTA);
         assertEquals(northArc6.getEndPoint().getY(),northLine7.getStartPoint().getY(), DELTA);
 
@@ -163,14 +163,14 @@ public class RimIntersectionMapTests {
 
         assertEquals(southLine1.getEndPoint().getX(),southArc2.getStartPoint().getX(), DELTA);
         assertEquals(southLine1.getEndPoint().getY(),southArc2.getStartPoint().getY(), DELTA);
-        assertEquals(southArc2.getEndPoint().getX(),southArc3.getEndPoint().getX(), DELTA);
-        assertEquals(southArc2.getEndPoint().getY(),southArc3.getEndPoint().getY(), DELTA);
-        assertEquals(southArc3.getStartPoint().getX(),southArc4.getEndPoint().getX(), DELTA);
-        assertEquals(southArc3.getStartPoint().getY(),southArc4.getEndPoint().getY(), DELTA);
-        assertEquals(southArc4.getStartPoint().getX(),southArc5.getEndPoint().getX(), DELTA);
-        assertEquals(southArc4.getStartPoint().getY(),southArc5.getEndPoint().getY(), DELTA);
-        assertEquals(southArc5.getStartPoint().getX(),southArc6.getStartPoint().getX(), DELTA);
-        assertEquals(southArc5.getStartPoint().getY(),southArc6.getStartPoint().getY(), DELTA);
+        assertEquals(southArc2.getEndPoint().getX(),southArc3.getStartPoint().getX(), DELTA);
+        assertEquals(southArc2.getEndPoint().getY(),southArc3.getStartPoint().getY(), DELTA);
+        assertEquals(southArc3.getEndPoint().getX(),southArc4.getStartPoint().getX(), DELTA);
+        assertEquals(southArc3.getEndPoint().getY(),southArc4.getStartPoint().getY(), DELTA);
+        assertEquals(southArc4.getEndPoint().getX(),southArc5.getStartPoint().getX(), DELTA);
+        assertEquals(southArc4.getEndPoint().getY(),southArc5.getStartPoint().getY(), DELTA);
+        assertEquals(southArc5.getEndPoint().getX(),southArc6.getStartPoint().getX(), DELTA);
+        assertEquals(southArc5.getEndPoint().getY(),southArc6.getStartPoint().getY(), DELTA);
         assertEquals(southArc6.getEndPoint().getX(),southLine7.getStartPoint().getX(), DELTA);
         assertEquals(southArc6.getEndPoint().getY(),southLine7.getStartPoint().getY(), DELTA);
         assert south.getDual() == verticalRoads.get(0);
@@ -215,14 +215,14 @@ public class RimIntersectionMapTests {
 
         assertEquals(eastLine1.getEndPoint().getX(),eastArc2.getStartPoint().getX(), DELTA);
         assertEquals(eastLine1.getEndPoint().getY(),eastArc2.getStartPoint().getY(), DELTA);
-        assertEquals(eastArc2.getEndPoint().getX(),eastArc3.getEndPoint().getX(), DELTA);
-        assertEquals(eastArc2.getEndPoint().getY(),eastArc3.getEndPoint().getY(), DELTA);
-        assertEquals(eastArc3.getStartPoint().getX(),eastArc4.getEndPoint().getX(), DELTA);
-        assertEquals(eastArc3.getStartPoint().getY(),eastArc4.getEndPoint().getY(), DELTA);
-        assertEquals(eastArc4.getStartPoint().getX(),eastArc5.getEndPoint().getX(), DELTA);
-        assertEquals(eastArc4.getStartPoint().getY(),eastArc5.getEndPoint().getY(), DELTA);
-        assertEquals(eastArc5.getStartPoint().getX(),eastArc6.getStartPoint().getX(), DELTA);
-        assertEquals(eastArc5.getStartPoint().getY(),eastArc6.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc2.getEndPoint().getX(),eastArc3.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc2.getEndPoint().getY(),eastArc3.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc3.getEndPoint().getX(),eastArc4.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc3.getEndPoint().getY(),eastArc4.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc4.getEndPoint().getX(),eastArc5.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc4.getEndPoint().getY(),eastArc5.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc5.getEndPoint().getX(),eastArc6.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc5.getEndPoint().getY(),eastArc6.getStartPoint().getY(), DELTA);
         assertEquals(eastArc6.getEndPoint().getX(),eastArc7.getStartPoint().getX(), DELTA);
         assertEquals(eastArc6.getEndPoint().getY(),eastArc7.getStartPoint().getY(), DELTA);
         assert east.getDual() == horizontalRoads.get(1);
@@ -267,14 +267,14 @@ public class RimIntersectionMapTests {
 
         assertEquals(westLine1.getEndPoint().getX(),westArc2.getStartPoint().getX(), DELTA);
         assertEquals(westLine1.getEndPoint().getY(),westArc2.getStartPoint().getY(), DELTA);
-        assertEquals(westArc2.getEndPoint().getX(),westArc3.getEndPoint().getX(), DELTA);
-        assertEquals(westArc2.getEndPoint().getY(),westArc3.getEndPoint().getY(), DELTA);
-        assertEquals(westArc3.getStartPoint().getX(),westArc4.getEndPoint().getX(), DELTA);
-        assertEquals(westArc3.getStartPoint().getY(),westArc4.getEndPoint().getY(), DELTA);
-        assertEquals(westArc4.getStartPoint().getX(),westArc5.getEndPoint().getX(), DELTA);
-        assertEquals(westArc4.getStartPoint().getY(),westArc5.getEndPoint().getY(), DELTA);
-        assertEquals(westArc5.getStartPoint().getX(),westArc6.getStartPoint().getX(), DELTA);
-        assertEquals(westArc5.getStartPoint().getY(),westArc6.getStartPoint().getY(), DELTA);
+        assertEquals(westArc2.getEndPoint().getX(),westArc3.getStartPoint().getX(), DELTA);
+        assertEquals(westArc2.getEndPoint().getY(),westArc3.getStartPoint().getY(), DELTA);
+        assertEquals(westArc3.getEndPoint().getX(),westArc4.getStartPoint().getX(), DELTA);
+        assertEquals(westArc3.getEndPoint().getY(),westArc4.getStartPoint().getY(), DELTA);
+        assertEquals(westArc4.getEndPoint().getX(),westArc5.getStartPoint().getX(), DELTA);
+        assertEquals(westArc4.getEndPoint().getY(),westArc5.getStartPoint().getY(), DELTA);
+        assertEquals(westArc5.getEndPoint().getX(),westArc6.getStartPoint().getX(), DELTA);
+        assertEquals(westArc5.getEndPoint().getY(),westArc6.getStartPoint().getY(), DELTA);
         assertEquals(westArc6.getEndPoint().getX(),westArc7.getStartPoint().getX(), DELTA);
         assertEquals(westArc6.getEndPoint().getY(),westArc7.getStartPoint().getY(), DELTA);
         assert west.getDual() == horizontalRoads.get(0);

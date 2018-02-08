@@ -28,46 +28,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.aim.destination;
+package aim4.map.destination;
 
 import aim4.config.Debug;
 import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
-import aim4.map.aim.AIMSpawnPoint;
-import aim4.map.aim.TrafficVolume;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * The destination selector that
+ * The RandomDestinationSelector selects Roads uniformly at random, but will
+ * not select a Road that is the dual of the starting Road.  This is to
+ * prevent Vehicles from simply going back from whence they came.
  */
-public class RatioDestinationSelector implements DestinationSelector {
+public class RandomDestinationSelector implements DestinationSelector {
 
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////
 
   /**
-   * The set of roads that a vehicle can use as an ultimate destination.
+   * The Set of legal Roads that a vehicle can use as an ultimate destination.
    */
   private List<Road> destinationRoads;
-  /**
-   * The traffic volume object.
-   */
-  private TrafficVolume trafficVolume;
-  /**
-   * The probability of making a left turn.
-   */
-  private Map<Integer,Double> leftTurnProb;
-  /**
-   * The probability of making a right turn.
-   */
-  private Map<Integer,Double> rightTurnProb;
-
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -76,23 +61,11 @@ public class RatioDestinationSelector implements DestinationSelector {
   /**
    * Create a new RandomDestinationSelector from the given Layout.
    *
-   * @param map            the Layout from which to create the
-   *                       RandomDestinationSelector
-   * @param trafficVolume  the traffic volume
+   * @param layout the Layout from which to create the
+   *               RandomDestinationSelector
    */
-  public RatioDestinationSelector(BasicIntersectionMap map, TrafficVolume trafficVolume) {
-    destinationRoads = map.getDestinationRoads();
-    this.trafficVolume = trafficVolume;
-    leftTurnProb = new HashMap<Integer, Double>();
-    rightTurnProb = new HashMap<Integer, Double>();
-
-    for(AIMSpawnPoint sp: map.getSpawnPoints()) {
-      int laneId = sp.getLane().getId();
-      leftTurnProb.put(laneId, trafficVolume.getLeftTurnVolume(laneId) /
-                               trafficVolume.getThroughVolume(laneId));
-      rightTurnProb.put(laneId, trafficVolume.getRightTurnVolume(laneId) /
-                                trafficVolume.getThroughVolume(laneId));
-    }
+  public RandomDestinationSelector(BasicIntersectionMap layout) {
+    destinationRoads = layout.getDestinationRoads();
   }
 
   /////////////////////////////////
@@ -105,14 +78,12 @@ public class RatioDestinationSelector implements DestinationSelector {
   @Override
   public Road selectDestination(Lane currentLane) {
     Road currentRoad = Debug.currentMap.getRoad(currentLane);
-    int laneId = currentLane.getId();
-    double prob = Util.random.nextDouble();
-    if (prob < leftTurnProb.get(laneId)) {
-      return trafficVolume.getLeftTurnRoad(currentRoad);
-    } else if (prob >= 1.0 - rightTurnProb.get(laneId)) {
-      return trafficVolume.getRightTurnRoad(currentRoad);
-    } else {
-      return currentRoad;
+    Road dest =
+      destinationRoads.get(Util.random.nextInt(destinationRoads.size()));
+    while(dest.getDual() == currentRoad) {
+      dest =
+        destinationRoads.get(Util.random.nextInt(destinationRoads.size()));
     }
+    return dest;
   }
 }

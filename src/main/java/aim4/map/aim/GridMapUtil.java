@@ -46,11 +46,9 @@ import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpecGenerator;
-import aim4.map.aim.destination.DestinationSelector;
-import aim4.map.aim.destination.RandomDestinationSelector;
-import aim4.map.aim.destination.RatioDestinationSelector;
-import aim4.map.aim.destination.TurnBasedDestinationSelector;
+import aim4.map.destination.*;
 import aim4.map.lane.Lane;
+import aim4.map.rim.RimMapUtil;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -792,6 +790,146 @@ public class GridMapUtil {
                     @Override
                     public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
                         return new ArrayList<AIMSpawnSpec>();
+                    }
+                });
+            }
+        }
+    }
+
+    public static void setJSONScheduleSpawnSpecGenerator(GridIntersectionMap map, File leftSchedule, File rightSchedule, File straightSchedule) throws IOException, ParseException {
+        for(AIMSpawnPoint sp : map.getSpawnPoints()) {
+            if(sp.getHeading() == 0) { // is going east
+                Road targetRoad = null;
+                for(Road r : map.getDestinationRoads()) {
+                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (straight)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        straightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI + Math.PI/2) { //will go north (left)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        leftSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI/2) { //will go south (right)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        rightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                }
+            } else if(sp.getHeading() == Math.PI/2) { //is going south
+                Road targetRoad = null;
+                for(Road r : map.getDestinationRoads()) {
+                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (left)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        leftSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (right)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        rightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI/2) { //will go south (straight)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        straightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                }
+            }
+            else if(sp.getHeading() == Math.PI + Math.PI/2) { //is going north
+                Road targetRoad = null;
+                for(Road r : map.getDestinationRoads()) {
+                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (right)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        rightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (left)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        leftSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI+ Math.PI/2) { //will go north (straight)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        straightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                }
+            }
+            else if(sp.getHeading() == Math.PI) { //is going west
+                Road targetRoad = null;
+                for(Road r : map.getDestinationRoads()) {
+                    if (r.getIndexLane().getInitialHeading() == Math.PI/2) { // will go south (left)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        leftSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (straight)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        straightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                    if(r.getIndexLane().getInitialHeading() == Math.PI+ Math.PI/2) { //will go north (right)
+                        targetRoad = r;
+                        assert targetRoad != null;
+                        sp.setVehicleSpecChooser(
+                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                        rightSchedule,
+                                        targetRoad
+                                ));
+                    }
+                }
+            }
+            else  {
+                sp.setVehicleSpecChooser(new AIMSpawnPoint.AIMSpawnSpecGenerator() {
+                    @Override
+                    public List<AIMSpawnPoint.AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+                        return new ArrayList<AIMSpawnPoint.AIMSpawnSpec>();
                     }
                 });
             }

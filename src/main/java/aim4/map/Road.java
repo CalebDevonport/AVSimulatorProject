@@ -177,6 +177,18 @@ public class Road {
   }
 
   /**
+   * Get the downmost Lane in this Road.
+   *
+   * @return the downmost Lane in this Road
+   */
+  public Lane getFirstLane() {
+    if(continuousLanes.isEmpty()) {
+      return null;
+    }
+    return continuousLanes.get(0);
+  }
+
+  /**
    * Get the Road that follows this Road in the opposite direction.
    *
    * @return the Road that follows this Road in the opposite direction

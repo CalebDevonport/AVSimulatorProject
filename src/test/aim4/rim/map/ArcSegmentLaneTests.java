@@ -38,7 +38,7 @@ public class ArcSegmentLaneTests {
         Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS * Math.sqrt(3));
         Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
         //act
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4, true);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
 
         //assert
         assertTrue(lane.leftBorder().getStartPoint().getX() < lane.getArc().getStartPoint().getX());
@@ -55,9 +55,9 @@ public class ArcSegmentLaneTests {
     public void calculateLaneBorders_withOppositeDirection_returnsLeftBorderToTheRightOfStartPoint() {
         //arrange
         Point2D origin = new Point2D.Double(0, 0);
-        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.TWO_PI - GeomMath.SIXTH_PI_30_DEGREES, -GeomMath.SIXTH_PI_30_DEGREES);
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.TWO_PI - GeomMath.THIRD_PI_60_DEGREES, GeomMath.SIXTH_PI_30_DEGREES);
         //act
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4, false);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
 
         //assert
         assertTrue(lane.leftBorder().getStartPoint().getX() < lane.getArc().getStartPoint().getX());
@@ -97,9 +97,9 @@ public class ArcSegmentLaneTests {
     public void calculateArcLaneDecomposition_withPositiveSplitFactorAndOppositeDirection_returnsLineSegmentLanes() {
         //arrange
         Point2D origin = new Point2D.Double(0, 0);
-        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.TWO_PI - GeomMath.SIXTH_PI_30_DEGREES, -GeomMath.SIXTH_PI_30_DEGREES);
+        Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.TWO_PI - GeomMath.THIRD_PI_60_DEGREES, GeomMath.SIXTH_PI_30_DEGREES);
         //act
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4, false);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 4);
 
         //assert
         assertFalse(lane.getArcLaneDecomposition().isEmpty());
@@ -108,8 +108,8 @@ public class ArcSegmentLaneTests {
                 line -> {
                     assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP1(), arc));
                     assertTrue(GeomMath.isPointIntersectingArc(line.getLine().getP2(), arc));
-                    assertTrue(line.getLine().getP1().getY() <= arc.getEndPoint().getY());
-                    assertTrue(line.getLine().getP1().getX() >= arc.getEndPoint().getX());
+                    assertTrue(line.getLine().getP1().getY() >= arc.getEndPoint().getY());
+                    assertTrue(line.getLine().getP1().getX() <= arc.getEndPoint().getX());
                     assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP1(), lane.leftBorder()));
                     assertTrue(GeomMath.isPointIntersectingArc(line.getLeftBorder().getP2(), lane.leftBorder()));
                     assertTrue(line.getLeftBorder().getP1().getY() < line.getLine().getP1().getY());
@@ -384,7 +384,7 @@ public class ArcSegmentLaneTests {
         Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
 
         //act
-        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 3, false);
+        ArcSegmentLane lane = new ArcSegmentLane(arc, WIDTH, SPEED_LIMIT, 3);
 
         //assert
         double[] coords = new double[6];
