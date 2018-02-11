@@ -190,7 +190,7 @@ public class ArcSegmentLaneTests {
     }
 
     @Test
-    public void calculateLaneShape_withValidPoints_returnsLaneShape() {
+    public void calculateLaneShape_withValidPointsAndNegativeAngle_returnsLaneShape() {
         //arrange
         Point2D origin = new Point2D.Double(ROUNDABOUT_RADIUS, ROUNDABOUT_RADIUS * Math.sqrt(3));
         Arc2D arc = createArc2DFromOrigin(origin, MAIN_ARC_RADIUS, GeomMath.PI, -GeomMath.THIRD_PI_60_DEGREES);
@@ -213,44 +213,36 @@ public class ArcSegmentLaneTests {
             double[] pathIteratorCoords = {type, coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]};
             areaPoints.add(pathIteratorCoords);
         }
-        // Fist we MOVE TO left of the arc
+        // Fist we MOVE TO left start of the arc
         assertEquals(areaPoints.get(0)[0], 0, DELTA);
         assertEquals(areaPoints.get(0)[1], leftArc.getStartPoint().getX(), DELTA);
         assertEquals(areaPoints.get(0)[2], leftArc.getStartPoint().getY(), DELTA);
 
-        //Then append left arc recorded as a curve
-        assertEquals(areaPoints.get(1)[0], 3, DELTA);
-        assertEquals(areaPoints.get(1)[5], leftArc.getEndPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(1)[6], leftArc.getEndPoint().getY(), DELTA);
+        //Then LINE TO right start of the arc
+        assertEquals(areaPoints.get(1)[0], 1, DELTA);
+        assertEquals(areaPoints.get(1)[1], rightArc.getStartPoint().getX(), DELTA);
+        assertEquals(areaPoints.get(1)[2], rightArc.getStartPoint().getY(), DELTA);
 
-        //Then LINE TO right till end of second arc
-        assertEquals(areaPoints.get(2)[0], 1, DELTA);
-        assertEquals(areaPoints.get(2)[1], rightArc.getEndPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(2)[2], rightArc.getEndPoint().getY(), DELTA);
+        //Then start from the right point
+        assertEquals(areaPoints.get(2)[0], 0, DELTA);
+        assertEquals(areaPoints.get(2)[1], rightArc.getStartPoint().getX(), DELTA);
+        assertEquals(areaPoints.get(2)[2], rightArc.getStartPoint().getY(), DELTA);
 
-        //Then MOVE TO start of right border
-        assertEquals(areaPoints.get(3)[0], 0, DELTA);
-        assertEquals(areaPoints.get(3)[1], rightArc.getStartPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(3)[2], rightArc.getStartPoint().getY(), DELTA);
+        //Then APPEND the right arc as a curve
+        assertEquals(areaPoints.get(3)[0], 3, DELTA);
+        assertEquals(areaPoints.get(3)[5], rightArc.getEndPoint().getX(), DELTA);
+        assertEquals(areaPoints.get(3)[6], rightArc.getEndPoint().getY(), DELTA);
 
-        //Then append the right arc recorded as a curve
-        assertEquals(areaPoints.get(4)[0], 3, DELTA);
-        assertEquals(areaPoints.get(4)[5], rightArc.getEndPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(4)[6], rightArc.getEndPoint().getY(), DELTA);
+        //Then LINE TO end of left arc
+        assertEquals(areaPoints.get(4)[0], 1, DELTA);
+        assertEquals(areaPoints.get(4)[1], leftArc.getEndPoint().getX(), DELTA);
+        assertEquals(areaPoints.get(4)[2], leftArc.getEndPoint().getY(), DELTA);
 
-        //Then MOVE TO start of right border
-        assertEquals(areaPoints.get(5)[0], 0, DELTA);
-        assertEquals(areaPoints.get(5)[1], rightArc.getStartPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(5)[2], rightArc.getStartPoint().getY(), DELTA);
+        //Then APPEND the left arc as a curve
+        assertEquals(areaPoints.get(5)[0], 3, DELTA);
+        assertEquals(areaPoints.get(5)[5], leftArc.getStartPoint().getX(), DELTA);
+        assertEquals(areaPoints.get(5)[6], leftArc.getStartPoint().getY(), DELTA);
 
-        //Then LINE TO start of left border (which should close the path)
-        assertEquals(areaPoints.get(6)[0], 1, DELTA);
-        assertEquals(areaPoints.get(6)[1], leftArc.getStartPoint().getX(), DELTA);
-
-        //Then CLOSE Path (should close in itself)
-        assertEquals(areaPoints.get(7)[0], 4, DELTA);
-        assertEquals(areaPoints.get(7)[1], leftArc.getStartPoint().getX(), DELTA);
-        assertEquals(areaPoints.get(7)[2], leftArc.getStartPoint().getY(), DELTA);
     }
 
     @Test

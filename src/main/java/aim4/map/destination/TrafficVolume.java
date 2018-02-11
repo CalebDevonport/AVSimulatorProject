@@ -192,9 +192,9 @@ public class TrafficVolume {
   }
 
   /**
-   * Create a new traffic volume object from the data in a file for RIM.
+   * Create a new traffic volume object from the data in a file for rim.
    *
-   * @param map   the RIM map
+   * @param map   the rim map
    * @param strs  the data in a file
    */
   public TrafficVolume(RimIntersectionMap map, List<String> strs) {
@@ -344,9 +344,9 @@ public class TrafficVolume {
   }
 
   /**
-   * Create a new traffic volume object from file for RIM.
+   * Create a new traffic volume object from file for rim.
    *
-   * @param map          the RIM map
+   * @param map          the rim map
    * @param csvFileName  the file name of the CSV file
    * @return the traffic volume object
    */

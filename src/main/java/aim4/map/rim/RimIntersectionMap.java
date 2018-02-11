@@ -22,7 +22,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * The grid layout map for RIM.
+ * The grid layout map for rim.
  */
 public class RimIntersectionMap implements BasicIntersectionMap {
     /////////////////////////////////
@@ -172,6 +172,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // Create roundabout path. Detailed map available here: http..
         // Calculate roundabout width (should be bigger than lane width)
         double roundaboutWidth = 1.2 * laneWidth;
+        // Set the lane width to be same size as roundabout width. Should not affect the results
+        //todo: add distance between roads to be able to use lane width different than roundabout width
+        laneWidth = roundaboutWidth;
         // Calculate roundabout radius
         double roundaboutRadius = (roundaboutDiameter - roundaboutWidth) / 2;
 

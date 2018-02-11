@@ -428,7 +428,7 @@ public class ArcSegmentLane extends AbstractLane {
         this.rightBorder = new Arc2D.Double();
 
         // Calculate orientation of the lane
-        double angle = GeomMath.angleBetweenTwoPointsWithFixedPointTakingIntoAccountAtanPositive(arc.getStartPoint(), arc.getEndPoint(), origin);
+        double angle = arc.getAngleExtent();
 
         // Negative angle means left border has bigger radius than right border
         if (angle < 0) {
@@ -452,23 +452,47 @@ public class ArcSegmentLane extends AbstractLane {
     private Shape calculateLaneShape(Arc2D leftBorder, Arc2D rightBorder) {
         GeneralPath result = new GeneralPath();
 
-        //Move left of arc to start point of left border
-        result.moveTo((float) (leftBorder.getStartPoint().getX()),
-                (float) (leftBorder.getStartPoint().getY()));
-        //Shape the left arc
-        result.append(leftBorder, false);
-        //Line to end of right border
-        result.lineTo(rightBorder.getEndPoint().getX(), rightBorder.getEndPoint().getY());
-        //Move start of right border
-        result.moveTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
-        //Shape the right arc
-        result.append(rightBorder, false);
-        //Move back again to start of right border
-        result.moveTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
-        //Close the path by connecting the ends
-        result.lineTo(leftBorder.getStartPoint().getX(), leftBorder.getStartPoint().getY());
-        //Fully close the path in case of missing precision
-        result.closePath();
+        Point2D origin = new Point2D.Double(leftBorder.getX() + leftBorder.getWidth() / 2, leftBorder.getY() + leftBorder.getWidth() / 2);
+        // Calculate orientation of the lane
+        double angle = leftBorder.getAngleExtent();
+
+        // If angle is negative then start drawing the shape by appending the right border and then the left border.
+        if (angle < 0){
+            // Move to left border start
+            result.moveTo((float) (leftBorder.getStartPoint().getX()),
+                    (float) (leftBorder.getStartPoint().getY()));
+            // Add a line to right border start
+            result.lineTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
+            // Append the right border arc
+            result.append(rightBorder,false);
+            // Add a line to the end of left border
+            result.lineTo(leftBorder.getEndPoint().getX(), leftBorder.getEndPoint().getY());
+            // Now need to append the left border. This is done by appending the start point and then the end point of
+            // the arc. Need to reverse the arc start point and end point. The append closes the shape.
+            Arc2D leftBorderReversedStartAndEnd = new Arc2D.Double();
+            leftBorderReversedStartAndEnd.setArcByCenter(origin.getX(), origin.getY(),
+                    leftBorder.getWidth() / 2, leftBorder.getAngleStart() - Math.abs(leftBorder.getAngleExtent()), -leftBorder.getAngleExtent(), 0);
+            result.append(leftBorderReversedStartAndEnd,true);
+        }
+        // If angle is positive then start drawing the shape by appending the left border and then the right border.
+        else {
+            // Move to right border start
+            result.moveTo((float) (rightBorder.getStartPoint().getX()),
+                    (float) (rightBorder.getStartPoint().getY()));
+            // Add a line to left border start
+            result.lineTo(leftBorder.getStartPoint().getX(), leftBorder.getStartPoint().getY());
+            // Append the left border arc
+            result.append(leftBorder,false);
+            // Add a line to the end of right border
+            result.lineTo(rightBorder.getEndPoint().getX(), rightBorder.getEndPoint().getY());
+            // Now need to append the right border. This is done by appending the start point and then the end point of
+            // the arc. Need to reverse the arc start point and end point. The append closes the shape.
+            Arc2D rightBorderReversedStartAndEnd = new Arc2D.Double();
+            rightBorderReversedStartAndEnd.setArcByCenter(origin.getX(), origin.getY(),
+                    rightBorder.getWidth() / 2, rightBorder.getAngleStart() + Math.abs(leftBorder.getAngleExtent()), -leftBorder.getAngleExtent(), 0);
+            result.append(rightBorderReversedStartAndEnd,true);
+        }
+
         return result;
     }
 

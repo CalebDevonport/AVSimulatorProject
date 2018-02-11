@@ -10,7 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- * A spawn point for RIM simulations.
+ * A spawn point for rim simulations.
  */
 public class RIMSpawnPoint extends SpawnPoint{
     /////////////////////////////////

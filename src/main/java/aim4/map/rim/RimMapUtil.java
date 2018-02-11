@@ -27,9 +27,9 @@ import java.util.*;
 /**
  * The utility class for RimIntersectionMap.
  */
-//todo: REWRITE THE SET MANAGERS BASED ON RIM, SEE BELOW
+//todo: REWRITE THE SET MANAGERS BASED ON rim, SEE BELOW
 public class RimMapUtil {
-    // Set RIM Managers
+    // Set rim Managers
 
     /**
      * Set the FCFS managers at all intersections.

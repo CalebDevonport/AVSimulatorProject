@@ -1,8 +1,10 @@
 package aim4.gui.setuppanel;
 
-import aim4.gui.parampanel.merge.*;
-import aim4.sim.setup.merge.enums.MapType;
+import aim4.gui.parampanel.merge.MergeParamPanel;
+import aim4.gui.parampanel.merge.S2SMergeParamPanel;
+import aim4.gui.parampanel.merge.SingleLaneParamPanel;
 import aim4.sim.setup.merge.MergeSimSetup;
+import aim4.sim.setup.merge.enums.MapType;
 import aim4.sim.setup.merge.enums.ProtocolType;
 
 import javax.swing.*;
@@ -19,7 +21,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
      * Merge types for Merge Combobox
      */
     final static String S2S_MERGE_TITLE = "Single-to-Single Merge";
-    final static String SINGLE_LANE_TEST = "Single Lane Test";
+    final static String SINGLE_LANE_TEST = "Single Lane RimMapTestApplet";
 
     //GUI ELEMENTS//
     private JComboBox mergeComboBox;
