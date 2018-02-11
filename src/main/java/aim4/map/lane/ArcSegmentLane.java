@@ -452,7 +452,7 @@ public class ArcSegmentLane extends AbstractLane {
     private Shape calculateLaneShape(Arc2D leftBorder, Arc2D rightBorder) {
         GeneralPath result = new GeneralPath();
 
-        Point2D origin = new Point2D.Double(leftBorder.getX() + leftBorder.getWidth() / 2, leftBorder.getY() + leftBorder.getWidth() / 2);
+        Point2D origin = new Point2D.Double(leftBorder.getX() + leftBorder.getWidth() / 2, leftBorder.getY() + leftBorder.getHeight() / 2);
         // Calculate orientation of the lane
         double angle = leftBorder.getAngleExtent();
 

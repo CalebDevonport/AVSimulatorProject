@@ -6,6 +6,7 @@ import aim4.map.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
+import aim4.map.connections.RimConnection;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -119,6 +120,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * A mapping form lanes to roads they belong
      */
     private Map<Lane, Road> laneToRoad = new HashMap<Lane, Road>();
+
+    /** The RIM connection */
+    private List<RimConnection> rimConnections = new ArrayList<RimConnection>();
 
     /////////////////////////////////
     // CLASS CONSTRUCTORS
@@ -667,6 +671,10 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         intersectionManagerGrid = new IntersectionManager[columns][rows];
 
         initializeSpawnPoints(initTime);
+        RimConnection rimConnection =
+                new RimConnection(getRoads());
+
+        addRimConnection(rimConnection);
     }
 
     public RimIntersectionMap(RimIntersectionMap map, double laneWidth, double roundaboutDiameter, double entranceExitRadius,
@@ -745,6 +753,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         return new AIMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
                 lane, noVehicleZone);
     }
+
+    protected void addRimConnection(RimConnection connection) { rimConnections.add(connection); }
 
     /////////////////////////////////
     // PUBLIC METHODS

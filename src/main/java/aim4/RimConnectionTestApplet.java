@@ -1,31 +1,36 @@
 package aim4;
 
 import aim4.map.Road;
-import aim4.map.lane.ArcSegmentLane;
+import aim4.map.connections.RimConnection;
 import aim4.map.lane.Lane;
-import aim4.map.lane.LineSegmentLane;
 import aim4.map.rim.RimIntersectionMap;
 
 import javax.imageio.ImageIO;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
-public class RimMapTestApplet extends Applet implements Runnable{
+public class RimConnectionTestApplet extends Applet implements Runnable{
     // Colors taken from AIM Canvas
-    private static final Color LEFT_BORDER_COLOR = Color.YELLOW;
-    private static final Color RIGHT_BORDER_COLOR = Color.RED;
+    private static final Color STRICT_AREA_COLOR = Color.BLUE;
+    private static final Color ROAD_AREA_COLOR = Color.PINK;
+    private static final Color POINTS_COLOR = Color.RED;
+    private static final Color ENTRY_POINTS_COLOR = Color.magenta;
+    private static final Color EXIT_POINTS_COLOR = Color.BLACK;
+    private static final Color APPROACH_ENTRY_POINTS_COLOR = Color.PINK;
+    private static final Color APPROACH_EXIT_POINTS_COLOR = Color.DARK_GRAY;
     private static final Stroke ROAD_BOUNDARY_STROKE = new BasicStroke(0.3f);
-    private static final Color ASPHALT_COLOR = Color.BLACK.brighter();
+    private static final Stroke ROAD_BOUNDARY_STROKE_2 = new BasicStroke(0.7f);
     private static final AffineTransform IDENTITY_TRANSFORM =
             new AffineTransform();
     private static final Color GRASS_COLOR = Color.GREEN.darker().darker();
     private static final String GRASS_TILE_FILE = "/images/grass128.png";
-    private static final String ASPHALT_TILE_FILE = "/images/asphalt32.png";
 
     // Roundabout properties
     private static final double[] ROUNDABOUT_DIAMETER = {30.0, 35.0, 40.0, 45.0};
@@ -65,16 +70,57 @@ public class RimMapTestApplet extends Applet implements Runnable{
 
         // Set map colors
         BufferedImage grassImage = loadImage(GRASS_TILE_FILE);
-        BufferedImage asphaltImage = loadImage(ASPHALT_TILE_FILE);
         TexturePaint grassTexture = makeScaledTexture(grassImage, scaleFactor);
-        TexturePaint asphaltTexture = makeScaledTexture(asphaltImage, scaleFactor);
         paintEntireBuffer(bgBuffer, Color.RED);
         drawGrass(bgBuffer, mapRect, grassTexture);
 
-        // Draw the roads
-        for (Road road : map.getRoads()) {
-            drawRoad(bgBuffer, road, asphaltTexture);
+        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE_2);
+        bgBuffer.setPaint(STRICT_AREA_COLOR);
+
+        // Create a connection
+        RimConnection connection = new RimConnection(map.getRoads());
+        // Draw the connections between roads
+        bgBuffer.draw(connection.getArea());
+
+        // Draw the road areas
+        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
+        bgBuffer.setPaint(ROAD_AREA_COLOR);
+        for(Road road : map.getRoads()) {
+            Area roadArea = new Area();
+            // Find the union of the shapes of the lanes for each road
+            for(Lane lane : road.getContinuousLanes()) {
+                // Add the area from each constituent lane
+                roadArea.add(new Area(lane.getShape()));
+            }
+            bgBuffer.draw(roadArea);
         }
+        bgBuffer.setPaint(POINTS_COLOR);
+        bgBuffer.drawOval((int)connection.getCentroid().getX()-1,
+                (int)connection.getCentroid().getY()-1, 1, 1);
+
+        // Draw entry points
+        bgBuffer.setPaint(ENTRY_POINTS_COLOR);
+        List<Lane> entryLanes = connection.getEntryLanes();
+        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)connection.getEntryPoint(entryLane).getX(),
+                (int)connection.getEntryPoint(entryLane).getY(), 1, 1));
+
+        // Draw entry approach points
+        bgBuffer.setPaint(APPROACH_ENTRY_POINTS_COLOR);
+        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)connection.getEntryApproachPoint(entryLane).getX(),
+                (int)connection.getEntryApproachPoint(entryLane).getY(), 1, 1));
+
+        // Draw exit points
+        bgBuffer.setPaint(EXIT_POINTS_COLOR);
+        List<Lane> exitLanes = connection.getExitLanes();
+        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)connection.getExitPoint(exitLane).getX(),
+                (int)connection.getExitPoint(exitLane).getY(), 1, 1));
+
+        // Draw approach exit points
+        bgBuffer.setPaint(APPROACH_EXIT_POINTS_COLOR);
+        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)connection.getExitApproachPoint(exitLane).getX(),
+                (int)connection.getExitApproachPoint(exitLane).getY(), 1, 1));
+
+
     }
 
     public void run() {
@@ -130,65 +176,4 @@ public class RimMapTestApplet extends Applet implements Runnable{
         }
         buffer.fill(rect);
     }
-
-    private void drawRoad(Graphics2D bgBuffer, Road road,
-                            TexturePaint asphaltTexture) {
-        // Draw Entry Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(0), asphaltTexture);
-
-        // Draw the Arc Lanes
-        for (int index = 1 ; index <= road.getContinuousLanes().size()-2; index++)
-        drawArcLane(bgBuffer, road.getContinuousLanes().get(index), asphaltTexture);
-
-        // Draw Exit Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(6), asphaltTexture);
-    }
-
-    private void drawLineLane(Graphics2D bgBuffer,
-                                Lane lane,
-                                TexturePaint asphaltTexture) {
-        // Draw the lane itself
-        if (asphaltTexture == null) {
-            bgBuffer.setPaint(ASPHALT_COLOR);
-        } else {
-            bgBuffer.setPaint(asphaltTexture);
-        }
-        LineSegmentLane lineLane = (LineSegmentLane) (lane);
-        // Fill the lane shape
-        bgBuffer.fill(lane.getShape());
-        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
-
-        // Draw left border
-        bgBuffer.setPaint(LEFT_BORDER_COLOR);
-        bgBuffer.draw(lineLane.getLeftBorder());
-
-        // Draw right border
-        bgBuffer.setPaint(RIGHT_BORDER_COLOR);
-        bgBuffer.draw(lineLane.getRightBorder());
-    }
-
-    private void drawArcLane(Graphics2D bgBuffer,
-                            Lane lane,
-                            TexturePaint asphaltTexture) {
-        // Draw the lane itself
-        if (asphaltTexture == null) {
-            bgBuffer.setPaint(ASPHALT_COLOR);
-        } else {
-            bgBuffer.setPaint(asphaltTexture);
-        }
-        ArcSegmentLane arcLane = (ArcSegmentLane) (lane);
-        // Fill the lane shape
-        bgBuffer.fill(lane.getShape());
-        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
-
-        // Draw left border
-        bgBuffer.setPaint(LEFT_BORDER_COLOR);
-        bgBuffer.draw(arcLane.leftBorder());
-
-        // Draw right border
-        bgBuffer.setPaint(RIGHT_BORDER_COLOR);
-        bgBuffer.draw(arcLane.rightBorder());
-    }
-
-
 }

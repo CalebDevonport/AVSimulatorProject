@@ -64,6 +64,12 @@ public class SimConfig {
   public static final double MERGE_TIME_STEP = TIME_STEP;
 
   /**
+   * The length of a time step (simulation time) in the rim grid
+   * ({@value} seconds).
+   */
+  public static final double RIM_TIME_STEP = TIME_STEP;
+
+  /**
    * How often the simulator should consider spawning vehicles.
    */
   public static final double SPAWN_TIME_STEP = TIME_STEP / 5.0;
