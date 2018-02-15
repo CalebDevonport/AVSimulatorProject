@@ -141,7 +141,7 @@ public class RimMapTestApplet extends Applet implements Runnable{
         drawArcLane(bgBuffer, road.getContinuousLanes().get(index), asphaltTexture);
 
         // Draw Exit Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(6), asphaltTexture);
+        drawLineLane(bgBuffer, road.getContinuousLanes().get(8), asphaltTexture);
     }
 
     private void drawLineLane(Graphics2D bgBuffer,

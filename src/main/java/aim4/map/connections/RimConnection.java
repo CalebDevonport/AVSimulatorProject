@@ -128,10 +128,10 @@ public class RimConnection implements RoadConnection {
         centroid = findOriginOfConnection(roads);
         // Calculate entry and approach points
         for(Road road : roads) {
-            // The entry points will always be on the first Arc Lane of a Road
+            // The entry points will always be on the first Approach - Enter Arc Lane of a Road
             establishAsEntryAndApproachPoint(road, road.getContinuousLanes().get(1));
-            // The entry points will always be on the last Arc Lane of a Road
-            establishAsExitAndApproachPoint(road, road.getContinuousLanes().get(5));
+            // The exit points will always be on the last Approach - Enter Arc Lane of a Road
+            establishAsExitAndApproachPoint(road, road.getContinuousLanes().get(7));
         }
         calcWayPoints();
         calcApproachWayPoints();
@@ -173,9 +173,9 @@ public class RimConnection implements RoadConnection {
         return areaOfConnection;
     }
 
-    // Given a set of Rim Roads, the origin is the origin of the second arc lane in every road.
+    // Given a set of Rim Roads, the origin is the origin of the first inside arc lane in every road.
     protected Point2D findOriginOfConnection(List<Road> roads){
-        ArcSegmentLane secondArcLane = (ArcSegmentLane)roads.get(0).getContinuousLanes().get(2);
+        ArcSegmentLane secondArcLane = (ArcSegmentLane)roads.get(0).getContinuousLanes().get(3);
         Point2D origin = new Point2D.Double(secondArcLane.getArc().getX() + secondArcLane.getArc().getWidth() / 2,
                 secondArcLane.getArc().getY() + secondArcLane.getArc().getHeight() / 2);
         return origin;

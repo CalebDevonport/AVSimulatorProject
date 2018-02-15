@@ -74,21 +74,25 @@ public class RimIntersectionMapTests {
         //assert
         List<Road> verticalRoads = map.getVerticalRoads();
         Road north = verticalRoads.get(0);
-        assert north.getContinuousLanes().size() == 7;
+        assert north.getContinuousLanes().size() == 9;
         Lane northLine1 = north.getContinuousLanes().get(0);
         Lane northArc2 = north.getContinuousLanes().get(1);
         Lane northArc3 = north.getContinuousLanes().get(2);
         Lane northArc4 = north.getContinuousLanes().get(3);
         Lane northArc5 = north.getContinuousLanes().get(4);
         Lane northArc6 = north.getContinuousLanes().get(5);
-        Lane northLine7 = north.getContinuousLanes().get(6);
+        Lane northArc7 = north.getContinuousLanes().get(6);
+        Lane northArc8 = north.getContinuousLanes().get(7);
+        Lane northLine9 = north.getContinuousLanes().get(8);
 
         assert northLine1.getNextLane() == northArc2;
         assert northArc2.getNextLane() == northArc3;
         assert northArc3.getNextLane() == northArc4;
         assert northArc4.getNextLane() == northArc5;
         assert northArc5.getNextLane() == northArc6;
-        assert northArc6.getNextLane() == northLine7;
+        assert northArc6.getNextLane() == northArc7;
+        assert northArc7.getNextLane() == northArc8;
+        assert northArc8.getNextLane() == northLine9;
 
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getPrevLane() == northLine1;
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
@@ -118,8 +122,12 @@ public class RimIntersectionMapTests {
         assertEquals(northArc4.getEndPoint().getY(),northArc5.getStartPoint().getY(), DELTA);
         assertEquals(northArc5.getEndPoint().getX(),northArc6.getStartPoint().getX(), DELTA);
         assertEquals(northArc5.getEndPoint().getY(),northArc6.getStartPoint().getY(), DELTA);
-        assertEquals(northArc6.getEndPoint().getX(),northLine7.getStartPoint().getX(), DELTA);
-        assertEquals(northArc6.getEndPoint().getY(),northLine7.getStartPoint().getY(), DELTA);
+        assertEquals(northArc6.getEndPoint().getX(),northArc7.getStartPoint().getX(), DELTA);
+        assertEquals(northArc6.getEndPoint().getY(),northArc7.getStartPoint().getY(), DELTA);
+        assertEquals(northArc7.getEndPoint().getX(),northArc8.getStartPoint().getX(), DELTA);
+        assertEquals(northArc7.getEndPoint().getY(),northArc8.getStartPoint().getY(), DELTA);
+        assertEquals(northArc8.getEndPoint().getX(),northLine9.getStartPoint().getX(), DELTA);
+        assertEquals(northArc8.getEndPoint().getY(),northLine9.getStartPoint().getY(), DELTA);
 
         assert north.getDual() == verticalRoads.get(1);
     }
@@ -145,21 +153,25 @@ public class RimIntersectionMapTests {
         //assert
         List<Road> verticalRoads = map.getVerticalRoads();
         Road south = verticalRoads.get(1);
-        assert south.getContinuousLanes().size() == 7;
+        assert south.getContinuousLanes().size() == 9;
         Lane southLine1 = south.getContinuousLanes().get(0);
         Lane southArc2 = south.getContinuousLanes().get(1);
         Lane southArc3 = south.getContinuousLanes().get(2);
         Lane southArc4 = south.getContinuousLanes().get(3);
         Lane southArc5 = south.getContinuousLanes().get(4);
         Lane southArc6 = south.getContinuousLanes().get(5);
-        Lane southLine7 = south.getContinuousLanes().get(6);
+        Lane southArc7 = south.getContinuousLanes().get(6);
+        Lane southArc8 = south.getContinuousLanes().get(7);
+        Lane southLine9 = south.getContinuousLanes().get(8);
 
         assert southLine1.getNextLane() == southArc2;
         assert southArc2.getNextLane() == southArc3;
         assert southArc3.getNextLane() == southArc4;
         assert southArc4.getNextLane() == southArc5;
         assert southArc5.getNextLane() == southArc6;
-        assert southArc6.getNextLane() == southLine7;
+        assert southArc6.getNextLane() == southArc7;
+        assert southArc7.getNextLane() == southArc8;
+        assert southArc8.getNextLane() == southLine9;
 
         assertEquals(southLine1.getEndPoint().getX(),southArc2.getStartPoint().getX(), DELTA);
         assertEquals(southLine1.getEndPoint().getY(),southArc2.getStartPoint().getY(), DELTA);
@@ -171,8 +183,12 @@ public class RimIntersectionMapTests {
         assertEquals(southArc4.getEndPoint().getY(),southArc5.getStartPoint().getY(), DELTA);
         assertEquals(southArc5.getEndPoint().getX(),southArc6.getStartPoint().getX(), DELTA);
         assertEquals(southArc5.getEndPoint().getY(),southArc6.getStartPoint().getY(), DELTA);
-        assertEquals(southArc6.getEndPoint().getX(),southLine7.getStartPoint().getX(), DELTA);
-        assertEquals(southArc6.getEndPoint().getY(),southLine7.getStartPoint().getY(), DELTA);
+        assertEquals(southArc6.getEndPoint().getX(),southArc7.getStartPoint().getX(), DELTA);
+        assertEquals(southArc6.getEndPoint().getY(),southArc7.getStartPoint().getY(), DELTA);
+        assertEquals(southArc7.getEndPoint().getX(),southArc8.getStartPoint().getX(), DELTA);
+        assertEquals(southArc7.getEndPoint().getY(),southArc8.getStartPoint().getY(), DELTA);
+        assertEquals(southArc8.getEndPoint().getX(),southLine9.getStartPoint().getX(), DELTA);
+        assertEquals(southArc8.getEndPoint().getY(),southLine9.getStartPoint().getY(), DELTA);
         assert south.getDual() == verticalRoads.get(0);
     }
 
@@ -197,7 +213,7 @@ public class RimIntersectionMapTests {
         //assert
         List<Road> horizontalRoads = map.getHorizontalRoads();
         Road east = horizontalRoads.get(0);
-        assert east.getContinuousLanes().size() == 7;
+        assert east.getContinuousLanes().size() == 9;
         Lane eastLine1 = east.getContinuousLanes().get(0);
         Lane eastArc2 = east.getContinuousLanes().get(1);
         Lane eastArc3 = east.getContinuousLanes().get(2);
@@ -205,6 +221,8 @@ public class RimIntersectionMapTests {
         Lane eastArc5 = east.getContinuousLanes().get(4);
         Lane eastArc6 = east.getContinuousLanes().get(5);
         Lane eastArc7 = east.getContinuousLanes().get(6);
+        Lane eastArc8 = east.getContinuousLanes().get(7);
+        Lane eastLine9 = east.getContinuousLanes().get(8);
 
         assert eastLine1.getNextLane() == eastArc2;
         assert eastArc2.getNextLane() == eastArc3;
@@ -212,6 +230,8 @@ public class RimIntersectionMapTests {
         assert eastArc4.getNextLane() == eastArc5;
         assert eastArc5.getNextLane() == eastArc6;
         assert eastArc6.getNextLane() == eastArc7;
+        assert eastArc7.getNextLane() == eastArc8;
+        assert eastArc8.getNextLane() == eastLine9;
 
         assertEquals(eastLine1.getEndPoint().getX(),eastArc2.getStartPoint().getX(), DELTA);
         assertEquals(eastLine1.getEndPoint().getY(),eastArc2.getStartPoint().getY(), DELTA);
@@ -225,6 +245,10 @@ public class RimIntersectionMapTests {
         assertEquals(eastArc5.getEndPoint().getY(),eastArc6.getStartPoint().getY(), DELTA);
         assertEquals(eastArc6.getEndPoint().getX(),eastArc7.getStartPoint().getX(), DELTA);
         assertEquals(eastArc6.getEndPoint().getY(),eastArc7.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc7.getEndPoint().getX(),eastArc8.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc7.getEndPoint().getY(),eastArc8.getStartPoint().getY(), DELTA);
+        assertEquals(eastArc8.getEndPoint().getX(),eastLine9.getStartPoint().getX(), DELTA);
+        assertEquals(eastArc8.getEndPoint().getY(),eastLine9.getStartPoint().getY(), DELTA);
         assert east.getDual() == horizontalRoads.get(1);
     }
 
@@ -249,7 +273,7 @@ public class RimIntersectionMapTests {
         //assert
         List<Road> horizontalRoads = map.getHorizontalRoads();
         Road west = horizontalRoads.get(1);
-        assert west.getContinuousLanes().size() == 7;
+        assert west.getContinuousLanes().size() == 9;
         Lane westLine1 = west.getContinuousLanes().get(0);
         Lane westArc2 = west.getContinuousLanes().get(1);
         Lane westArc3 = west.getContinuousLanes().get(2);
@@ -257,6 +281,8 @@ public class RimIntersectionMapTests {
         Lane westArc5 = west.getContinuousLanes().get(4);
         Lane westArc6 = west.getContinuousLanes().get(5);
         Lane westArc7 = west.getContinuousLanes().get(6);
+        Lane westArc8 = west.getContinuousLanes().get(7);
+        Lane westLine9 = west.getContinuousLanes().get(8);
 
         assert westLine1.getNextLane() == westArc2;
         assert westArc2.getNextLane() == westArc3;
@@ -264,6 +290,8 @@ public class RimIntersectionMapTests {
         assert westArc4.getNextLane() == westArc5;
         assert westArc5.getNextLane() == westArc6;
         assert westArc6.getNextLane() == westArc7;
+        assert westArc7.getNextLane() == westArc8;
+        assert westArc8.getNextLane() == westLine9;
 
         assertEquals(westLine1.getEndPoint().getX(),westArc2.getStartPoint().getX(), DELTA);
         assertEquals(westLine1.getEndPoint().getY(),westArc2.getStartPoint().getY(), DELTA);
@@ -277,6 +305,10 @@ public class RimIntersectionMapTests {
         assertEquals(westArc5.getEndPoint().getY(),westArc6.getStartPoint().getY(), DELTA);
         assertEquals(westArc6.getEndPoint().getX(),westArc7.getStartPoint().getX(), DELTA);
         assertEquals(westArc6.getEndPoint().getY(),westArc7.getStartPoint().getY(), DELTA);
+        assertEquals(westArc7.getEndPoint().getX(),westArc8.getStartPoint().getX(), DELTA);
+        assertEquals(westArc7.getEndPoint().getY(),westArc8.getStartPoint().getY(), DELTA);
+        assertEquals(westArc8.getEndPoint().getX(),westLine9.getStartPoint().getX(), DELTA);
+        assertEquals(westArc8.getEndPoint().getY(),westLine9.getStartPoint().getY(), DELTA);
         assert west.getDual() == horizontalRoads.get(0);
     }
 }
