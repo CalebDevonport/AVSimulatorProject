@@ -75,6 +75,11 @@ public class RimMapTestApplet extends Applet implements Runnable{
         for (Road road : map.getRoads()) {
             drawRoad(bgBuffer, road, asphaltTexture);
         }
+
+        // Draw the roads
+        for (Road road : map.getRoads()) {
+            drawRoadAsLineLanes(bgBuffer, road, asphaltTexture);
+        }
     }
 
     public void run() {
@@ -144,6 +149,19 @@ public class RimMapTestApplet extends Applet implements Runnable{
         drawLineLane(bgBuffer, road.getContinuousLanes().get(8), asphaltTexture);
     }
 
+    private void drawRoadAsLineLanes(Graphics2D bgBuffer, Road road,
+                          TexturePaint asphaltTexture) {
+        // Draw Entry Line Lane
+        drawLineLane(bgBuffer, road.getContinuousLanes().get(0), asphaltTexture);
+
+        // Draw the Arc Lanes
+        for (int index = 1 ; index <= road.getContinuousLanes().size()-2; index++)
+            drawArcLaneAsLineLanes(bgBuffer, road.getContinuousLanes().get(index), asphaltTexture);
+
+        // Draw Exit Line Lane
+        drawLineLane(bgBuffer, road.getContinuousLanes().get(8), asphaltTexture);
+    }
+
     private void drawLineLane(Graphics2D bgBuffer,
                                 Lane lane,
                                 TexturePaint asphaltTexture) {
@@ -188,6 +206,32 @@ public class RimMapTestApplet extends Applet implements Runnable{
         // Draw right border
         bgBuffer.setPaint(RIGHT_BORDER_COLOR);
         bgBuffer.draw(arcLane.rightBorder());
+    }
+
+    private void drawArcLaneAsLineLanes(Graphics2D bgBuffer,
+                             Lane lane,
+                             TexturePaint asphaltTexture) {
+        // Draw the lane itself
+        if (asphaltTexture == null) {
+            bgBuffer.setPaint(ASPHALT_COLOR);
+        } else {
+            bgBuffer.setPaint(asphaltTexture);
+        }
+
+        // Fill the lane shape
+        bgBuffer.fill(lane.getShape());
+        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
+
+        ArcSegmentLane arcLane = (ArcSegmentLane) (lane);
+        for (LineSegmentLane lineLane : arcLane.getArcLaneDecomposition()) {
+            // Draw left border
+            bgBuffer.setPaint(LEFT_BORDER_COLOR);
+            bgBuffer.draw(lineLane.leftBorder());
+
+            // Draw right border
+            bgBuffer.setPaint(RIGHT_BORDER_COLOR);
+            bgBuffer.draw(lineLane.rightBorder());
+        }
     }
 
 

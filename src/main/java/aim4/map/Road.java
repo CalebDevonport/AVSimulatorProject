@@ -61,6 +61,13 @@ public class Road {
   /////////////////////////////////
 
   /**
+   * Create a new Road with no Lanes.
+   *
+   */
+  public Road() {
+  }
+
+  /**
    * Create a new Road with no Lanes.  Lanes can then be added.
    *
    * @param name   the name of the Road

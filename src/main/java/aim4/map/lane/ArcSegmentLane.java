@@ -400,7 +400,7 @@ public class ArcSegmentLane extends AbstractLane {
                 baseArc.getY(),
                 baseArc.getWidth(),
                 baseArc.getHeight(),
-                baseArc.getAngleStart() - split * Math.abs(splitAngle),
+                baseArc.getAngleStart() + split * splitAngle,
                 splitAngle,
                 baseArc.getArcType());
     }
