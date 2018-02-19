@@ -42,7 +42,14 @@ public interface Intersection {
      *
      * @return the minimal circular region that encloses the intersection
      */
-    Ellipse2D getBoundingBox();
+    Ellipse2D getMinimalCircle();
+
+    /**
+     * Get the maximal circular region that encloses the intersection.
+     *
+     * @return the minimal circular region that encloses the intersection
+     */
+    Ellipse2D getMaximalCircle();
 
 
     /**

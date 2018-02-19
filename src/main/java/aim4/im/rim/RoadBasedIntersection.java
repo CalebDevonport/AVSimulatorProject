@@ -50,9 +50,14 @@ public class RoadBasedIntersection implements Intersection{
     private Area areaPlus;
 
     /**
-     * The smallest rectangle that contains this intersection.
+     * The smallest circle that contains this intersection.
      */
-    private Ellipse2D boundingBox;
+    private Ellipse2D getMinimalCircle;
+
+    /**
+     * The biggest circle that contains this intersection.
+     */
+    private Ellipse2D getMaximalCircle;
 
     /**
      * The centroid of this intersection.
@@ -166,8 +171,10 @@ public class RoadBasedIntersection implements Intersection{
         centroid = findOriginOfConnection(roads);
         // Calculate the waypoints.
         calcWayPoints();
-        // Calculate the bounding box
-        boundingBox = findBoundingBox(centroid, roads);
+        // Calculate the minimal circular region
+        getMinimalCircle = findMinimalCircle(centroid, roads);
+        // Calculate the maximal circular region
+        getMaximalCircle = findMaximalCircle(centroid, roads);
 
         calcEntryRoads(roads);
         calcExitRoads(roads);
@@ -242,7 +249,7 @@ public class RoadBasedIntersection implements Intersection{
 
         //Establish exit and approach exit points. This will correspond to last arc lane of every road
         for (Road road : roads){
-            ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getContinuousLanes().get(road.getContinuousLanes().size() - 2);
+            ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane();
 
             // Approach exit point
             this.approachExitPoints.put(approachExitLane,
@@ -300,15 +307,32 @@ public class RoadBasedIntersection implements Intersection{
         }
     }
 
-    // Find the circle of the intersection. Center will be the centroid and width=height will be the one of the inside arcs in every road.
-    private Ellipse2D findBoundingBox(Point2D centroid, List<Road> roads) {
+    /**
+     * Find the minimal circular region that represents the intersection.
+     */
+    private Ellipse2D findMinimalCircle(Point2D centroid, List<Road> roads) {
         ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanes().get(3);
-        double boundBoxWidth = insideArcLane.getArc().getWidth() + insideArcLane.getWidth();
+        // The radius of the circle will be the radius of the left border of every inside arc
+        double minimalRadius = insideArcLane.leftBorder().getWidth();
         return new Ellipse2D.Double(
-                centroid.getX() - boundBoxWidth / 2,
-                centroid.getY() - boundBoxWidth / 2,
-                boundBoxWidth,
-                boundBoxWidth);
+                centroid.getX() - minimalRadius / 2,
+                centroid.getY() - minimalRadius / 2,
+                minimalRadius,
+                minimalRadius);
+    }
+
+    /**
+     * Find the maximal circular region that represents the intersection.
+     */
+    private Ellipse2D findMaximalCircle(Point2D centroid, List<Road> roads) {
+        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanes().get(3);
+        // The radius of the circle will be the radius of the right border of every inside arc
+        double maximalRadius = insideArcLane.rightBorder().getWidth();
+        return new Ellipse2D.Double(
+                centroid.getX() - maximalRadius / 2,
+                centroid.getY() - maximalRadius / 2,
+                maximalRadius,
+                maximalRadius);
     }
 
     /**
@@ -334,6 +358,21 @@ public class RoadBasedIntersection implements Intersection{
     @Override
     public List<Road> getRoads() {
         return roads;
+    }
+
+    /**
+     * Get the Roads incident to the space governed by this intersection by name.
+     *
+     * @return the roads managed by this intersection.
+     */
+    public Road getRoadByName(String name) {
+        Road roadByName = null;
+        for (Road road : roads) {
+            if (road.getName() == name){
+                roadByName = road;
+            }
+        }
+        return roadByName;
     }
 
     /**
@@ -378,13 +417,23 @@ public class RoadBasedIntersection implements Intersection{
     }
 
     /**
-     * Get the minimal rectangular region that encloses the intersection.
+     * Get the minimal circular region that encloses the intersection.
      *
-     * @return the minimal rectangular region that encloses the intersection
+     * @return the minimal v region that encloses the intersection
      */
     @Override
-    public Ellipse2D getBoundingBox() {
-        return boundingBox;
+    public Ellipse2D getMinimalCircle() {
+        return getMinimalCircle;
+    }
+
+    /**
+     * Get the maximal circular region that encloses the intersection.
+     *
+     * @return the minimal circular region that encloses the intersection
+     */
+    @Override
+    public Ellipse2D getMaximalCircle() {
+        return getMaximalCircle;
     }
 
     /**

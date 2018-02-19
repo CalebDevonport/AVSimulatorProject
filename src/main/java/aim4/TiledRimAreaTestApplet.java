@@ -1,32 +1,25 @@
 package aim4;
 
 import aim4.im.rim.RoadBasedIntersection;
-import aim4.map.Road;
-import aim4.map.lane.Lane;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.rim.RimIntersectionMap;
+import aim4.util.TiledRimArea;
+import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.aim.AIMBasicAutoVehicle;
 
 import javax.imageio.ImageIO;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
+public class TiledRimAreaTestApplet extends Applet implements Runnable{
     // Colors taken from AIM Canvas
-    private static final Color STRICT_AREA_COLOR = Color.BLUE;
-    private static final Color ROAD_AREA_COLOR = Color.PINK;
-    private static final Color POINTS_COLOR = Color.RED;
-    private static final Color ENTRY_POINTS_COLOR = Color.magenta;
-    private static final Color EXIT_POINTS_COLOR = Color.BLACK;
-    private static final Color APPROACH_ENTRY_POINTS_COLOR = Color.PINK;
-    private static final Color APPROACH_EXIT_POINTS_COLOR = Color.DARK_GRAY;
     private static final Stroke ROAD_BOUNDARY_STROKE = new BasicStroke(0.3f);
-    private static final Stroke ROAD_BOUNDARY_STROKE_2 = new BasicStroke(0.7f);
     private static final AffineTransform IDENTITY_TRANSFORM =
             new AffineTransform();
     private static final Color GRASS_COLOR = Color.GREEN.darker().darker();
@@ -74,57 +67,66 @@ public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
         paintEntireBuffer(bgBuffer, Color.RED);
         drawGrass(bgBuffer, mapRect, grassTexture);
 
-        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE_2);
-        bgBuffer.setPaint(STRICT_AREA_COLOR);
+        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
+        bgBuffer.setPaint(Color.white);
 
         // Create a connection
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        // Draw the connections between roads
-        bgBuffer.draw(roadBasedIntersection.getArea());
-        // Draw the minimal circular region
-        bgBuffer.setPaint(Color.pink);
-        bgBuffer.draw(roadBasedIntersection.getMinimalCircle());
-        // Draw the maximal circular region
-        bgBuffer.setPaint(Color.yellow);
-        bgBuffer.draw(roadBasedIntersection.getMaximalCircle());
 
-        // Draw the road areas
-        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
-        bgBuffer.setPaint(ROAD_AREA_COLOR);
-        for(Road road : map.getRoads()) {
-            Area roadArea = new Area();
-            // Find the union of the shapes of the lanes for each road
-            for(Lane lane : road.getContinuousLanes()) {
-                // Add the area from each constituent lane
-                roadArea.add(new Area(lane.getShape()));
-            }
-            bgBuffer.draw(roadArea);
-        }
-        bgBuffer.setPaint(POINTS_COLOR);
-        bgBuffer.drawOval((int)roadBasedIntersection.getCentroid().getX()-1,
-                (int)roadBasedIntersection.getCentroid().getY()-1, 1, 1);
+        // Create a tiled rim area
+        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getMaximalCircle(), 6);
 
-        // Draw entry points
-        bgBuffer.setPaint(ENTRY_POINTS_COLOR);
-        List<Lane> entryLanes = roadBasedIntersection.getEntryLanes();
-        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)roadBasedIntersection.getEntryPoint(entryLane).getX(),
-                (int)roadBasedIntersection.getEntryPoint(entryLane).getY(), 1, 1));
+        tiledRimArea.getAllTilesById().forEach( tile -> {
+            bgBuffer.draw(tile.getArea());
+//            float hue = tile.getId()/15f;
+//            bgBuffer.setPaint(Color.getHSBColor(hue, 1.0f,0.8f));
+        });
 
-        // Draw entry approach points
-        bgBuffer.setPaint(APPROACH_ENTRY_POINTS_COLOR);
-        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachEntryPoint(entryLane).getX(),
-                (int)roadBasedIntersection.getApproachEntryPoint(entryLane).getY(), 1, 1));
+        // Create a vehicle
 
-        // Draw exit points
-        bgBuffer.setPaint(EXIT_POINTS_COLOR);
-        List<Lane> exitLanes = roadBasedIntersection.getExitLanes();
-        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)roadBasedIntersection.getExitPoint(exitLane).getX(),
-                (int)roadBasedIntersection.getExitPoint(exitLane).getY(), 1, 1));
+        // North Road
+        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanes().get(4);
+        Point2D positionOfVehicleFront = new Point2D.Double(
+                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+                vehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
 
-        // Draw approach exit points
-        bgBuffer.setPaint(APPROACH_EXIT_POINTS_COLOR);
-        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachExitPoint(exitLane).getX(),
-                (int)roadBasedIntersection.getApproachExitPoint(exitLane).getY(), 1, 1));
+//        // South Road
+//        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanes().get(3);
+//        Point2D positionOfVehicleFront = new Point2D.Double(
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+//        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+//                vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+
+//        // East Road
+//        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanes().get(3);
+//        Point2D positionOfVehicleFront = new Point2D.Double(
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+//        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+//                vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+
+
+//        // West Road
+//        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanes().get(7);
+//        Point2D positionOfVehicleFront = new Point2D.Double(
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+//        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+//                vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+
+
+        // Draw occupied lanes
+        bgBuffer.setPaint(Color.RED);
+        tiledRimArea.findOccupiedTiles(vehicle.getShape()).forEach( tile -> {
+            bgBuffer.draw(tile.getArea());
+        });
+
+        // Draw vehicle
+        bgBuffer.setPaint(Color.BLACK);
+        bgBuffer.fill(vehicle.getShape());
 
 
     }

@@ -196,6 +196,30 @@ public class Road {
   }
 
   /**
+   * Get the first arc Lane in this Road.
+   *
+   * @return the first arc Lane in this Road
+   */
+  public Lane getEntryApproachLane() {
+    if(continuousLanes.isEmpty()) {
+      return null;
+    }
+    return continuousLanes.get(1);
+  }
+
+  /**
+   * Get the last arc Lane in this Road.
+   *
+   * @return the last arc Lane in this Road
+   */
+  public Lane getExitApproachLane() {
+    if(continuousLanes.isEmpty()) {
+      return null;
+    }
+    return continuousLanes.get(continuousLanes.size() - 2);
+  }
+
+  /**
    * Get the Road that follows this Road in the opposite direction.
    *
    * @return the Road that follows this Road in the opposite direction

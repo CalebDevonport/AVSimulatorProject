@@ -10,13 +10,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class RoadBasedIntersectionTests {
-    private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     private static final double[] ROUNDABOUT_DIAMETER = {30.0, 35.0, 40.0, 45.0};
     private static final double ENTRANCE_EXIT_RADIUS =  20.0;
     private static final double LANE_WIDTH =  3.014;
     private static final double LANE_SPEED_LIMIT =  31.0686;
     private static final double ROUNDABOUT_SPEED_LIMIT =  21.748;
-    private static final double DELTA = 0.5e-2; // necessary for assertEquals for doubles
 
 
 

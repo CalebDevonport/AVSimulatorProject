@@ -4,6 +4,7 @@ import aim4.config.Debug;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.gui.Viewer;
+import aim4.gui.screen.Canvas;
 import aim4.gui.viewer.AIMSimViewer;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.RequestHandler.TrafficSignalRequestHandler;

@@ -5,11 +5,14 @@ import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.rim.RimIntersectionMap;
+import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.aim.AIMBasicAutoVehicle;
 
 import javax.imageio.ImageIO;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -76,9 +79,21 @@ public class RimMapTestApplet extends Applet implements Runnable{
             drawRoad(bgBuffer, road, asphaltTexture);
         }
 
-        // Draw the roads
+        // Draw vehicles
+        int i = 1;
         for (Road road : map.getRoads()) {
-            drawRoadAsLineLanes(bgBuffer, road, asphaltTexture);
+            float hue = i/15f;
+            bgBuffer.setPaint(Color.getHSBColor(hue, 1.0f,0.8f));
+            for (int index = 1; index <= 7; index++) {
+                ArcSegmentLane vehicleLane = (ArcSegmentLane)road.getContinuousLanes().get(index);
+                Point2D positionOfVehicleFront = new Point2D.Double(
+                        vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                        vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+                AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+                        vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+                bgBuffer.fill(vehicle.getShape());
+            }
+            i++;
         }
     }
 

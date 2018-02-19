@@ -129,9 +129,9 @@ public class RimConnection implements RoadConnection {
         // Calculate entry and approach points
         for(Road road : roads) {
             // The entry points will always be on the first Approach - Enter Arc Lane of a Road
-            establishAsEntryAndApproachPoint(road, road.getContinuousLanes().get(1));
+            establishAsEntryAndApproachPoint(road, road.getEntryApproachLane());
             // The exit points will always be on the last Approach - Enter Arc Lane of a Road
-            establishAsExitAndApproachPoint(road, road.getContinuousLanes().get(7));
+            establishAsExitAndApproachPoint(road, road.getExitApproachLane());
         }
         calcWayPoints();
         calcApproachWayPoints();

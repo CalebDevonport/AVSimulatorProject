@@ -3,9 +3,12 @@ package aim4.gui.viewer;
 import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.gui.*;
-import aim4.gui.screen.aim.Canvas;
+import aim4.gui.StatusPanelContainer;
+import aim4.gui.Viewer;
+import aim4.gui.ViewerCardType;
+import aim4.gui.ViewerDebugView;
 import aim4.gui.frame.VehicleInfoFrame;
+import aim4.gui.screen.Canvas;
 import aim4.gui.screen.SimScreen;
 import aim4.gui.screen.StatScreen;
 import aim4.gui.setuppanel.SimSetupPanel;
@@ -16,7 +19,7 @@ import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseListener;
 
 /**
  * Created by Callum on 09/11/2016.

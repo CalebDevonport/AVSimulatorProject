@@ -459,8 +459,7 @@ public class ArcSegmentLane extends AbstractLane {
         // If angle is negative then start drawing the shape by appending the right border and then the left border.
         if (angle < 0){
             // Move to left border start
-            result.moveTo((float) (leftBorder.getStartPoint().getX()),
-                    (float) (leftBorder.getStartPoint().getY()));
+            result.moveTo(leftBorder.getStartPoint().getX(),leftBorder.getStartPoint().getY());
             // Add a line to right border start
             result.lineTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
             // Append the right border arc
@@ -477,8 +476,7 @@ public class ArcSegmentLane extends AbstractLane {
         // If angle is positive then start drawing the shape by appending the left border and then the right border.
         else {
             // Move to right border start
-            result.moveTo((float) (rightBorder.getStartPoint().getX()),
-                    (float) (rightBorder.getStartPoint().getY()));
+            result.moveTo(rightBorder.getStartPoint().getX(), rightBorder.getStartPoint().getY());
             // Add a line to left border start
             result.lineTo(leftBorder.getStartPoint().getX(), leftBorder.getStartPoint().getY());
             // Append the left border arc
