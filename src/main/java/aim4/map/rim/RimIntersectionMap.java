@@ -127,7 +127,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     // CLASS CONSTRUCTORS
     /////////////////////////////////
 
-    //todo: given Breath of vehicle, roundabout width, diameter roundabout and radius of entrance/exit circles
+    //todo: For each road have only one segment lane for inside roundabout c1-c4
 
     /**
      * Create a grid map.
@@ -174,7 +174,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
 
         // Create roundabout path. Detailed map available here: http..
         // Calculate roundabout width (should be bigger than lane width)
-        double roundaboutWidth = 1.2 * laneWidth;
+        double roundaboutWidth = 1.5 * laneWidth;
         // Set the lane width to be same size as roundabout width. Should not affect the results
         //todo: add distance between roads to be able to use lane width different than roundabout width
         laneWidth = roundaboutWidth;
