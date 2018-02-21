@@ -64,7 +64,7 @@ public class ReservationGrid extends ReservationArray{
     /**
      * The granularity of the map.
      */
-    private final int granularity;
+    private final double granularity;
 
     /**
      * The time step
@@ -80,8 +80,8 @@ public class ReservationGrid extends ReservationArray{
      * @param granularity  the granularity of the map
      * @param gridTimeStep  the time step.
      */
-    public ReservationGrid(int granularity, double gridTimeStep) {
-        super(2 * granularity);
+    public ReservationGrid(double granularity, double gridTimeStep) {
+        super(2 * (int) granularity);
         this.granularity = granularity;
         this.gridTimeStep = gridTimeStep;
     }
@@ -120,9 +120,7 @@ public class ReservationGrid extends ReservationArray{
      *
      * @return the granularity of the map
      */
-    public int getGranularity() {
-        return granularity;
-    }
+    public double getGranularity() { return granularity; }
 
     /**
      * Get the time step.
