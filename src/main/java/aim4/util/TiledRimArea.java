@@ -68,7 +68,7 @@ public class TiledRimArea {
     /** The maximal circle of the intersection. */
     private final Ellipse2D maximalCircle;
     /** The factor by which the circle is divided. */
-    private final int granularity;
+    private final double granularity;
     /** A mapping from id to tiles */
     private final ArrayList<Tile> idToTiles;
     /** The number of tiles */
@@ -85,12 +85,12 @@ public class TiledRimArea {
      * @param maximalCircle     the maximal circle of the intersection
      * @param granularity       the factor by which the tiles are divided
      */
-    public TiledRimArea(Ellipse2D minimalCircle, Ellipse2D maximalCircle, int granularity) {
+    public TiledRimArea(Ellipse2D minimalCircle, Ellipse2D maximalCircle, double granularity) {
         this.minimalCircle = minimalCircle;
         this.maximalCircle = maximalCircle;
         this.granularity = granularity;
-        numberOfTiles = granularity * 2;
-        idToTiles = new ArrayList<Tile>(granularity * 2);
+        numberOfTiles = (int) granularity * 2;
+        idToTiles = new ArrayList<Tile>((int) granularity * 2);
         createTiles();
 
     }
