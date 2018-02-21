@@ -1,6 +1,7 @@
 package aim4.im.rim;
 
 import aim4.config.Constants;
+import aim4.config.Debug;
 import aim4.map.Road;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
@@ -17,23 +18,6 @@ import java.util.*;
  * An intersection that is defined by the intersection of a set of roads.
  */
 public class RoadBasedIntersection implements Intersection{
-    /////////////////////////////////
-    // CONSTANTS
-    /////////////////////////////////
-
-    /**
-     * The distance outside of the strict intersection that the
-     * IntersectionManager will control, in meters. {@value} meters.
-     * This gives room for things like crosswalks.
-     */
-    public static final double EXPANSION_DISTANCE = 4; // meters
-
-    /**
-     * A small increase in size of the area such that the simulator can
-     * determine whether a vehicle is close enough to the intersection.
-     */
-    private static final double AREA_PLUS_OFFSET = 0.000001;
-
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -176,8 +160,8 @@ public class RoadBasedIntersection implements Intersection{
         // Calculate the maximal circular region
         getMaximalCircle = findMaximalCircle(centroid, roads);
 
-        calcEntryRoads(roads);
-        calcExitRoads(roads);
+        calcEntryRoads();
+        calcExitRoads();
     }
 
     /////////////////////////////////
@@ -228,44 +212,44 @@ public class RoadBasedIntersection implements Intersection{
 
         //Establish entry and approach entry points. This will correspond to first arc lane of every road
         for (Road road : roads){
-            ArcSegmentLane approachEntryLane = (ArcSegmentLane) road.getContinuousLanes().get(1);
+            ArcSegmentLane entryApproachLane = (ArcSegmentLane) road.getEntryApproachLane();
 
             // Approach entry point
-            this.approachEntryPoints.put(approachEntryLane,
-                    new WayPoint(approachEntryLane.getStartPoint()));
+            this.approachEntryPoints.put(entryApproachLane,
+                    new WayPoint(entryApproachLane.getStartPoint()));
 
             // Approach heading corresponds to heading of first Line Lane of the respective arc Lane
-            this.approachEntryHeadings.put(approachEntryLane,
-                    approachEntryLane.getArcLaneDecomposition().get(0).getInitialHeading());
+            this.approachEntryHeadings.put(entryApproachLane,
+                    entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
 
             // Entry point
-            this.entryPoints.put(approachEntryLane,
-                    new WayPoint(approachEntryLane.getEndPoint()));
+            this.entryPoints.put(entryApproachLane,
+                    new WayPoint(entryApproachLane.getEndPoint()));
 
             // Entry heading corresponds to heading of last Line Lane of the respective arc Lane
-            this.entryHeadings.put(approachEntryLane,
-                    approachEntryLane.getArcLaneDecomposition().get(approachEntryLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+            this.entryHeadings.put(entryApproachLane,
+                    entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
         }
 
         //Establish exit and approach exit points. This will correspond to last arc lane of every road
         for (Road road : roads){
-            ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane();
+            ArcSegmentLane exitApproachLane = (ArcSegmentLane) road.getExitApproachLane();
 
             // Approach exit point
-            this.approachExitPoints.put(approachExitLane,
-                    new WayPoint(approachExitLane.getEndPoint()));
+            this.approachExitPoints.put(exitApproachLane,
+                    new WayPoint(exitApproachLane.getEndPoint()));
 
             // Approach heading corresponds to heading of last Line Lane of the respective arc Lane
-            this.approachExitHeadings.put(approachExitLane,
-                    approachExitLane.getArcLaneDecomposition().get(approachExitLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+            this.approachExitHeadings.put(exitApproachLane,
+                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
 
             // Exit point
-            this.exitPoints.put(approachExitLane,
-                    new WayPoint(approachExitLane.getStartPoint()));
+            this.exitPoints.put(exitApproachLane,
+                    new WayPoint(exitApproachLane.getStartPoint()));
 
             // Exit heading corresponds to heading of first Line Lane of the respective arc Lane
-            this.exitHeadings.put(approachExitLane,
-                    approachExitLane.getArcLaneDecomposition().get(0).getInitialHeading());
+            this.exitHeadings.put(exitApproachLane,
+                    exitApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
         }
     }
 
@@ -338,12 +322,20 @@ public class RoadBasedIntersection implements Intersection{
     /**
      * Create the entry roads.
      */
-    private void calcEntryRoads(List<Road> roads) {
-        entryRoads.addAll(roads);
+    private void calcEntryRoads() {
+        for(Lane lane : getEntryLanes()) {
+            if (!entryRoads.contains(Debug.currentMap.getRoad(lane))) {
+                entryRoads.add(Debug.currentMap.getRoad(lane));
+            }
+        }
     }
 
-    private void calcExitRoads(List<Road> roads) {
-        exitRoads.addAll(roads);
+    private void calcExitRoads() {
+        for(Lane lane : getExitLanes()) {
+            if (!exitRoads.contains(Debug.currentMap.getRoad(lane))) {
+                exitRoads.add(Debug.currentMap.getRoad(lane));
+            }
+        }
     }
 
     /////////////////////////////////
@@ -603,19 +595,8 @@ public class RoadBasedIntersection implements Intersection{
      */
     @Override
     public Constants.TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane) {
-        Road currentRoad = new Road();
-        Road departureRoad = new Road();;
-        for (Road road : roads){
-            if (road.getContinuousLanes().contains(currentLane))
-                currentRoad = road;
-        }
-        for (Road road : roads){
-            if (road.getContinuousLanes().contains(departureLane))
-                departureRoad = road;
-        }
-        assert currentRoad.getName() != null;
-        assert departureRoad.getName() != null;
-
+        Road currentRoad = Debug.currentMap.getRoad(currentLane);
+        Road departureRoad = Debug.currentMap.getRoad(departureLane);
         if(departureRoad == currentRoad) {
             return Constants.TurnDirection.STRAIGHT;
         } else if(departureRoad == currentRoad.getDual()) {
