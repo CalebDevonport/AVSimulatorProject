@@ -101,7 +101,7 @@ public class RimIntersectionMapTests {
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3);
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getNextLane() == northArc3;
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0);
 
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getPrevLane() == northArc2;
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1);
@@ -110,7 +110,7 @@ public class RimIntersectionMapTests {
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2).getPrevLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1);
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3);
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3).getPrevLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(2);
-        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3).getNextLane() == northArc4;
+        assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(3).getNextLane() == ((ArcSegmentLane) northArc4).getArcLaneDecomposition().get(0);
 
         assertEquals(northLine1.getEndPoint().getX(),northArc2.getStartPoint().getX(), DELTA);
         assertEquals(northLine1.getEndPoint().getY(),northArc2.getStartPoint().getY(), DELTA);

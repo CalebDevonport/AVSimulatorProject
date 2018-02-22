@@ -116,9 +116,13 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     private Registry<IntersectionManager> imRegistry =
             new ArrayListRegistry<IntersectionManager>();
     /**
-     * A mapping form lanes to roads they belong
+     * A mapping from lanes to roads they belong
      */
     private Map<Lane, Road> laneToRoad = new HashMap<Lane, Road>();
+    /**
+     * A mapping from all lanes (including line lanes decomposition) to roads they belong
+     */
+    private Map<Lane, Road> laneDecompositionToRoad = new HashMap<Lane, Road>();
 
     /** The RIM connection */
     private List<RimConnection> rimConnections = new ArrayList<RimConnection>();
@@ -221,6 +225,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneNorth1.setId(laneRegistry.register(lineLaneNorth1));
         right.addTheUpMostLane(lineLaneNorth1);
         laneToRoad.put(lineLaneNorth1, right);
+        laneDecompositionToRoad.put(lineLaneNorth1, right);
 
         // Second arc Lane approaching the roundabout B1-E1
         Arc2D arcNorth2 = new Arc2D.Double();
@@ -231,6 +236,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth2.setId(laneRegistry.register(arcLaneNorth2));
         right.addTheUpMostLane(arcLaneNorth2);
         laneToRoad.put(arcLaneNorth2, right);
+        arcLaneNorth2.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Third arc Lane entering roundabout E1-C1
         Arc2D arcNorth3 = new Arc2D.Double();
@@ -241,6 +249,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth3.setId(laneRegistry.register(arcLaneNorth3));
         right.addTheUpMostLane(arcLaneNorth3);
         laneToRoad.put(arcLaneNorth3, right);
+        arcLaneNorth3.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Fourth arc Lane inside roundabout C1-C6
         Arc2D arcNorth4 = new Arc2D.Double();
@@ -251,6 +262,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth4.setId(laneRegistry.register(arcLaneNorth4));
         right.addTheUpMostLane(arcLaneNorth4);
         laneToRoad.put(arcLaneNorth4, right);
+        arcLaneNorth4.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Fifth arc Lane inside roundabout C6-C5
         Arc2D arcNorth5 = new Arc2D.Double();
@@ -261,6 +275,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth5.setId(laneRegistry.register(arcLaneNorth5));
         right.addTheUpMostLane(arcLaneNorth5);
         laneToRoad.put(arcLaneNorth5, right);
+        arcLaneNorth5.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Sixth arc Lane inside roundabout C5-C4
         Arc2D arcNorth6 = new Arc2D.Double();
@@ -271,6 +288,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth6.setId(laneRegistry.register(arcLaneNorth6));
         right.addTheUpMostLane(arcLaneNorth6);
         laneToRoad.put(arcLaneNorth6, right);
+        arcLaneNorth6.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Seventh arc Lane exiting roundabout C4-E4
         Arc2D arcNorth7 = new Arc2D.Double();
@@ -281,6 +301,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth7.setId(laneRegistry.register(arcLaneNorth7));
         right.addTheUpMostLane(arcLaneNorth7);
         laneToRoad.put(arcLaneNorth7, right);
+        arcLaneNorth7.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Eight arc Lane exiting on approach the roundabout E4-B4
         Arc2D arcNorth8 = new Arc2D.Double();
@@ -291,6 +314,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneNorth8.setId(laneRegistry.register(arcLaneNorth8));
         right.addTheUpMostLane(arcLaneNorth8);
         laneToRoad.put(arcLaneNorth8, right);
+        arcLaneNorth8.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, right);
+        });
 
         // Ninth line Lane exiting roundabout B4-A4
         LineSegmentLane lineLaneNorth9 = new LineSegmentLane(
@@ -304,6 +330,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneNorth9.setId(laneRegistry.register(lineLaneNorth9));
         right.addTheUpMostLane(lineLaneNorth9);
         laneToRoad.put(lineLaneNorth9, right);
+        laneDecompositionToRoad.put(lineLaneNorth9, right);
 
         // Set continuous lanes for all arc lanes
         arcLaneNorth2.setContinuousLanes();
@@ -350,6 +377,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneSouth1.setId(laneRegistry.register(lineLaneSouth1));
         left.addTheUpMostLane(lineLaneSouth1);
         laneToRoad.put(lineLaneSouth1, left);
+        laneDecompositionToRoad.put(lineLaneSouth1, left);
 
         // Second arc Lane approaching roundabout B3-E3
         Arc2D arcSouth2 = new Arc2D.Double();
@@ -360,6 +388,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth2.setId(laneRegistry.register(arcLaneSouth2));
         left.addTheUpMostLane(arcLaneSouth2);
         laneToRoad.put(arcLaneSouth2, left);
+        arcLaneSouth2.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Third arc Lane entering roundabout E3-C3
         Arc2D arcSouth3 = new Arc2D.Double();
@@ -370,6 +401,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth3.setId(laneRegistry.register(arcLaneSouth3));
         left.addTheUpMostLane(arcLaneSouth3);
         laneToRoad.put(arcLaneSouth3, left);
+        arcLaneSouth3.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Fourth arc Lane inside roundabout C3-C8
         Arc2D arcSouth4 = new Arc2D.Double();
@@ -380,6 +414,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth4.setId(laneRegistry.register(arcLaneSouth4));
         left.addTheUpMostLane(arcLaneSouth4);
         laneToRoad.put(arcLaneSouth4, left);
+        arcLaneSouth4.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Fifth arc Lane inside roundabout C8-C7
         Arc2D arcSouth5 = new Arc2D.Double();
@@ -390,6 +427,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth5.setId(laneRegistry.register(arcLaneSouth5));
         left.addTheUpMostLane(arcLaneSouth5);
         laneToRoad.put(arcLaneSouth5, left);
+        arcLaneSouth5.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Sixth arc Lane inside roundabout C7-C2
         Arc2D arcSouth6 = new Arc2D.Double();
@@ -400,6 +440,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth6.setId(laneRegistry.register(arcLaneSouth6));
         left.addTheUpMostLane(arcLaneSouth6);
         laneToRoad.put(arcLaneSouth6, left);
+        arcLaneSouth6.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Seventh arc Lane exiting roundabout C2-E2
         Arc2D arcSouth7 = new Arc2D.Double();
@@ -410,6 +453,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth7.setId(laneRegistry.register(arcLaneSouth7));
         left.addTheUpMostLane(arcLaneSouth7);
         laneToRoad.put(arcLaneSouth7, left);
+        arcLaneSouth7.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Eight arc Lane exiting on approach the roundabout E2-B2
         Arc2D arcSouth8 = new Arc2D.Double();
@@ -420,6 +466,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneSouth8.setId(laneRegistry.register(arcLaneSouth8));
         left.addTheUpMostLane(arcLaneSouth8);
         laneToRoad.put(arcLaneSouth8, left);
+        arcLaneSouth8.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, left);
+        });
 
         // Seventh line Lane outside roundabout B2-A2
         LineSegmentLane lineLaneSouth9 = new LineSegmentLane(
@@ -433,6 +482,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneSouth9.setId(laneRegistry.register(lineLaneSouth9));
         left.addTheUpMostLane(lineLaneSouth9);
         laneToRoad.put(lineLaneSouth9, left);
+        laneDecompositionToRoad.put(lineLaneSouth9, left);
 
         // Set continuous lanes for all arc lanes
         arcLaneSouth2.setContinuousLanes();
@@ -483,6 +533,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneEast1.setId(laneRegistry.register(lineLaneEast1));
         lower.addTheUpMostLane(lineLaneEast1);
         laneToRoad.put(lineLaneEast1, lower);
+        laneDecompositionToRoad.put(lineLaneEast1, lower);
 
         // Second arc Lane approaching roundabout B7-E7
         Arc2D arcEast2 = new Arc2D.Double();
@@ -493,6 +544,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast2.setId(laneRegistry.register(arcLaneEast2));
         lower.addTheUpMostLane(arcLaneEast2);
         laneToRoad.put(arcLaneEast2, lower);
+        arcLaneEast2.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Third arc Lane entering roundabout E7-C7
         Arc2D arcEast3 = new Arc2D.Double();
@@ -503,6 +557,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast3.setId(laneRegistry.register(arcLaneEast3));
         lower.addTheUpMostLane(arcLaneEast3);
         laneToRoad.put(arcLaneEast3, lower);
+        arcLaneEast3.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Fourth arc Lane inside roundabout C7-C2
         Arc2D arcEast4 = new Arc2D.Double();
@@ -513,6 +570,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast4.setId(laneRegistry.register(arcLaneEast4));
         lower.addTheUpMostLane(arcLaneEast4);
         laneToRoad.put(arcLaneEast4, lower);
+        arcLaneEast4.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Fifth arc Lane inside roundabout C2-C1
         Arc2D arcEast5 = new Arc2D.Double();
@@ -523,6 +583,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast5.setId(laneRegistry.register(arcLaneEast5));
         lower.addTheUpMostLane(arcLaneEast5);
         laneToRoad.put(arcLaneEast5, lower);
+        arcLaneEast5.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Sixth arc Lane inside roundabout C1-C6
         Arc2D arcEast6 = new Arc2D.Double();
@@ -533,6 +596,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast6.setId(laneRegistry.register(arcLaneEast6));
         lower.addTheUpMostLane(arcLaneEast6);
         laneToRoad.put(arcLaneEast6, lower);
+        arcLaneEast6.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Seventh arc Lane exiting roundabout C6-E6
         Arc2D arcEast7 = new Arc2D.Double();
@@ -543,6 +609,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast7.setId(laneRegistry.register(arcLaneEast7));
         lower.addTheUpMostLane(arcLaneEast7);
         laneToRoad.put(arcLaneEast7, lower);
+        arcLaneEast7.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Eight arc Lane exiting on approach the roundabout E6-B6
         Arc2D arcEast8 = new Arc2D.Double();
@@ -553,6 +622,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneEast8.setId(laneRegistry.register(arcLaneEast8));
         lower.addTheUpMostLane(arcLaneEast8);
         laneToRoad.put(arcLaneEast8, lower);
+        arcLaneEast8.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, lower);
+        });
 
         // Ninth line Lane exiting roundabout B6-A6
         LineSegmentLane lineLaneEast9 = new LineSegmentLane(
@@ -566,6 +638,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneEast9.setId(laneRegistry.register(lineLaneEast9));
         lower.addTheUpMostLane(lineLaneEast9);
         laneToRoad.put(lineLaneEast9, lower);
+        laneDecompositionToRoad.put(lineLaneEast9, lower);
 
         // Set continuous lanes for all arc lanes
         arcLaneEast2.setContinuousLanes();
@@ -613,6 +686,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneWest1.setId(laneRegistry.register(lineLaneWest1));
         upper.addTheUpMostLane(lineLaneWest1);
         laneToRoad.put(lineLaneWest1, upper);
+        laneDecompositionToRoad.put(lineLaneWest1, upper);
 
         // Second arc Lane entering roundabout B5-E5
         Arc2D arcWest2 = new Arc2D.Double();
@@ -623,6 +697,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest2.setId(laneRegistry.register(arcLaneWest2));
         upper.addTheUpMostLane(arcLaneWest2);
         laneToRoad.put(arcLaneWest2, upper);
+        arcLaneWest2.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Third arc Lane entering roundabout E5-C5
         Arc2D arcWest3 = new Arc2D.Double();
@@ -633,6 +710,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest3.setId(laneRegistry.register(arcLaneWest3));
         upper.addTheUpMostLane(arcLaneWest3);
         laneToRoad.put(arcLaneWest3, upper);
+        arcLaneWest3.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Fourth arc Lane inside roundabout C5-C4
         Arc2D arcWest4 = new Arc2D.Double();
@@ -643,6 +723,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest4.setId(laneRegistry.register(arcLaneWest4));
         upper.addTheUpMostLane(arcLaneWest4);
         laneToRoad.put(arcLaneWest4, upper);
+        arcLaneWest4.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Fifth arc Lane inside roundabout C4-C3
         Arc2D arcWest5 = new Arc2D.Double();
@@ -653,6 +736,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest5.setId(laneRegistry.register(arcLaneWest5));
         upper.addTheUpMostLane(arcLaneWest5);
         laneToRoad.put(arcLaneWest5, upper);
+        arcLaneWest5.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Sixth arc Lane inside roundabout C3-C8
         Arc2D arcWest6 = new Arc2D.Double();
@@ -663,6 +749,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest6.setId(laneRegistry.register(arcLaneWest6));
         upper.addTheUpMostLane(arcLaneWest6);
         laneToRoad.put(arcLaneWest6, upper);
+        arcLaneWest6.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Seventh arc Lane exiting roundabout C8-E8
         Arc2D arcWest7 = new Arc2D.Double();
@@ -673,6 +762,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest7.setId(laneRegistry.register(arcLaneWest7));
         upper.addTheUpMostLane(arcLaneWest7);
         laneToRoad.put(arcLaneWest7, upper);
+        arcLaneWest7.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Eight arc Lane exiting roundabout E8-B8
         Arc2D arcWest8 = new Arc2D.Double();
@@ -683,6 +775,9 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         arcLaneWest8.setId(laneRegistry.register(arcLaneWest8));
         upper.addTheUpMostLane(arcLaneWest8);
         laneToRoad.put(arcLaneWest8, upper);
+        arcLaneWest8.getArcLaneDecomposition().forEach(lineDecomposition -> {
+            laneDecompositionToRoad.put(lineDecomposition, upper);
+        });
 
         // Ninth line Lane outside roundabout B8-A8
         LineSegmentLane lineLaneWest9 = new LineSegmentLane(
@@ -696,6 +791,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         lineLaneWest9.setId(laneRegistry.register(lineLaneWest9));
         upper.addTheUpMostLane(lineLaneWest9);
         laneToRoad.put(lineLaneWest9, upper);
+        laneDecompositionToRoad.put(lineLaneWest9, upper);
 
         // Set continuous lanes for all arc lanes
         arcLaneWest2.setContinuousLanes();
@@ -730,6 +826,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         // Set up the "dual" relationship
         lower.setDual(upper);
 
+        laneDecompositionToRoad.putAll(laneToRoad);
         roads = new ArrayList<Road>(horizontalRoads);
         roads.addAll(verticalRoads);
         roads = Collections.unmodifiableList(roads);
@@ -1015,6 +1112,14 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     @Override
     public Road getRoad(Lane lane) {
         return laneToRoad.get(lane);
+    }
+
+    /**
+     * Given any lane in the intersection, get the road it belongs.
+     * Applies to all lanes (including line lanes from arc lanes).
+     */
+    public Road getRoadByDecompositionLane(Lane lane) {
+        return laneDecompositionToRoad.get(lane);
     }
 
     /**
