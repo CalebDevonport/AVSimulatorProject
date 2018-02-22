@@ -208,6 +208,18 @@ public class Road {
   }
 
   /**
+   * Get the second arc Lane in this Road.
+   *
+   * @return the first arc Lane in this Road
+   */
+  public Lane getEntryMergingLane() {
+    if(continuousLanes.isEmpty()) {
+      return null;
+    }
+    return continuousLanes.get(2);
+  }
+
+  /**
    * Get the last arc Lane in this Road.
    *
    * @return the last arc Lane in this Road
@@ -217,6 +229,18 @@ public class Road {
       return null;
     }
     return continuousLanes.get(continuousLanes.size() - 2);
+  }
+
+  /**
+   * Get the previous last arc Lane in this Road.
+   *
+   * @return the previous last arc Lane in this Road
+   */
+  public Lane getExitMergingLane() {
+    if(continuousLanes.isEmpty()) {
+      return null;
+    }
+    return continuousLanes.get(continuousLanes.size() - 3);
   }
 
   /**
