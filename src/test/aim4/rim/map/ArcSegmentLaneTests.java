@@ -139,7 +139,7 @@ public class ArcSegmentLaneTests {
         assertEquals(lane.getArcLaneDecomposition().size(), 4);
         assert lane.getArcLaneDecomposition().get(0).getPrevLane() == previousLane;
         assert lane.getArcLaneDecomposition().get(0).getNextLane() == lane.getArcLaneDecomposition().get(1);
-        assert lane.getArcLaneDecomposition().get(3).getNextLane() == nextLane;
+        assert lane.getArcLaneDecomposition().get(3).getNextLane() == nextLane.getArcLaneDecomposition().get(0);
         assert lane.getArcLaneDecomposition().get(3).getPrevLane() == lane.getArcLaneDecomposition().get(2);
         for (int index = 1; index <= 2; index ++){
             assert lane.getArcLaneDecomposition().get(index).getPrevLane() == lane.getArcLaneDecomposition().get(index-1);
@@ -163,7 +163,7 @@ public class ArcSegmentLaneTests {
         assertFalse(lane.getArcLaneDecomposition().isEmpty());
         assertEquals(lane.getArcLaneDecomposition().size(), 1);
         assert lane.getArcLaneDecomposition().get(0).getPrevLane() == previousLane;
-        assert lane.getArcLaneDecomposition().get(0).getNextLane() == nextLane;
+        assert lane.getArcLaneDecomposition().get(0).getNextLane() == nextLane.getArcLaneDecomposition().get(0);
     }
 
     @Test

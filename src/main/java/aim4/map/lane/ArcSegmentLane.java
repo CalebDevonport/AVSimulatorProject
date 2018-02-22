@@ -538,7 +538,17 @@ public class ArcSegmentLane extends AbstractLane {
                     arcLaneDecomposition.get(index).setNextLane(arcLaneDecomposition.get(index + 1));
                     // Otherwise, the next lane will be the next lane of the arc lane
                 } else {
-                    arcLaneDecomposition.get(index).setNextLane(this.getNextLane());
+                    // Possibly next lane to not exits
+                    Lane nextLane = null;
+                    // If it does and it's an arc
+                    if (this.getNextLane() instanceof ArcSegmentLane) {
+                        // Then the next lane will be the first line lane of that lane
+                        nextLane = ((ArcSegmentLane) this.getNextLane()).getArcLaneDecomposition().get(0);
+                    } // Or if it's a line lane, then just set it
+                    else if (this.getNextLane() instanceof LineSegmentLane){
+                        nextLane = this.getNextLane();
+                    }
+                    arcLaneDecomposition.get(index).setNextLane(nextLane);
                 }
             // If not an edge line lane, then set previous lane and next lane according to the decomposition lanes
             } else if (index < arcLaneDecomposition.size() - 1) {
@@ -547,7 +557,17 @@ public class ArcSegmentLane extends AbstractLane {
             // Else reached the last line lane from decomposition. The next lane will be the next lane of the arc lane.
             } else {
                 arcLaneDecomposition.get(index).setPrevLane(arcLaneDecomposition.get(index - 1));
-                arcLaneDecomposition.get(index).setNextLane(this.getNextLane());
+                // Possibly next lane to not exits
+                Lane nextLane = null;
+                // If it does and it's an arc
+                if (this.getNextLane() instanceof ArcSegmentLane) {
+                    // Then the next lane will be the first line lane of that lane
+                    nextLane = ((ArcSegmentLane) this.getNextLane()).getArcLaneDecomposition().get(0);
+                } // Or if it's a line lane, then just set it
+                else if (this.getNextLane() instanceof LineSegmentLane){
+                    nextLane = this.getNextLane();
+                }
+                arcLaneDecomposition.get(index).setNextLane(nextLane);
             }
         }
     }
