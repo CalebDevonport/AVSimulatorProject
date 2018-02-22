@@ -190,7 +190,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         double b = Math.sqrt(Math.pow(roundaboutRadius + entranceExitRadius, 2) - Math.pow(entranceExitRadius + laneWidth / 2, 2));
         double c = (roundaboutRadius / (roundaboutRadius + entranceExitRadius)) * a;
         double d = (roundaboutRadius / (roundaboutRadius + entranceExitRadius)) * b;
-        double e = b - d - laneWidth;
+        double e = b - d - laneWidth - 0.5; // 0.5 buffer needed as entry points would result in front of vehicle getting inside the intersection
         double alpha = Math.toDegrees(Math.asin(a / (entranceExitRadius + roundaboutRadius)));
         double beta = Math.toDegrees(GeomMath.HALF_PI_90_DEGREES) - 2 * alpha;
         double theta = Math.toDegrees(Math.asin(e / (entranceExitRadius + laneWidth / 2)));
