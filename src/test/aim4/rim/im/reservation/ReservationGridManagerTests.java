@@ -63,7 +63,7 @@ public class ReservationGridManagerTests {
         Lane departureLane = getWestRoad().getExitApproachLane();
 
         // Set vehicle's driver query
-        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT);
+        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
 
         // Set the manager to take the query
         ReservationGridManager reservationGridManager = new ReservationGridManager(
@@ -138,7 +138,7 @@ public class ReservationGridManagerTests {
         Lane departureLane = getWestRoad().getExitApproachLane();
 
         // Set vehicle's driver query
-        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, true, 3.04); // velocity less than roundabout ideal
+        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, true, 3.04, ARRIVAL_TIME); // velocity less than roundabout ideal
 
         // Set the manager to take the query
         ReservationGridManager reservationGridManager = new ReservationGridManager(
@@ -213,7 +213,7 @@ public class ReservationGridManagerTests {
         Lane departureLane = getEastRoad().getExitApproachLane();
 
         // Set vehicle's driver query
-        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT);
+        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
 
         // Set the manager to take the query
         ReservationGridManager reservationGridManager = new ReservationGridManager(
@@ -279,7 +279,7 @@ public class ReservationGridManagerTests {
         Lane departureLane = getWestRoad().getExitApproachLane();
 
         // Set vehicle's driver query
-        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, true, 8.04); // velocity more than roundabout ideal
+        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, true, 8.04, ARRIVAL_TIME); // velocity more than roundabout ideal
 
         // Set the manager to take the query
         ReservationGridManager reservationGridManager = new ReservationGridManager(
@@ -354,7 +354,7 @@ public class ReservationGridManagerTests {
         Lane departureLane = getNorthRoad().getExitApproachLane();
 
         // Set vehicle's driver query
-        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT);
+        Query query = getQuery(vehicleSpecForRequestMsg, arrivalLane, departureLane, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
 
         // Set the manager to take the query
         ReservationGridManager reservationGridManager = new ReservationGridManager(
@@ -396,10 +396,349 @@ public class ReservationGridManagerTests {
 
     }
 
-    private Query getQuery(VehicleSpecForRequestMsg vehicleSpecForRequestMsg, Lane arrivalLane, Lane departureLane, boolean acceleration, double arrivalVelocity) {
+    @Test
+    public void query_withTwoIntersectingTrajectoriesAndSameRoad_doesNotReturnAPlan() {
+        //arrange
+        // Create map
+        RimIntersectionMap map = getRimIntersectionMap();
+
+        // Create config
+        Config config = getConfig();
+
+        // Create intersection
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+
+        // Create tiles for intersection
+        TiledRimArea tiledRimArea = new TiledRimArea(
+                roadBasedIntersection.getMinimalCircle(),
+                roadBasedIntersection.getMaximalCircle(),
+                GRANULARITY);
+
+        // Assign the tiles times
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+
+        // Set first vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg1 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+
+        // Set second vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg2 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
+
+        // Set arrival and departure lanes of first vehicle
+        Lane arrivalLane1 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane1 = getWestRoad().getExitApproachLane();
+
+        // Set arrival and departure lanes of second vehicle
+        Lane arrivalLane2 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane2 = getWestRoad().getExitApproachLane();
+
+        // Set first vehicle's driver query
+        Query query1 = getQuery(vehicleSpecForRequestMsg1, arrivalLane1, departureLane1, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
+
+        // Set second vehicle's driver query arriving a bit later on same lane
+        Query query2 = getQuery(vehicleSpecForRequestMsg2, arrivalLane2, departureLane2, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME + 1.0);
+
+        // Set the manager to take the queries
+        ReservationGridManager reservationGridManager = new ReservationGridManager(
+                config,
+                roadBasedIntersection,
+                tiledRimArea,
+                reservationGrid
+        );
+        // First vehicle makes a query
+        Plan plan1 = reservationGridManager.query(query1);
+
+        assert plan1.getVin() == VIN; // ensure there is a plan for first vehicle
+        assert plan1.getAccelerationProfile().size() == 1; // only one acceleration profile
+
+        // Accept first reservation
+        reservationGridManager.accept(plan1);
+
+        //act
+        // Make second reservation at similar time
+        Plan plan2 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan2 == null; // as this vehicle's path intersects with previous ones
+
+    }
+
+    @Test
+    public void query_withTwoNotIntersectingTrajectoriesAndSameRoad_doesReturnTwoPlans() {
+        //arrange
+        // Create map
+        RimIntersectionMap map = getRimIntersectionMap();
+
+        // Create config
+        Config config = getConfig();
+
+        // Create intersection
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+
+        // Create tiles for intersection
+        TiledRimArea tiledRimArea = new TiledRimArea(
+                roadBasedIntersection.getMinimalCircle(),
+                roadBasedIntersection.getMaximalCircle(),
+                GRANULARITY);
+
+        // Assign the tiles times
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+
+        // Set first vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg1 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+
+        // Set second vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg2 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
+
+        // Set arrival and departure lanes of first vehicle
+        Lane arrivalLane1 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane1 = getWestRoad().getExitApproachLane();
+
+        // Set arrival and departure lanes of second vehicle
+        Lane arrivalLane2 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane2 = getWestRoad().getExitApproachLane();
+
+        // Set first vehicle's driver query
+        Query query1 = getQuery(vehicleSpecForRequestMsg1, arrivalLane1, departureLane1, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
+
+        // Set second vehicle's driver query arriving a bit later on same lane
+        Query query2 = getQuery(vehicleSpecForRequestMsg2, arrivalLane2, departureLane2, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME + 3.0);
+
+        // Set the manager to take the queries
+        ReservationGridManager reservationGridManager = new ReservationGridManager(
+                config,
+                roadBasedIntersection,
+                tiledRimArea,
+                reservationGrid
+        );
+        // First vehicle makes a query
+        Plan plan1 = reservationGridManager.query(query1);
+
+        assert plan1.getVin() == VIN; // ensure there is a plan for first vehicle
+        assert plan1.getAccelerationProfile().size() == 1; // only one acceleration profile
+
+        // Accept first reservation
+        reservationGridManager.accept(plan1);
+
+        //act
+        // Make second reservation at similar time
+        Plan plan2 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan2 != null; // as this vehicle's path does not intersect with previous ones
+
+    }
+
+    @Test
+    public void query_withTwoIntersectingTrajectoriesAndDifferentRoad_doesNotReturnAPlan() {
+        //arrange
+        // Create map
+        RimIntersectionMap map = getRimIntersectionMap();
+
+        // Create config
+        Config config = getConfig();
+
+        // Create intersection
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+
+        // Create tiles for intersection
+        TiledRimArea tiledRimArea = new TiledRimArea(
+                roadBasedIntersection.getMinimalCircle(),
+                roadBasedIntersection.getMaximalCircle(),
+                GRANULARITY);
+
+        // Assign the tiles times
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+
+        // Set first vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg1 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+
+        // Set second vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg2 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
+
+        // Set arrival and departure lanes of first vehicle
+        Lane arrivalLane1 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane1 = getWestRoad().getExitApproachLane();
+
+        // Set arrival and departure lanes of second vehicle
+        Lane arrivalLane2 = getEastRoad().getEntryApproachLane();
+        Lane departureLane2 = getNorthRoad().getExitApproachLane();
+
+        // Set first vehicle's driver query
+        Query query1 = getQuery(vehicleSpecForRequestMsg1, arrivalLane1, departureLane1, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
+
+        // Set second vehicle's driver query arriving a bit later on same lane
+        Query query2 = getQuery(vehicleSpecForRequestMsg2, arrivalLane2, departureLane2, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME - 4.0);
+
+        // Set the manager to take the queries
+        ReservationGridManager reservationGridManager = new ReservationGridManager(
+                config,
+                roadBasedIntersection,
+                tiledRimArea,
+                reservationGrid
+        );
+        // First vehicle makes a query
+        Plan plan1 = reservationGridManager.query(query1);
+
+        assert plan1.getVin() == VIN; // ensure there is a plan for first vehicle
+        assert plan1.getAccelerationProfile().size() == 1; // only one acceleration profile
+
+        // Accept first reservation
+        reservationGridManager.accept(plan1);
+
+        //act
+        // Make second reservation at similar time
+        Plan plan2 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan2 == null; // as this vehicle's path intersects with previous ones
+    }
+
+    @Test
+    public void query_withTwoNotIntersectingTrajectoriesAndDifferentRoad_doesReturnTwoPlans() {
+        //arrange
+        // Create map
+        RimIntersectionMap map = getRimIntersectionMap();
+
+        // Create config
+        Config config = getConfig();
+
+        // Create intersection
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+
+        // Create tiles for intersection
+        TiledRimArea tiledRimArea = new TiledRimArea(
+                roadBasedIntersection.getMinimalCircle(),
+                roadBasedIntersection.getMaximalCircle(),
+                GRANULARITY);
+
+        // Assign the tiles times
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+
+        // Set first vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg1 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+
+        // Set second vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg2 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
+
+        // Set arrival and departure lanes of first vehicle
+        Lane arrivalLane1 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane1 = getWestRoad().getExitApproachLane();
+
+        // Set arrival and departure lanes of second vehicle
+        Lane arrivalLane2 = getEastRoad().getEntryApproachLane();
+        Lane departureLane2 = getNorthRoad().getExitApproachLane();
+
+        // Set first vehicle's driver query
+        Query query1 = getQuery(vehicleSpecForRequestMsg1, arrivalLane1, departureLane1, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
+
+        // Set second vehicle's driver query arriving a bit later on same lane
+        Query query2 = getQuery(vehicleSpecForRequestMsg2, arrivalLane2, departureLane2, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME + 1.0);
+
+        // Set the manager to take the queries
+        ReservationGridManager reservationGridManager = new ReservationGridManager(
+                config,
+                roadBasedIntersection,
+                tiledRimArea,
+                reservationGrid
+        );
+        // First vehicle makes a query
+        Plan plan1 = reservationGridManager.query(query1);
+
+        assert plan1.getVin() == VIN; // ensure there is a plan for first vehicle
+        assert plan1.getAccelerationProfile().size() == 1; // only one acceleration profile
+
+        // Accept first reservation
+        reservationGridManager.accept(plan1);
+
+        //act
+        // Make second reservation at similar time
+        Plan plan2 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan2 != null; // as this vehicle's path does not intersect with previous ones
+
+    }
+
+    @Test
+    public void query_withTwoIntersectingTrajectoriesAndSameRoadAndOneVehicleCancels_doesReturnAPlan() {
+        //arrange
+        // Create map
+        RimIntersectionMap map = getRimIntersectionMap();
+
+        // Create config
+        Config config = getConfig();
+
+        // Create intersection
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+
+        // Create tiles for intersection
+        TiledRimArea tiledRimArea = new TiledRimArea(
+                roadBasedIntersection.getMinimalCircle(),
+                roadBasedIntersection.getMaximalCircle(),
+                GRANULARITY);
+
+        // Assign the tiles times
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+
+        // Set first vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg1 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+
+        // Set second vehicle spec
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg2 = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
+
+        // Set arrival and departure lanes of first vehicle
+        Lane arrivalLane1 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane1 = getWestRoad().getExitApproachLane();
+
+        // Set arrival and departure lanes of second vehicle
+        Lane arrivalLane2 = getNorthRoad().getEntryApproachLane();
+        Lane departureLane2 = getWestRoad().getExitApproachLane();
+
+        // Set first vehicle's driver query
+        Query query1 = getQuery(vehicleSpecForRequestMsg1, arrivalLane1, departureLane1, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME);
+
+        // Set second vehicle's driver query arriving a bit later on same lane
+        Query query2 = getQuery(vehicleSpecForRequestMsg2, arrivalLane2, departureLane2, false, ROUNDABOUT_SPEED_LIMIT, ARRIVAL_TIME + 1.0);
+
+        // Set the manager to take the queries
+        ReservationGridManager reservationGridManager = new ReservationGridManager(
+                config,
+                roadBasedIntersection,
+                tiledRimArea,
+                reservationGrid
+        );
+        // First vehicle makes a query
+        Plan plan1 = reservationGridManager.query(query1);
+
+        assert plan1.getVin() == VIN; // ensure there is a plan for first vehicle
+        assert plan1.getAccelerationProfile().size() == 1; // only one acceleration profile
+
+        // Accept first reservation
+        reservationGridManager.accept(plan1);
+
+        //act
+        // Make second reservation at similar time
+        Plan plan2 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan2 == null; // as this vehicle's path intersects with previous ones
+
+        // First vehicle cancels it's reservation
+        reservationGridManager.cancel(plan1.getVin());
+
+        //act
+        // Make second reservation at similar time
+        Plan plan3 = reservationGridManager.query(query2);
+
+        //assert
+        assert plan3 != null; // as this vehicle's path does not intersect with previous one
+
+    }
+
+    private Query getQuery(VehicleSpecForRequestMsg vehicleSpecForRequestMsg, Lane arrivalLane, Lane departureLane, boolean acceleration, double arrivalVelocity, double arrivalTime) {
         return new Query(
                     VIN,
-                    ARRIVAL_TIME,
+                    arrivalTime,
                     arrivalVelocity, // arrival velocity
                     arrivalLane.getId(),
                     departureLane.getId(),
