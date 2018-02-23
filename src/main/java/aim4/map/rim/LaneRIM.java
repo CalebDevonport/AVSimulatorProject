@@ -1,6 +1,6 @@
 package aim4.map.rim;
 
-import aim4.im.aim.IntersectionManager;
+import aim4.im.rim.IntersectionManager;
 import aim4.map.lane.Lane;
 
 import java.awt.geom.Point2D;
