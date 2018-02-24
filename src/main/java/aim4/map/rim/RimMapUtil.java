@@ -12,7 +12,7 @@ import aim4.map.rim.destination.DestinationSelector;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.rim.RimVehicleSimModel;
+import aim4.vehicle.rim.RIMVehicleSimModel;
 import org.json.simple.JSONArray;
 
 import java.util.*;
@@ -461,7 +461,7 @@ public class RimMapUtil {
         RimMapUtil.setUniformSpawnSpecGenerator(map, trafficLevel);
 
         //Create SpawnHelper
-        Map<Integer, RimVehicleSimModel> vinToVehicles = new HashMap<Integer, RimVehicleSimModel>();
+        Map<Integer, RIMVehicleSimModel> vinToVehicles = new HashMap<Integer, RIMVehicleSimModel>();
 //        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
 //        SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 //

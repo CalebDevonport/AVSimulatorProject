@@ -6,7 +6,7 @@ import aim4.map.rim.RimIntersectionMap;
 import aim4.sim.setup.rim.enums.ProtocolType;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
-import aim4.vehicle.rim.RimVehicleSimModel;
+import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class SpawnHelper {
     private RimIntersectionMap map;
-    private Map<Integer, RimVehicleSimModel> vinToVehicles;
+    private Map<Integer, RIMVehicleSimModel> vinToVehicles;
 
-    public SpawnHelper(RimIntersectionMap map, Map<Integer, RimVehicleSimModel> vinToVehicles){
+    public SpawnHelper(RimIntersectionMap map, Map<Integer, RIMVehicleSimModel> vinToVehicles){
         this.map = map;
         this.vinToVehicles = vinToVehicles;
     }
@@ -28,14 +28,14 @@ public class SpawnHelper {
      * @param protocolType The protocol type for the given simulation
      * @return A List of the Vehicles spawned. Null if no vehicles spawned.
      */
-    public List<RimVehicleSimModel> spawnVehicles(double timeStep, ProtocolType protocolType) {
+    public List<RIMVehicleSimModel> spawnVehicles(double timeStep, ProtocolType protocolType) {
         for(RIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<RIMSpawnPoint.RIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if(!spawnSpecs.isEmpty()){
                 if(canSpawnVehicle(spawnPoint)) {
-                    List<RimVehicleSimModel> spawnedVehicles = new ArrayList<RimVehicleSimModel>();
+                    List<RIMVehicleSimModel> spawnedVehicles = new ArrayList<RIMVehicleSimModel>();
                     for(RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
-                        RimVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec, protocolType);
+                        RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec, protocolType);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
                         spawnedVehicles.add(vehicle);
@@ -57,7 +57,7 @@ public class SpawnHelper {
     private boolean canSpawnVehicle(RIMSpawnPoint spawnPoint) {
         assert spawnPoint.getNoVehicleZone() instanceof Path2D;
         Path2D noVehicleZone = (Path2D) spawnPoint.getNoVehicleZone();
-        for(RimVehicleSimModel vehicle : vinToVehicles.values()) {
+        for(RIMVehicleSimModel vehicle : vinToVehicles.values()) {
             if (noVehicleZone.intersects(vehicle.getShape().getBounds2D())) {
                 return false;
             }
@@ -71,7 +71,7 @@ public class SpawnHelper {
      * @param spawnSpec
      * @return
      */
-    private RimVehicleSimModel setupVehicle(
+    private RIMVehicleSimModel setupVehicle(
             RIMSpawnPoint spawnPoint,
             RIMSpawnPoint.RIMSpawnSpec spawnSpec,
             ProtocolType protocolType) {
@@ -101,7 +101,7 @@ public class SpawnHelper {
         return null;
     }
 
-//    private RimVehicleSimModel  makeAutoVehicle(
+//    private RIMVehicleSimModel  makeAutoVehicle(
 //            AIMSpawnPoint spawnPoint,
 //            double initVelocity, Lane lane,
 //            VehicleSpec spec,

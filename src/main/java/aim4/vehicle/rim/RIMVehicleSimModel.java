@@ -1,7 +1,6 @@
 package aim4.vehicle.rim;
 
-import aim4.msg.aim.v2i.V2IMessage;
-import aim4.vehicle.ResultsEnabledVehicle;
+import aim4.msg.rim.v2i.V2IMessage;
 import aim4.vehicle.VehicleSimModel;
 
 import java.util.Queue;
@@ -9,7 +8,7 @@ import java.util.Queue;
 /**
  * The interface of a vehicle from the viewpoint of a simulator.
  */
-public interface RimVehicleSimModel extends VehicleSimModel, ResultsEnabledVehicle {
+public interface RIMVehicleSimModel extends VehicleSimModel, aim4.vehicle.rim.ResultsEnabledVehicle {
     /////////////////////////////////
     // PUBLIC METHODS
     /////////////////////////////////

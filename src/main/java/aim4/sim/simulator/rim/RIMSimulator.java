@@ -4,7 +4,7 @@ import aim4.map.rim.RimIntersectionMap;
 import aim4.sim.Simulator;
 import aim4.sim.results.AIMResult;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
-import aim4.vehicle.rim.RimVehicleSimModel;
+import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public interface RIMSimulator extends Simulator {
      *
      * @return the set of all active vehicles in the simulation
      */
-    Set<RimVehicleSimModel> getActiveVehicles();
+    Set<RIMVehicleSimModel> getActiveVehicles();
 
     @Override
     RimIntersectionMap getMap();
