@@ -133,8 +133,8 @@ public class V2IPilot extends BasicPilot {
     // If we're not already in the departure lane
     if (driver.getCurrentLane() != rp.getDepartureLane()) {
       // If we're changing to a different Roadf
-      if (Debug.currentMap.getRoad(driver.getCurrentLane()) !=
-        Debug.currentMap.getRoad(rp.getDepartureLane())) {
+      if (Debug.currentAimMap.getRoad(driver.getCurrentLane()) !=
+        Debug.currentAimMap.getRoad(rp.getDepartureLane())) {
         // Find out how far from it we are
         double distToLane =
           rp.getDepartureLane().nearestDistance(vehicle.gaugePosition());

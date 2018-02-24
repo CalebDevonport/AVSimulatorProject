@@ -533,8 +533,8 @@ public class ReservationGridManager implements
     public Plan query(Query q) {
 
         // Position the Vehicle to be ready to start the simulation
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(q.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(q.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(q.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(q.getDepartureLaneId());
 
         // Create a test vehicle to use in the internal simulation
         AIMBasicAutoVehicle testVehicle =

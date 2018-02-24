@@ -31,9 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.im.aim.v2i.RequestHandler;
 
 import aim4.im.aim.v2i.policy.BasePolicy;
-import aim4.im.aim.v2i.policy.BasePolicyCallback;
 import aim4.im.aim.v2i.policy.BasePolicy.ProposalFilterResult;
 import aim4.im.aim.v2i.policy.BasePolicy.ReserveParam;
+import aim4.im.aim.v2i.policy.BasePolicyCallback;
 import aim4.msg.aim.i2v.Reject;
 import aim4.msg.aim.v2i.Request;
 import aim4.sim.StatCollector;
@@ -101,15 +101,16 @@ public class FCFSRequestHandler implements RequestHandler {
                                msg.getRequestId(),
                                filterResult.getReason());
     }
-
-    // try to see if reservation is possible for the remaining proposals.
-    ReserveParam reserveParam =
-      basePolicy.findReserveParam(msg, filterResult.getProposals());
-    if (reserveParam != null) {
-      basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
-    } else {
-      basePolicy.sendRejectMsg(vin, msg.getRequestId(),
-                               Reject.Reason.NO_CLEAR_PATH);
+    else {
+      // try to see if reservation is possible for the remaining proposals.
+      ReserveParam reserveParam =
+              basePolicy.findReserveParam(msg, filterResult.getProposals());
+      if (reserveParam != null) {
+        basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
+      } else {
+        basePolicy.sendRejectMsg(vin, msg.getRequestId(),
+                Reject.Reason.NO_CLEAR_PATH);
+      }
     }
   }
 

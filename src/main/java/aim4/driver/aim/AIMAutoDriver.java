@@ -36,7 +36,7 @@ import aim4.driver.Coordinator;
 import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.im.aim.IntersectionManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
@@ -63,7 +63,7 @@ public class AIMAutoDriver extends AIMDriver
   private Coordinator coordinator;
 
   /** The map */
-  private BasicIntersectionMap basicIntersectionMap;
+  private BasicAIMIntersectionMap basicAIMIntersectionMap;
 
   /**
    * The IntersectionManager with which the driver is currently interacting.
@@ -85,9 +85,9 @@ public class AIMAutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
+  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicAIMIntersectionMap basicAIMIntersectionMap) {
     this.vehicle = vehicle;
-    this.basicIntersectionMap = basicIntersectionMap;
+    this.basicAIMIntersectionMap = basicAIMIntersectionMap;
     coordinator = null;
     currentIM = null;
   }
@@ -112,7 +112,7 @@ public class AIMAutoDriver extends AIMDriver
       // TODO: need to check type of intersection
       if (im != null) {
         currentIM = im;
-        coordinator = new V2ICoordinator(vehicle, this, basicIntersectionMap);
+        coordinator = new V2ICoordinator(vehicle, this, basicAIMIntersectionMap);
       } else {
         currentIM = null;
         coordinator = new NoIntersectionCoordinator(vehicle, this);

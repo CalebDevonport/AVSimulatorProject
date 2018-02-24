@@ -36,8 +36,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalEastAndDepartureEast_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(0,0);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -58,8 +58,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalEastAndDepartureSouth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(0,3);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -80,8 +80,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalEastAndDepartureNorth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(0,2);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -102,8 +102,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalNorthAndDepartureEast_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(2,0);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -124,8 +124,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalNorthAndDepartureNorth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(2,2);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -145,8 +145,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalNorthAndDepartureWest_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(2,1);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -167,8 +167,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalWestAndDepartureWest_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(1,1);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -188,8 +188,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalWestAndDepartureNorth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(1,2);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -209,8 +209,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalWestAndDepartureSouth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(1,3);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -231,8 +231,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalSouthAndDepartureSouth_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(3,3);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -253,8 +253,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalSouthAndDepartureEast_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(3,0);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),
@@ -274,8 +274,8 @@ public class CrashTestDummyTests {
     public void act_withArrivalSouthAndDepartureWest_setsCurrentLaneAndSteering(){
         //arrange
         Query query = setupQuery(3,1);
-        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getArrivalLaneId());
-        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentMap.getLaneRegistry().get(query.getDepartureLaneId());
+        ArcSegmentLane arrivalLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getArrivalLaneId());
+        ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(query.getDepartureLaneId());
         AIMBasicAutoVehicle testVehicle =
                 createTestVehicle(query.getSpec(),
                         query.getArrivalVelocity(),

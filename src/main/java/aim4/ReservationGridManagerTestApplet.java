@@ -116,7 +116,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
 
         // Set arrival and departure lanes
         Lane arrivalLane = getNorthRoad().getEntryApproachLane();
-        Lane exitLane = getWestRoad().getExitApproachLane();
+        Lane exitLane = getNorthRoad().getExitApproachLane();
 
         // Set vehicle spec
         Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
@@ -236,19 +236,19 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
     }
 
     private Road getNorthRoad(){
-        return Debug.currentMap.getRoads().get(2);
+        return Debug.currentRimMap.getRoads().get(2);
     }
 
     private Road getEastRoad(){
-        return Debug.currentMap.getRoads().get(0);
+        return Debug.currentRimMap.getRoads().get(0);
     }
 
     private Road getSouthRoad(){
-        return Debug.currentMap.getRoads().get(3);
+        return Debug.currentRimMap.getRoads().get(3);
     }
 
     private Road getWestRoad(){
-        return Debug.currentMap.getRoads().get(1);
+        return Debug.currentRimMap.getRoads().get(1);
     }
 
     private AIMBasicAutoVehicle createTestVehicle(

@@ -30,30 +30,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim;
 
-import java.awt.geom.Area;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import aim4.config.Debug;
 import aim4.config.Constants.TurnDirection;
+import aim4.config.Debug;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.track.WayPoint;
 import aim4.util.GeomMath;
 import aim4.util.Util;
+
+import java.awt.geom.*;
+import java.util.*;
 
 
 /**
@@ -530,8 +516,8 @@ public class RoadBasedIntersection implements Intersection {
    */
   private void calcEntryRoads() {
     for(Lane lane : getEntryLanes()) {
-      if (!entryRoads.contains(Debug.currentMap.getRoad(lane))) {
-        entryRoads.add(Debug.currentMap.getRoad(lane));
+      if (!entryRoads.contains(Debug.currentAimMap.getRoad(lane))) {
+        entryRoads.add(Debug.currentAimMap.getRoad(lane));
       }
     }
   }
@@ -595,8 +581,8 @@ public class RoadBasedIntersection implements Intersection {
 
   private void calcExitRoads() {
     for(Lane lane : getExitLanes()) {
-      if (!exitRoads.contains(Debug.currentMap.getRoad(lane))) {
-        exitRoads.add(Debug.currentMap.getRoad(lane));
+      if (!exitRoads.contains(Debug.currentAimMap.getRoad(lane))) {
+        exitRoads.add(Debug.currentAimMap.getRoad(lane));
       }
     }
   }
@@ -655,8 +641,8 @@ public class RoadBasedIntersection implements Intersection {
    */
   @Override
   public TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane) {
-    Road currentRoad = Debug.currentMap.getRoad(currentLane);
-    Road departureRoad = Debug.currentMap.getRoad(departureLane);
+    Road currentRoad = Debug.currentAimMap.getRoad(currentLane);
+    Road departureRoad = Debug.currentAimMap.getRoad(departureLane);
     if(departureRoad == currentRoad) {
       return TurnDirection.STRAIGHT;
     } else if(departureRoad == currentRoad.getDual()) {

@@ -10,7 +10,7 @@ import aim4.vehicle.VehicleDriverModel;
 
 import java.awt.geom.Point2D;
 
-import static aim4.config.Debug.currentMap;
+import static aim4.config.Debug.currentRimMap;
 
 /**
  * A driver agent that only steers and changes lanes when appropriate.
@@ -129,18 +129,18 @@ public class CrashTestDummy extends BasicDriver {
             // First make sure we shouldn't transfer to the next lane
             if(remaining <= 0) {
                 // Check if needed to exit road at first disjunction
-                if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getX())
-                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getY())) {
-                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentMap)
+                if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getX())
+                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getY())) {
+                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentRimMap)
                             .getRoadByDecompositionLane(departureLane)
                             .getExitMergingLane())
                             .getArcLaneDecomposition()
                             .get(0));
                     // Check if needed to exit road at second disjunction
-                } else if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getX())
-                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getY()) &&
-                        ((RimIntersectionMap) currentMap).getRoadByDecompositionLane(getCurrentLane()).getName() != ((RimIntersectionMap) currentMap).getRoadByDecompositionLane(departureLane).getName()) {
-                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentMap)
+                } else if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getX())
+                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getY()) &&
+                        ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getName() != ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getName()) {
+                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentRimMap)
                             .getRoadByDecompositionLane(departureLane)
                             .getContinuousLanes().get(4))
                             .getArcLaneDecomposition()

@@ -41,14 +41,13 @@ import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.batch.RoadBasedReordering;
 import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpecGenerator;
-import aim4.map.destination.*;
+import aim4.map.aim.destination.*;
 import aim4.map.lane.Lane;
-import aim4.map.rim.RimMapUtil;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -66,7 +65,7 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * The utility class for GridIntersectionMap.
+ * The utility class for GridAIMIntersectionMap.
  */
 public class GridMapUtil {
 
@@ -230,7 +229,7 @@ public class GridMapUtil {
          * Create a spec generator that generates just one vehicle in the entire
          * simulation.
          */
-        public OnlyOneSpawnSpecGenerator(BasicIntersectionMap map) {
+        public OnlyOneSpawnSpecGenerator(BasicAIMIntersectionMap map) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             isDone = false;
             destinationSelector = new RandomDestinationSelector(map);
@@ -281,7 +280,7 @@ public class GridMapUtil {
                                            double spawnPeriod) {
             this.destinationRoads = new ArrayList<Road>(destinationRoads.size());
             for(Road road : destinationRoads) {
-                if (Debug.currentMap.getRoad(spawnPoint.getLane()).getDual() != road) {
+                if (Debug.currentAimMap.getRoad(spawnPoint.getLane()).getDual() != road) {
                     this.destinationRoads.add(road);
                 }
             }
@@ -457,7 +456,7 @@ public class GridMapUtil {
      * @param currentTime  the current time
      * @param config       the reservation grid manager configuration
      */
-    public static void setFCFSManagers(GridIntersectionMap layout,
+    public static void setFCFSManagers(GridAIMIntersectionMap layout,
                                        double currentTime,
                                        ReservationGridManager.Config config) {
         layout.removeAllManagers();
@@ -484,7 +483,7 @@ public class GridMapUtil {
      * @param config              the reservation grid manager configuration
      * @param processingInterval  the processing interval
      */
-    public static void setBatchManagers(GridIntersectionMap layout,
+    public static void setBatchManagers(GridAIMIntersectionMap layout,
                                         double currentTime,
                                         ReservationGridManager.Config config,
                                         double processingInterval) {
@@ -519,7 +518,7 @@ public class GridMapUtil {
      * @param yellowLightDuration  the yellow light duration
      */
     public static void setApproxSimpleTrafficLightManagers(
-            GridIntersectionMap layout,
+            GridAIMIntersectionMap layout,
             double currentTime,
             ReservationGridManager.Config config,
             double greenLightDuration,
@@ -555,7 +554,7 @@ public class GridMapUtil {
      * @param yellowLightDuration  the yellow light duration
      */
     public static void setApprox4PhasesTrafficLightManagers(
-            GridIntersectionMap layout,
+            GridAIMIntersectionMap layout,
             double currentTime,
             ReservationGridManager.Config config,
             double greenLightDuration,
@@ -590,7 +589,7 @@ public class GridMapUtil {
      *                                    traffic signals duration information
      */
     public static void setApproxNPhasesTrafficLightManagers(
-            GridIntersectionMap layout,
+            GridAIMIntersectionMap layout,
             double currentTime,
             ReservationGridManager.Config config,
             String trafficSignalPhaseFileName) {
@@ -632,7 +631,7 @@ public class GridMapUtil {
      * @param currentTime  the current time
      * @param config       the reservation grid manager configuration
      */
-    public static void setApproxStopSignManagers(GridIntersectionMap layout,
+    public static void setApproxStopSignManagers(GridAIMIntersectionMap layout,
                                                  double currentTime,
                                                  ReservationGridManager.Config config) {
         layout.removeAllManagers();
@@ -659,7 +658,7 @@ public class GridMapUtil {
      * @param map           the map
      * @param trafficLevel  the traffic level
      */
-    public static void setUniformRandomSpawnPoints(final GridIntersectionMap map, //TODO: Remove finality
+    public static void setUniformRandomSpawnPoints(final GridAIMIntersectionMap map, //TODO: Remove finality
                                                    double trafficLevel) {
         for(AIMSpawnPoint sp : map.getSpawnPoints()) {
                 sp.setVehicleSpecChooser(
@@ -673,7 +672,7 @@ public class GridMapUtil {
      * @param map           the map
      * @param trafficLevel  the traffic level
      */
-    public static void setUniformTurnBasedSpawnPoints(GridIntersectionMap map,
+    public static void setUniformTurnBasedSpawnPoints(GridAIMIntersectionMap map,
                                                       double trafficLevel) {
         for(AIMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
@@ -688,7 +687,7 @@ public class GridMapUtil {
      * @param map                    the map
      * @param trafficVolumeFileName  the traffic volume filename
      */
-    public static void setUniformRatioSpawnPoints(GridIntersectionMap map,
+    public static void setUniformRatioSpawnPoints(GridAIMIntersectionMap map,
                                                   String trafficVolumeFileName) {
 
         TrafficVolume trafficVolume =
@@ -716,7 +715,7 @@ public class GridMapUtil {
      * @param hTrafficLevel  the traffic level in the horizontal direction
      * @param vTrafficLevel  the traffic level in the vertical direction
      */
-    public static void setDirectionalSpawnPoints(GridIntersectionMap layout,
+    public static void setDirectionalSpawnPoints(GridAIMIntersectionMap layout,
                                                  double hTrafficLevel,
                                                  double vTrafficLevel) {
         for(AIMSpawnPoint sp : layout.getHorizontalSpawnPoints()) {
@@ -737,7 +736,7 @@ public class GridMapUtil {
      * @param layout          the map
      * @param traversalTime   the traversal time
      */
-    public static void setBaselineSpawnPoints(GridIntersectionMap layout,
+    public static void setBaselineSpawnPoints(GridAIMIntersectionMap layout,
                                               double traversalTime) {
         int totalNumOfLanes = 0;
         int minNumOfLanes = Integer.MAX_VALUE;
@@ -761,7 +760,7 @@ public class GridMapUtil {
         }
     }
 
-    public static void setJSONScheduleSpawnSpecGenerator(GridIntersectionMap map, File mergeSchedule, File targetSchedule) throws IOException, ParseException {
+    public static void setJSONScheduleSpawnSpecGenerator(GridAIMIntersectionMap map, File mergeSchedule, File targetSchedule) throws IOException, ParseException {
         for(AIMSpawnPoint sp : map.getSpawnPoints()) {
             if(sp.getHeading() == 0) {
                 Road targetRoad = null;
@@ -796,7 +795,7 @@ public class GridMapUtil {
         }
     }
 
-    public static void setJSONScheduleSpawnSpecGenerator(GridIntersectionMap map, File leftSchedule, File rightSchedule, File straightSchedule) throws IOException, ParseException {
+    public static void setJSONScheduleSpawnSpecGenerator(GridAIMIntersectionMap map, File leftSchedule, File rightSchedule, File straightSchedule) throws IOException, ParseException {
         for(AIMSpawnPoint sp : map.getSpawnPoints()) {
             if(sp.getHeading() == 0) { // is going east
                 Road targetRoad = null;
@@ -805,7 +804,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         straightSchedule,
                                         targetRoad
                                 ));
@@ -814,7 +813,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         leftSchedule,
                                         targetRoad
                                 ));
@@ -823,7 +822,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         rightSchedule,
                                         targetRoad
                                 ));
@@ -836,7 +835,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         leftSchedule,
                                         targetRoad
                                 ));
@@ -845,7 +844,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         rightSchedule,
                                         targetRoad
                                 ));
@@ -854,7 +853,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         straightSchedule,
                                         targetRoad
                                 ));
@@ -868,7 +867,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         rightSchedule,
                                         targetRoad
                                 ));
@@ -877,7 +876,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         leftSchedule,
                                         targetRoad
                                 ));
@@ -886,7 +885,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         straightSchedule,
                                         targetRoad
                                 ));
@@ -900,7 +899,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         leftSchedule,
                                         targetRoad
                                 ));
@@ -909,7 +908,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         straightSchedule,
                                         targetRoad
                                 ));
@@ -918,7 +917,7 @@ public class GridMapUtil {
                         targetRoad = r;
                         assert targetRoad != null;
                         sp.setVehicleSpecChooser(
-                                new RimMapUtil.JsonScheduleSpawnSpecGenerator(
+                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
                                         rightSchedule,
                                         targetRoad
                                 ));

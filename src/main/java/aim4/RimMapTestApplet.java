@@ -55,7 +55,7 @@ public class RimMapTestApplet extends Applet implements Runnable{
                 0,
                 0);
 
-        double scaleFactor = 4;
+        double scaleFactor = 3;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
@@ -71,7 +71,7 @@ public class RimMapTestApplet extends Applet implements Runnable{
         BufferedImage asphaltImage = loadImage(ASPHALT_TILE_FILE);
         TexturePaint grassTexture = makeScaledTexture(grassImage, scaleFactor);
         TexturePaint asphaltTexture = makeScaledTexture(asphaltImage, scaleFactor);
-        paintEntireBuffer(bgBuffer, Color.RED);
+        paintEntireBuffer(bgBuffer, Color.LIGHT_GRAY);
         drawGrass(bgBuffer, mapRect, grassTexture);
 
         // Draw the roads
@@ -95,6 +95,23 @@ public class RimMapTestApplet extends Applet implements Runnable{
             }
             i++;
         }
+
+        // Draw spawn points
+        bgBuffer.setPaint(Color.white);
+        map.getVerticalSpawnPoints().forEach(point -> {
+            bgBuffer.fill(point.getNoVehicleZone());
+            bgBuffer.setPaint(Color.red);
+            bgBuffer.drawOval((int)point.getPosition().getX(),
+                    (int)point.getPosition().getY(), 1, 1);
+            bgBuffer.setPaint(Color.white);
+        });
+        map.getHorizontalSpawnPoints().forEach(point -> {
+            bgBuffer.fill(point.getNoVehicleZone());
+            bgBuffer.setPaint(Color.red);
+            bgBuffer.drawOval((int)point.getPosition().getX(),
+                    (int)point.getPosition().getY(), 1, 1);
+            bgBuffer.setPaint(Color.white);
+        });
     }
 
     public void run() {

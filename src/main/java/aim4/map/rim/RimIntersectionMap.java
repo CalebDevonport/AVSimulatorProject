@@ -1,11 +1,10 @@
 package aim4.map.rim;
 
 import aim4.config.Debug;
-import aim4.im.aim.IntersectionManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.im.rim.IntersectionManager;
+import aim4.map.BasicRIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.connections.RimConnection;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
@@ -25,7 +24,7 @@ import java.util.*;
 /**
  * The grid layout map for rim.
  */
-public class RimIntersectionMap implements BasicIntersectionMap {
+public class RimIntersectionMap implements BasicRIMIntersectionMap {
     /////////////////////////////////
     // CONSTANTS
     /////////////////////////////////
@@ -96,15 +95,15 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     /**
      * The spawn points
      */
-    private List<AIMSpawnPoint> spawnPoints;
+    private List<RIMSpawnPoint> spawnPoints;
     /**
      * The horizontal spawn points
      */
-    private List<AIMSpawnPoint> horizontalSpawnPoints;
+    private List<RIMSpawnPoint> horizontalSpawnPoints;
     /**
      * The vertical spawn points
      */
-    private List<AIMSpawnPoint> verticalSpawnPoints;
+    private List<RIMSpawnPoint> verticalSpawnPoints;
     /**
      * The lane registry
      */
@@ -836,6 +835,8 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         intersectionManagerGrid = new IntersectionManager[columns][rows];
 
         initializeSpawnPoints(initTime);
+
+        //todo: remove this "connection"
         RimConnection rimConnection =
                 new RimConnection(getRoads());
 
@@ -856,23 +857,23 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * @param initTime the initial time
      */
     private void initializeSpawnPoints(double initTime) {
-        spawnPoints = new ArrayList<AIMSpawnPoint>(columns + rows);
-        horizontalSpawnPoints = new ArrayList<AIMSpawnPoint>(rows);
-        verticalSpawnPoints = new ArrayList<AIMSpawnPoint>(columns);
+        spawnPoints = new ArrayList<RIMSpawnPoint>(columns + rows);
+        horizontalSpawnPoints = new ArrayList<RIMSpawnPoint>(rows);
+        verticalSpawnPoints = new ArrayList<RIMSpawnPoint>(columns);
 
         // Make spawn points only on the first line lane of each road
         for (Road road : horizontalRoads) {
-            horizontalSpawnPoints.add(makeSpawnPoint(initTime, road.getContinuousLanes().get(0)));
+            horizontalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane()));
         }
 
         for (Road road : verticalRoads) {
-            verticalSpawnPoints.add(makeSpawnPoint(initTime, road.getContinuousLanes().get(0)));
+            verticalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane()));
         }
 
         spawnPoints.addAll(horizontalSpawnPoints);
         spawnPoints.addAll(verticalSpawnPoints);
 
-        Debug.currentMap = this;
+        Debug.currentRimMap = this;
     }
 
     /**
@@ -886,15 +887,15 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         if (rows > 1 || columns > 1) {
             throw new IllegalArgumentException("Undefined behaviour with one spawn point");
         }
-        spawnPoints = new ArrayList<AIMSpawnPoint>(1);
-        horizontalSpawnPoints = new ArrayList<AIMSpawnPoint>(1);
+        spawnPoints = new ArrayList<RIMSpawnPoint>(1);
+        horizontalSpawnPoints = new ArrayList<RIMSpawnPoint>(1);
 
         Lane lane = horizontalRoads.get(0).getContinuousLanes().get(0);
         horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
 
         spawnPoints.addAll(horizontalSpawnPoints);
 
-        Debug.currentMap = this;
+        Debug.currentRimMap = this;
     }
 
     /**
@@ -904,7 +905,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      * @param lane     the lane
      * @return the spawn point
      */
-    private AIMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
+    private RIMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
         double startDistance = 0.0;
         double normalizedStartDistance = lane.normalizedDistance(startDistance);
         Point2D pos = lane.getPointAtNormalizedDistance(normalizedStartDistance);
@@ -915,7 +916,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
         Rectangle2D noVehicleZone =
                 lane.getShape(normalizedStartDistance, d).getBounds2D();
 
-        return new AIMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
+        return new RIMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
                 lane, noVehicleZone);
     }
 
@@ -1004,14 +1005,14 @@ public class RimIntersectionMap implements BasicIntersectionMap {
     }
 
     @Override
-    public List<AIMSpawnPoint> getSpawnPoints() { return spawnPoints; }
+    public List<RIMSpawnPoint> getSpawnPoints() { return spawnPoints; }
 
     /**
      * Get the list of horizontal spawn points.
      *
      * @return the list of horizontal spawn points
      */
-    public List<AIMSpawnPoint> getHorizontalSpawnPoints() {
+    public List<RIMSpawnPoint> getHorizontalSpawnPoints() {
         return horizontalSpawnPoints;
     }
 
@@ -1021,7 +1022,7 @@ public class RimIntersectionMap implements BasicIntersectionMap {
      *
      * @return the list of vertical spawn points
      */
-    public List<AIMSpawnPoint> getVerticalSpawnPoints() {
+    public List<RIMSpawnPoint> getVerticalSpawnPoints() {
         return verticalSpawnPoints;
     }
 

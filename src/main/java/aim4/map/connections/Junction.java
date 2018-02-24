@@ -154,8 +154,8 @@ public class Junction extends BasicConnection{
     /*public Constants.TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane) {
 
 
-        Road currentRoad = Debug.currentMap.getRoad(currentLane);
-        Road departureRoad = Debug.currentMap.getRoad(departureLane);
+        Road currentRoad = Debug.currentAimMap.getRoad(currentLane);
+        Road departureRoad = Debug.currentAimMap.getRoad(departureLane);
         if(departureRoad == currentRoad) {
             return Constants.TurnDirection.STRAIGHT;
         } else if(departureRoad == currentRoad.getDual()) {

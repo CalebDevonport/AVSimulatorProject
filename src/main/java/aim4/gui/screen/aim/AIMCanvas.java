@@ -11,7 +11,7 @@ import aim4.im.aim.v2i.RequestHandler.TrafficSignalRequestHandler;
 import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.im.aim.v2i.policy.Policy;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
@@ -86,8 +86,8 @@ public class AIMCanvas extends Canvas {
      */
     @Override
     protected Image createMapImage(BasicMap map, double scale) {
-        assert map instanceof BasicIntersectionMap;
-        BasicIntersectionMap intersectionMap = (BasicIntersectionMap) map;
+        assert map instanceof BasicAIMIntersectionMap;
+        BasicAIMIntersectionMap intersectionMap = (BasicAIMIntersectionMap) map;
 
         Rectangle2D mapRect = intersectionMap.getDimensions();
         // First, set up an image buffer
@@ -164,7 +164,7 @@ public class AIMCanvas extends Canvas {
         // if the simulator exists, draw the current view
         if (sim != null) {
             Collection<IntersectionManager> ims =
-                    ((BasicIntersectionMap) sim.getMap()).getIntersectionManagers();
+                    ((BasicAIMIntersectionMap) sim.getMap()).getIntersectionManagers();
             // draw the intersection managers' debug shapes
             if (isShowIMDebugShapes) {
                 for (IntersectionManager im : ims) {

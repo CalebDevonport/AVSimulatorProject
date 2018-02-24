@@ -32,7 +32,7 @@ package aim4.sim;
 
 import aim4.config.Debug;
 import aim4.driver.aim.ProxyDriver;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.msg.aim.udp.*;
 import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.vehicle.VinRegistry;
@@ -398,7 +398,7 @@ public class UdpListener implements Runnable {
                                                    msg.targetVelocity,
                                                    msg.acceleration,
                                                    msg.receivedTime);
-    vehicle.setDriver(new ProxyDriver(vehicle, (BasicIntersectionMap) sim.getMap()));
+    vehicle.setDriver(new ProxyDriver(vehicle, (BasicAIMIntersectionMap) sim.getMap()));
 
     assert vehicle.getDriver() != null;
     return vehicle;

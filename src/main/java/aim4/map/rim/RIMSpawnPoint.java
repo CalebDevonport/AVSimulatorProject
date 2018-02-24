@@ -13,6 +13,7 @@ import java.util.List;
  * A spawn point for rim simulations.
  */
 public class RIMSpawnPoint extends SpawnPoint{
+
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////

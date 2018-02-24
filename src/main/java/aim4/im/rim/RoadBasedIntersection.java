@@ -324,16 +324,16 @@ public class RoadBasedIntersection implements Intersection{
      */
     private void calcEntryRoads() {
         for(Lane lane : getEntryLanes()) {
-            if (!entryRoads.contains(Debug.currentMap.getRoad(lane))) {
-                entryRoads.add(Debug.currentMap.getRoad(lane));
+            if (!entryRoads.contains(Debug.currentRimMap.getRoad(lane))) {
+                entryRoads.add(Debug.currentRimMap.getRoad(lane));
             }
         }
     }
 
     private void calcExitRoads() {
         for(Lane lane : getExitLanes()) {
-            if (!exitRoads.contains(Debug.currentMap.getRoad(lane))) {
-                exitRoads.add(Debug.currentMap.getRoad(lane));
+            if (!exitRoads.contains(Debug.currentRimMap.getRoad(lane))) {
+                exitRoads.add(Debug.currentRimMap.getRoad(lane));
             }
         }
     }
@@ -595,8 +595,8 @@ public class RoadBasedIntersection implements Intersection{
      */
     @Override
     public Constants.TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane) {
-        Road currentRoad = Debug.currentMap.getRoad(currentLane);
-        Road departureRoad = Debug.currentMap.getRoad(departureLane);
+        Road currentRoad = Debug.currentRimMap.getRoad(currentLane);
+        Road departureRoad = Debug.currentRimMap.getRoad(departureLane);
         if(departureRoad == currentRoad) {
             return Constants.TurnDirection.STRAIGHT;
         } else if(departureRoad == currentRoad.getDual()) {

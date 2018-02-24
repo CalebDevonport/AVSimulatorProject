@@ -31,7 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.config;
 
 import aim4.gui.ViewerDebugView;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
+import aim4.map.BasicRIMIntersectionMap;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -45,9 +46,14 @@ import java.util.Map;
 public class Debug {
 
   /**
-   * A global variable referring to the global map.
+   * A global variable referring to the global aim map.
    */
-  public static BasicIntersectionMap currentMap;
+  public static BasicAIMIntersectionMap currentAimMap;
+
+  /**
+   * A global variable referring to the global rim map.
+   */
+  public static BasicRIMIntersectionMap currentRimMap;
 
   /**
    * A global variable referring to the GUI object.

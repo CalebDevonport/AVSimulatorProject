@@ -28,38 +28,56 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.destination;
+package aim4.map;
 
-import aim4.config.Debug;
-import aim4.map.Road;
-import aim4.map.lane.Lane;
+import aim4.im.aim.IntersectionManager;
+import aim4.map.aim.AIMSpawnPoint;
+import aim4.util.Registry;
+
+import java.util.List;
 
 /**
- * The IdentityDestinationSelector always chooses the Vehicle's current Road
- * as the destination Road, unless it is not a legal destination Road, in
- * which case it throws a RuntimeException.
+ * Essentially a structured grouping of AIM Roads and IntersectionManagers that
+ * allows a unified interface so that we can re-use certain layouts and
+ * create classes of layouts.
  */
-public class IdentityDestinationSelector implements DestinationSelector {
-
-  /////////////////////////////////
-  // CONSTRUCTORS
-  /////////////////////////////////
+public interface BasicAIMIntersectionMap extends BasicMap {
+  /**
+   * Get the Roads that exit this Layout.
+   *
+   * @return the Roads exit this Layout
+   */
+  List<Road> getDestinationRoads();
 
   /**
-   * Create a new IdentityDestinationSelector from the given Layout.
+   * Get the intersection manager registry.
+   *
+   * @return the intersection manager registry.
    */
-  public IdentityDestinationSelector() {
-  }
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
+  Registry<IntersectionManager> getImRegistry();
 
   /**
-   * {@inheritDoc}
+   * Get the IntersectionManagers that are part of this Layout.
+   *
+   * @return the IntersectionManagers that are part of this Layout
    */
-  @Override
-  public Road selectDestination(Lane currentLane) {
-    return Debug.currentMap.getRoad(currentLane);
-  }
+  List<IntersectionManager> getIntersectionManagers();
+
+  /**
+   * Set the intersection manager of a particular intersection.
+   *
+   * @param column  the column of the intersection
+   * @param row     the row of the intersection
+   * @param im      the intersection manager
+   */
+  void setManager(int column, int row, IntersectionManager im);
+
+  /**
+   * Get the list of spawn points.
+   *
+   * @return the list of spawn points
+   */
+  List<AIMSpawnPoint> getSpawnPoints();
+
+
 }

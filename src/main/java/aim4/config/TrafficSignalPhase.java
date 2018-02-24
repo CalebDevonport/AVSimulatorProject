@@ -31,11 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.config;
 
 import aim4.im.aim.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler;
-import aim4.im.aim.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.
-    CyclicSignalController;
-import aim4.map.aim.GridIntersectionMap;
+import aim4.im.aim.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.CyclicSignalController;
 import aim4.map.Road;
+import aim4.map.aim.GridAIMIntersectionMap;
 import aim4.util.Util;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -74,7 +74,7 @@ public class TrafficSignalPhase {
    * @param strs  the description of the direction based on the name of the
    *              roads.
    */
-  public TrafficSignalPhase(GridIntersectionMap map, List<String> strs) {
+  public TrafficSignalPhase(GridAIMIntersectionMap map, List<String> strs) {
 
     this.phaseNum = strs.size() - 1;
     this.activeRoads = new LinkedList<List<Road>>();
@@ -138,7 +138,7 @@ public class TrafficSignalPhase {
    * @param csvFileName  the file name of the CSV file
    * @return the traffic signal phase object
    */
-  public static TrafficSignalPhase makeFromFile(GridIntersectionMap map,
+  public static TrafficSignalPhase makeFromFile(GridAIMIntersectionMap map,
                                                 String csvFileName) {
     List<String> strs = null;
     try {

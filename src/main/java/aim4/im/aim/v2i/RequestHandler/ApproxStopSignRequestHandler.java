@@ -30,19 +30,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim.v2i.RequestHandler;
 
-import java.util.Iterator;
-import java.util.List;
-
 import aim4.config.Debug;
 import aim4.im.aim.v2i.policy.BasePolicy;
-import aim4.im.aim.v2i.policy.BasePolicyCallback;
-import aim4.im.aim.v2i.policy.ExtendedBasePolicyCallback;
 import aim4.im.aim.v2i.policy.BasePolicy.ProposalFilterResult;
 import aim4.im.aim.v2i.policy.BasePolicy.ReserveParam;
+import aim4.im.aim.v2i.policy.BasePolicyCallback;
+import aim4.im.aim.v2i.policy.ExtendedBasePolicyCallback;
 import aim4.map.Road;
 import aim4.msg.aim.i2v.Reject;
 import aim4.msg.aim.v2i.Request;
 import aim4.sim.StatCollector;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The approximate stop sign request handler.
@@ -213,7 +213,7 @@ public class ApproxStopSignRequestHandler implements RequestHandler {
    * @return whether the vehicle can enter the intersection
    */
   private boolean canEnterFromLane(int laneId) {
-    Road road = Debug.currentMap.getRoad(laneId);
+    Road road = Debug.currentAimMap.getRoad(laneId);
     String roadName = road.getName();
 
     if (nextRoadName != null) {

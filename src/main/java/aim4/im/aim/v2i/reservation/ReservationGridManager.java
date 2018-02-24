@@ -30,22 +30,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim.v2i.reservation;
 
-import java.awt.Shape;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 import aim4.config.Constants;
 import aim4.config.Debug;
-import aim4.driver.aim.CrashTestDummy;
 import aim4.driver.Driver;
+import aim4.driver.aim.CrashTestDummy;
 import aim4.im.ReservationManager;
 import aim4.im.aim.Intersection;
 import aim4.im.aim.v2i.reservation.ReservationGrid.TimeTile;
@@ -55,9 +43,17 @@ import aim4.msg.aim.v2i.Request.VehicleSpecForRequestMsg;
 import aim4.sim.StatCollector;
 import aim4.util.TiledArea;
 import aim4.util.TiledArea.Tile;
-import aim4.vehicle.aim.AIMBasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleUtil;
+import aim4.vehicle.aim.AIMBasicAutoVehicle;
+
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * The reservation grid manager.
@@ -615,9 +611,9 @@ public class ReservationGridManager implements
 
     // Position the Vehicle to be ready to start the simulation
     Lane arrivalLane =
-      Debug.currentMap.getLaneRegistry().get(q.getArrivalLaneId());
+      Debug.currentAimMap.getLaneRegistry().get(q.getArrivalLaneId());
     Lane departureLane =
-      Debug.currentMap.getLaneRegistry().get(q.getDepartureLaneId());
+      Debug.currentAimMap.getLaneRegistry().get(q.getDepartureLaneId());
 
     // Create a test vehicle to use in the internal simulation
     AIMBasicAutoVehicle testVehicle =

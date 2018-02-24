@@ -32,7 +32,7 @@ package aim4.map.aim;
 
 import aim4.config.Debug;
 import aim4.im.aim.IntersectionManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
@@ -52,7 +52,7 @@ import java.util.*;
 /**
  * The grid layout map.
  */
-public class GridIntersectionMap implements BasicIntersectionMap {
+public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -122,9 +122,9 @@ public class GridIntersectionMap implements BasicIntersectionMap {
      *                                  direction
      * @param distanceBetween           the distance between the adjacent intersections
      */
-    public GridIntersectionMap(double initTime, int columns, int rows,
-                               double laneWidth, double speedLimit, int lanesPerRoad,
-                               double widthBetweenOppositeRoads, double distanceBetween) {
+    public GridAIMIntersectionMap(double initTime, int columns, int rows,
+                                  double laneWidth, double speedLimit, int lanesPerRoad,
+                                  double widthBetweenOppositeRoads, double distanceBetween) {
         // Can't make these unless there is at least one row and column
         if(rows < 1 || columns < 1) {
             throw new IllegalArgumentException("Must have at least one column "+
@@ -337,8 +337,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
         initializeSpawnPoints(initTime);
     }
 
-    public GridIntersectionMap(GridIntersectionMap map, double laneWidth,
-                               double widthBetweenOppositeRoads, double distanceBetween) {
+    public GridAIMIntersectionMap(GridAIMIntersectionMap map, double laneWidth,
+                                  double widthBetweenOppositeRoads, double distanceBetween) {
         this(0, map.getColumns(), map.getRows(),
                 laneWidth, map.getMaximumSpeedLimit(),
                 map.getRoads().get(0).getLanes().size(),
@@ -370,7 +370,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
         spawnPoints.addAll(horizontalSpawnPoints);
         spawnPoints.addAll(verticalSpawnPoints);
 
-        Debug.currentMap = this;
+        Debug.currentAimMap = this;
     }
 
     /**
@@ -392,7 +392,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
 
         spawnPoints.addAll(horizontalSpawnPoints);
 
-        Debug.currentMap = this;
+        Debug.currentAimMap = this;
     }
 
     /**

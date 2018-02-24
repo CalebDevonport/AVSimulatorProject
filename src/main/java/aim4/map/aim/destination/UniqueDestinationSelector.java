@@ -28,23 +28,45 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.destination;
+package aim4.map.aim.destination;
 
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 
 /**
- * The destination selector.
+ * The unique destination selector which always returns the same destination
  */
-public interface DestinationSelector {
+public class UniqueDestinationSelector implements DestinationSelector {
+
+  /////////////////////////////////
+  // PRIVATE FIELDS
+  /////////////////////////////////
+
+  /** The destination */
+  private Road endRoad;
+
+  /////////////////////////////////
+  // CLASS CONSTRUCTORS
+  /////////////////////////////////
 
   /**
-   * Select the Road which the given Vehicle should use as its destination.
+   * Create a unique destination selector.
    *
-   * @param currentLane the lane the Vehicle is currently on, usually also
-   *                    the lane the vehicle spawned on
-   * @return            the Road which the Vehicle should use as its
-   *                    destination
+   * @param endRoad  the destination
    */
-  Road selectDestination(Lane currentLane);
+  public UniqueDestinationSelector(Road endRoad) {
+    this.endRoad = endRoad;
+  }
+
+  /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Road selectDestination(Lane currentLane) {
+    return endRoad;
+  }
 }

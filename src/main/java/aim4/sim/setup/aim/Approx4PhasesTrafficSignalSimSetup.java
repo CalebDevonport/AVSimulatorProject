@@ -34,10 +34,10 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
-import aim4.map.aim.GridIntersectionMap;
+import aim4.map.aim.GridAIMIntersectionMap;
 import aim4.map.aim.GridMapUtil;
-import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
+import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 
 /**
  * The setup for the simulator in which the intersections are controlled
@@ -119,7 +119,7 @@ public class Approx4PhasesTrafficSignalSimSetup extends BasicSimSetup
   @Override
   public Simulator getSimulator() {
     double currentTime = 0.0;
-    GridIntersectionMap layout = new GridIntersectionMap(currentTime,
+    GridAIMIntersectionMap layout = new GridAIMIntersectionMap(currentTime,
                                        numOfColumns,
                                        numOfRows,
                                        laneWidth,

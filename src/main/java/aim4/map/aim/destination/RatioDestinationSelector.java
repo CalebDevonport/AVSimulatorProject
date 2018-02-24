@@ -28,44 +28,70 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.destination;
+package aim4.map.aim.destination;
 
 import aim4.config.Debug;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.Road;
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.lane.Lane;
+import aim4.util.Util;
 
+import java.util.HashMap;
 import java.util.List;
-
-
-//TODO: Need to fix this class to avoid hard-coding
+import java.util.Map;
 
 /**
- * The turn based destination selector.
+ * The destination selector that
  */
-public class TurnBasedDestinationSelector implements DestinationSelector {
+public class RatioDestinationSelector implements DestinationSelector {
 
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////
 
   /**
-   * The Set of legal Roads that a vehicle can use as an ultimate destination.
+   * The set of roads that a vehicle can use as an ultimate destination.
    */
   private List<Road> destinationRoads;
+  /**
+   * The traffic volume object.
+   */
+  private TrafficVolume trafficVolume;
+  /**
+   * The probability of making a left turn.
+   */
+  private Map<Integer,Double> leftTurnProb;
+  /**
+   * The probability of making a right turn.
+   */
+  private Map<Integer,Double> rightTurnProb;
+
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Create a new identity destination selector from the given Layout.
+   * Create a new RandomDestinationSelector from the given Layout.
    *
-   * @param layout  the layout from which to create the new
-   *                identity destination selector
+   * @param map            the Layout from which to create the
+   *                       RandomDestinationSelector
+   * @param trafficVolume  the traffic volume
    */
-  public TurnBasedDestinationSelector(BasicIntersectionMap layout) {
-    destinationRoads = layout.getDestinationRoads();
+  public RatioDestinationSelector(BasicAIMIntersectionMap map, TrafficVolume trafficVolume) {
+    destinationRoads = map.getDestinationRoads();
+    this.trafficVolume = trafficVolume;
+    leftTurnProb = new HashMap<Integer, Double>();
+    rightTurnProb = new HashMap<Integer, Double>();
+
+    for(AIMSpawnPoint sp: map.getSpawnPoints()) {
+      int laneId = sp.getLane().getId();
+      leftTurnProb.put(laneId, trafficVolume.getLeftTurnVolume(laneId) /
+                               trafficVolume.getThroughVolume(laneId));
+      rightTurnProb.put(laneId, trafficVolume.getRightTurnVolume(laneId) /
+                                trafficVolume.getThroughVolume(laneId));
+    }
   }
 
   /////////////////////////////////
@@ -77,37 +103,13 @@ public class TurnBasedDestinationSelector implements DestinationSelector {
    */
   @Override
   public Road selectDestination(Lane currentLane) {
-    Road currentRoad = Debug.currentMap.getRoad(currentLane);
-
-    boolean hasLeft = currentLane.hasLeftNeighbor();
-    boolean hasRight = currentLane.hasRightNeighbor();
-
-    if (hasLeft && hasRight) {
-      return currentRoad;
-    } else if (!hasLeft && hasRight) {
-      if (currentRoad.getName().equals("1st Street E")) {
-        return destinationRoads.get(2);
-      } else if (currentRoad.getName().equals("1st Street W")) {
-        return destinationRoads.get(3);
-      } else if (currentRoad.getName().equals("1st Avenue N")) {
-        return destinationRoads.get(1);
-      } else if (currentRoad.getName().equals("1st Avenue S")) {
-        return destinationRoads.get(0);
-      } else {
-        throw new RuntimeException("Error in TurnBasedDestination");
-      }
-    } else if (hasLeft && !hasRight) {
-      if (currentRoad.getName().equals("1st Street E")) {
-        return destinationRoads.get(3);
-      } else if (currentRoad.getName().equals("1st Street W")) {
-        return destinationRoads.get(2);
-      } else if (currentRoad.getName().equals("1st Avenue N")) {
-        return destinationRoads.get(0);
-      } else if (currentRoad.getName().equals("1st Avenue S")) {
-        return destinationRoads.get(1);
-      } else {
-        throw new RuntimeException("Error in TurnBasedDestination");
-      }
+    Road currentRoad = Debug.currentAimMap.getRoad(currentLane);
+    int laneId = currentLane.getId();
+    double prob = Util.random.nextDouble();
+    if (prob < leftTurnProb.get(laneId)) {
+      return trafficVolume.getLeftTurnRoad(currentRoad);
+    } else if (prob >= 1.0 - rightTurnProb.get(laneId)) {
+      return trafficVolume.getRightTurnRoad(currentRoad);
     } else {
       return currentRoad;
     }

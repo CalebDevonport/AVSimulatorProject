@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
@@ -130,8 +130,8 @@ public class AutoV2VDriver extends AIMAutoDriver {
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public AutoV2VDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
-        super(vehicle, basicIntersectionMap);  // TODO: temporarily make it compilable. remove it later.
+    public AutoV2VDriver(AIMAutoVehicleDriverModel vehicle, BasicAIMIntersectionMap basicAIMIntersectionMap) {
+        super(vehicle, basicAIMIntersectionMap);  // TODO: temporarily make it compilable. remove it later.
         this.vehicle = vehicle;
         // TODO Auto-generated constructor stub
     }

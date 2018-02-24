@@ -1,7 +1,7 @@
 package aim4.sim.simulator.rim.helper;
 
-import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.lane.Lane;
+import aim4.map.rim.RIMSpawnPoint;
 import aim4.map.rim.RimIntersectionMap;
 import aim4.sim.setup.rim.enums.ProtocolType;
 import aim4.vehicle.VehicleSpec;
@@ -29,12 +29,12 @@ public class SpawnHelper {
      * @return A List of the Vehicles spawned. Null if no vehicles spawned.
      */
     public List<RimVehicleSimModel> spawnVehicles(double timeStep, ProtocolType protocolType) {
-        for(AIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
-            List<AIMSpawnPoint.AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+        for(RIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
+            List<RIMSpawnPoint.RIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if(!spawnSpecs.isEmpty()){
                 if(canSpawnVehicle(spawnPoint)) {
                     List<RimVehicleSimModel> spawnedVehicles = new ArrayList<RimVehicleSimModel>();
-                    for(AIMSpawnPoint.AIMSpawnSpec spawnSpec : spawnSpecs) {
+                    for(RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
                         RimVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec, protocolType);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
@@ -54,7 +54,7 @@ public class SpawnHelper {
      * @param spawnPoint
      * @return
      */
-    private boolean canSpawnVehicle(AIMSpawnPoint spawnPoint) {
+    private boolean canSpawnVehicle(RIMSpawnPoint spawnPoint) {
         assert spawnPoint.getNoVehicleZone() instanceof Path2D;
         Path2D noVehicleZone = (Path2D) spawnPoint.getNoVehicleZone();
         for(RimVehicleSimModel vehicle : vinToVehicles.values()) {
@@ -72,8 +72,8 @@ public class SpawnHelper {
      * @return
      */
     private RimVehicleSimModel setupVehicle(
-            AIMSpawnPoint spawnPoint,
-            AIMSpawnPoint.AIMSpawnSpec spawnSpec,
+            RIMSpawnPoint spawnPoint,
+            RIMSpawnPoint.RIMSpawnSpec spawnSpec,
             ProtocolType protocolType) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();

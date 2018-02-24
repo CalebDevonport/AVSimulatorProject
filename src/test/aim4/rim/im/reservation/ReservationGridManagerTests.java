@@ -771,19 +771,17 @@ public class ReservationGridManagerTests {
                     0);
     }
 
-    private Road getNorthRoad(){
-        return Debug.currentMap.getRoads().get(2);
-    }
+    private Road getNorthRoad(){ return Debug.currentRimMap.getRoads().get(2); }
 
     private Road getEastRoad(){
-        return Debug.currentMap.getRoads().get(0);
+        return Debug.currentRimMap.getRoads().get(0);
     }
 
     private Road getSouthRoad(){
-        return Debug.currentMap.getRoads().get(3);
+        return Debug.currentRimMap.getRoads().get(3);
     }
 
     private Road getWestRoad(){
-        return Debug.currentMap.getRoads().get(1);
+        return Debug.currentRimMap.getRoads().get(1);
     }
 }

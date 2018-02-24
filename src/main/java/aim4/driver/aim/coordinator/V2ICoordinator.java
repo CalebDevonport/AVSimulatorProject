@@ -42,7 +42,7 @@ import aim4.driver.aim.navigator.Navigator;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.V2IManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.msg.aim.i2v.Confirm;
@@ -501,7 +501,7 @@ public class V2ICoordinator implements Coordinator {
     private TurnDirection getTurnDirection(Navigator navigator) {
       IntersectionManager im = driver.nextIntersectionManager();
       Lane currentLane = driver.getCurrentLane();
-      Road currentRoad = Debug.currentMap.getRoad(currentLane);
+      Road currentRoad = Debug.currentAimMap.getRoad(currentLane);
       Road departureRoad =
         navigator.navigate(currentRoad, im, driver.getDestination());
       Lane departureLane = departureRoad.getIndexLane();
@@ -709,9 +709,9 @@ public class V2ICoordinator implements Coordinator {
      */
     public ReservationParameter(Confirm msg) {
       this.arrivalLane =
-        Debug.currentMap.getLaneRegistry().get(msg.getArrivalLaneID());
+        Debug.currentAimMap.getLaneRegistry().get(msg.getArrivalLaneID());
       this.departureLane =
-        Debug.currentMap.getLaneRegistry().get(msg.getDepartureLaneID());
+        Debug.currentAimMap.getLaneRegistry().get(msg.getDepartureLaneID());
 //      this.arrivalLane = LaneRegistry.getLaneFromId(msg.getArrivalLaneID());
 //      this.departureLane = LaneRegistry.getLaneFromId(msg.getDepartureLaneID());
       this.arrivalTime = msg.getArrivalTime();
@@ -909,15 +909,15 @@ public class V2ICoordinator implements Coordinator {
    *
    * @param vehicle  the Vehicle to coordinate
    * @param driver   the driver
-   * @param basicIntersectionMap the map
+   * @param basicAIMIntersectionMap the map
    */
   public V2ICoordinator(AIMAutoVehicleDriverModel vehicle,
                         AIMAutoDriver driver,
-                        BasicIntersectionMap basicIntersectionMap) {
+                        BasicAIMIntersectionMap basicAIMIntersectionMap) {
     this.vehicle = vehicle;
     this.driver = driver;
     this.pilot = new V2IPilot(vehicle, driver);
-    this.navigator = new BasicNavigator(vehicle.getSpec(), basicIntersectionMap);
+    this.navigator = new BasicNavigator(vehicle.getSpec(), basicAIMIntersectionMap);
 
     isDebugging = Debug.isTargetVIN(vehicle.getVIN());
 
@@ -1582,7 +1582,7 @@ public class V2ICoordinator implements Coordinator {
       List<Lane> departureLanes =
         new ArrayList<Lane>(MAX_LANES_TO_TRY_PER_ROAD);
       Road departureRoad =
-        navigator.navigate(Debug.currentMap.getRoad(driver.getCurrentLane()),
+        navigator.navigate(Debug.currentAimMap.getRoad(driver.getCurrentLane()),
                            driver.getCurrentIM(),
                            driver.getDestination());
       // Let's just take the highest priority Lane from each Road

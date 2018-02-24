@@ -28,11 +28,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.destination;
+package aim4.map.aim.destination;
 
 import aim4.config.Constants;
 import aim4.map.Road;
-import aim4.map.aim.GridIntersectionMap;
+import aim4.map.aim.GridAIMIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.map.rim.RimIntersectionMap;
 import aim4.util.Util;
@@ -72,7 +72,7 @@ public class TrafficVolume {
    * @param map   the map
    * @param strs  the data in a file
    */
-  public TrafficVolume(GridIntersectionMap map, List<String> strs) {
+  public TrafficVolume(GridAIMIntersectionMap map, List<String> strs) {
     leftTurnVolumes = new HashMap<Integer, Double>();
     throughVolumes = new HashMap<Integer, Double>();
     rightTurnVolumes = new HashMap<Integer, Double>();
@@ -328,7 +328,7 @@ public class TrafficVolume {
    * @param csvFileName  the file name of the CSV file
    * @return the traffic volume object
    */
-  public static TrafficVolume makeFromFile(GridIntersectionMap map,
+  public static TrafficVolume makeFromFile(GridAIMIntersectionMap map,
                                            String csvFileName) {
     List<String> strs = null;
     try {

@@ -32,7 +32,7 @@ package aim4.driver.aim.navigator;
 
 import aim4.config.Debug;
 import aim4.im.aim.IntersectionManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.Road;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
@@ -197,7 +197,7 @@ public class BasicNavigator implements Navigator {
      * @return the road of the last node
      */
     public Road getLastRoad() {
-      return Debug.currentMap.getRoad(path.get(path.size() - 1));
+      return Debug.currentAimMap.getRoad(path.get(path.size() - 1));
     }
 
     /**
@@ -218,7 +218,7 @@ public class BasicNavigator implements Navigator {
   /**
    * The map object
    */
-  private BasicIntersectionMap basicIntersectionMap;
+  private BasicAIMIntersectionMap basicAIMIntersectionMap;
 
   /**
    * The vehicle for which this agent is navigating.
@@ -242,11 +242,11 @@ public class BasicNavigator implements Navigator {
    * This will only be called by derived classes.
    *
    * @param vehicleSpec  the vehicle's specification
-   * @param basicIntersectionMap     the map object
+   * @param basicAIMIntersectionMap     the map object
    */
-  public BasicNavigator(VehicleSpec vehicleSpec, BasicIntersectionMap basicIntersectionMap) {
+  public BasicNavigator(VehicleSpec vehicleSpec, BasicAIMIntersectionMap basicAIMIntersectionMap) {
     this.vehicleSpec = vehicleSpec;
-    this.basicIntersectionMap = basicIntersectionMap;
+    this.basicAIMIntersectionMap = basicAIMIntersectionMap;
   }
 
   /////////////////////////////////
@@ -289,7 +289,7 @@ public class BasicNavigator implements Navigator {
         List<Integer> currKey =
           Arrays.asList(path.get(i-1), pathIMs.get(i-1),
                         destinationRoad.getIndexLane().getId());
-        fastestMap.put(currKey, Debug.currentMap.getRoad(path.get(i)));
+        fastestMap.put(currKey, Debug.currentAimMap.getRoad(path.get(i)));
       }
     }
     return fastestMap.get(key);
@@ -331,7 +331,7 @@ public class BasicNavigator implements Navigator {
     while(!queue.isEmpty() && !queue.peek().isComplete()) {
       Node node = queue.poll();  // the current node
       IntersectionManager nodeIM =
-        basicIntersectionMap.getImRegistry().get(node.getLastIMid());
+        basicAIMIntersectionMap.getImRegistry().get(node.getLastIMid());
       Road nodeRoad = node.getLastRoad();
 
       // for each departure road of the current node

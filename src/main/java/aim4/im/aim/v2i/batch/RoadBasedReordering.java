@@ -30,17 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim.v2i.batch;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-
 import aim4.config.Debug;
 import aim4.im.aim.TrackModel;
 import aim4.im.aim.v2i.RequestHandler.BatchModeRequestHandler.IndexedProposal;
 import aim4.map.Road;
 import aim4.msg.aim.v2i.Request.Proposal;
+
+import java.util.*;
 
 /**
  * The road-based reorder strategy.
@@ -206,7 +202,7 @@ public class RoadBasedReordering implements ReorderingStrategy {
 
     for(IndexedProposal iProposal : iProposals) {
       int laneId = iProposal.getProposal().getArrivalLaneID();
-      Road road = Debug.currentMap.getRoad(laneId);
+      Road road = Debug.currentAimMap.getRoad(laneId);
       if (partition.containsKey(road)) {
         partition.get(road).add(iProposal);
       } else {

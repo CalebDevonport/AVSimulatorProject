@@ -30,14 +30,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import java.awt.geom.Point2D;
-
 import aim4.config.Debug;
 import aim4.driver.BasicDriver;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
+
+import java.awt.geom.Point2D;
 
 /**
  * A driver agent that only steers and changes lanes when appropriate.
@@ -90,7 +90,7 @@ public class CrashTestDummy extends BasicDriver {
     // If we're not already in the departure lane
     if(getCurrentLane() != departureLane) {
       // If we're changing to a different Road
-      if(Debug.currentMap.getRoad(getCurrentLane()) != Debug.currentMap.getRoad(departureLane)) {
+      if(Debug.currentAimMap.getRoad(getCurrentLane()) != Debug.currentAimMap.getRoad(departureLane)) {
         // If we're close enough...
         if(departureLane.nearestDistance(getVehicle().gaugePosition()) <
            calculateTraversingLaneChangeDistance()) {

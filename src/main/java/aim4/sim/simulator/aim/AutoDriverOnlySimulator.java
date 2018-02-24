@@ -36,7 +36,7 @@ import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.ProxyDriver;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.V2IManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
@@ -102,7 +102,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /////////////////////////////////
 
     /** The map */
-    private BasicIntersectionMap basicIntersectionMap;
+    private BasicAIMIntersectionMap basicAIMIntersectionMap;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
     private Map<Integer,AIMVehicleSimModel> vinToVehicles;
     /** The current time */
@@ -129,23 +129,23 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Create an instance of the simulator.
      *
-     * @param basicIntersectionMap             the map of the simulation
+     * @param basicAIMIntersectionMap             the map of the simulation
      */
-    public AutoDriverOnlySimulator(BasicIntersectionMap basicIntersectionMap) {
-        this(basicIntersectionMap, false, null, null);
+    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap) {
+        this(basicAIMIntersectionMap, false, null, null);
     }
 
-    public AutoDriverOnlySimulator(BasicIntersectionMap basicIntersectionMap, boolean mergeMode) {
-        this(basicIntersectionMap, mergeMode, null, null);
+    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap, boolean mergeMode) {
+        this(basicAIMIntersectionMap, mergeMode, null, null);
     }
 
     //Only used with MergeMimicSimSetup
-    public AutoDriverOnlySimulator(BasicIntersectionMap basicIntersectionMap,
+    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap,
                                    boolean mergeMode,
                                    Map<String, Double> specToExpectedTimeMergeLane,
                                    Map<String, Double> specToExpectedTimeTargetLane){
         this.mergeMode = mergeMode;
-        this.basicIntersectionMap = basicIntersectionMap;
+        this.basicAIMIntersectionMap = basicAIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,AIMVehicleSimModel>();
         if(mergeMode) {
             Map<String, Double> fakeDelayTimes = new HashMap<String, Double>();
@@ -238,8 +238,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * {@inheritDoc}
      */
     @Override
-    public synchronized BasicIntersectionMap getMap() {
-        return basicIntersectionMap;
+    public synchronized BasicAIMIntersectionMap getMap() {
+        return basicAIMIntersectionMap;
     }
 
     /**
@@ -314,7 +314,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         Lane minLane = null;
         double minDistance = -1.0;
 
-        for(Road road : basicIntersectionMap.getRoads()) {
+        for(Road road : basicAIMIntersectionMap.getRoads()) {
             for(Lane lane : road.getLanes()) {
                 double d = lane.nearestDistance(pos);
                 if (minLane == null || d < minDistance) {
@@ -350,7 +350,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * @param timeStep  the time step
      */
     private void spawnVehicles(double timeStep) {
-        for(AIMSpawnPoint spawnPoint : basicIntersectionMap.getSpawnPoints()) {
+        for(AIMSpawnPoint spawnPoint : basicAIMIntersectionMap.getSpawnPoints()) {
             List<AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
@@ -417,7 +417,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         else
             vehicle.setStartingRoad(RoadNames.MERGING_ROAD);
         // Set the driver
-        AIMAutoDriver driver = new AIMAutoDriver(vehicle, basicIntersectionMap);
+        AIMAutoDriver driver = new AIMAutoDriver(vehicle, basicAIMIntersectionMap);
         driver.setCurrentLane(lane);
         driver.setSpawnPoint(spawnPoint);
         driver.setDestination(spawnSpec.getDestinationRoad());
@@ -442,7 +442,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         // currently ordered in the Lanes
         Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists =
                 new HashMap<Lane,SortedMap<Double,AIMVehicleSimModel>>();
-        for(Road road : basicIntersectionMap.getRoads()) {
+        for(Road road : basicAIMIntersectionMap.getRoads()) {
             for(Lane lane : road.getLanes()) {
                 vehicleLists.put(lane, new TreeMap<Double,AIMVehicleSimModel>());
             }
@@ -467,7 +467,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             }
         }
         // Now consolidate the lists based on lanes
-        for(Road road : basicIntersectionMap.getRoads()) {
+        for(Road road : basicAIMIntersectionMap.getRoads()) {
             for(Lane lane : road.getLanes()) {
                 // We may have already removed this Lane from the map
                 if(vehicleLists.containsKey(lane)) {
@@ -770,7 +770,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * @param timeStep  the time step
      */
     private void letIntersectionManagersAct(double timeStep) {
-        for(IntersectionManager im : basicIntersectionMap.getIntersectionManagers()) {
+        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
             im.act(timeStep);
         }
     }
@@ -801,7 +801,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                 while(!v2iOutbox.isEmpty()) {
                     V2IMessage msg = v2iOutbox.poll();
                     V2IManager receiver =
-                            (V2IManager) basicIntersectionMap.getImRegistry().get(msg.getImId());
+                            (V2IManager) basicAIMIntersectionMap.getImRegistry().get(msg.getImId());
                     // Calculate the distance the message must travel
                     double txDistance =
                             sender.getPosition().distance(
@@ -823,7 +823,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void deliverI2VMessages() {
         // Now deliver all the I2V messages
-        for(IntersectionManager im : basicIntersectionMap.getIntersectionManagers()) {
+        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
             V2IManager senderIM = (V2IManager)im;
             for(Iterator<I2VMessage> i2vIter = senderIM.outboxIterator();
                 i2vIter.hasNext();) {
@@ -888,7 +888,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
 //    for(V2VMessage msg : broadcastMessages) {
 //      // Send a copy to the IM for debugging/statistics purposes
 //      IntersectionManager im =
-//        basicIntersectionMap.getImRegistry().get(msg.getIntersectionManagerID());
+//        basicAIMIntersectionMap.getImRegistry().get(msg.getIntersectionManagerID());
 ////      if(im != null) {
 ////        switch(im.getIntersectionType()) {
 ////        case V2V:
@@ -948,7 +948,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
-            for(DataCollectionLine line : basicIntersectionMap.getDataCollectionLines()) {
+            for(DataCollectionLine line : basicAIMIntersectionMap.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }
             if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
@@ -989,7 +989,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     private List<Integer> cleanUpCompletedVehicles() {
         List<Integer> completedVINs = new LinkedList<Integer>();
 
-        Rectangle2D mapBoundary = basicIntersectionMap.getDimensions();
+        Rectangle2D mapBoundary = basicAIMIntersectionMap.getDimensions();
 
         List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
         for(int vin : vinToVehicles.keySet()) {
@@ -1020,7 +1020,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     private List<AIMVehicleSimModel> calculateCompletedVehicles() {
         List<AIMVehicleSimModel> completedVehicles = new LinkedList<AIMVehicleSimModel>();
 
-        Rectangle2D mapBoundary = basicIntersectionMap.getDimensions();
+        Rectangle2D mapBoundary = basicAIMIntersectionMap.getDimensions();
         for(int vin : vinToVehicles.keySet()) {
             if(!vinToVehicles.get(vin).getShape().intersects(mapBoundary))
                 completedVehicles.add(vinToVehicles.get(vin));
@@ -1188,7 +1188,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             vehicle.checkCurrentTime(currentTime);
         }
         // Check the clocks for all the intersection managers.
-        for(IntersectionManager im : basicIntersectionMap.getIntersectionManagers()) {
+        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
             im.checkCurrentTime(currentTime);
         }
     }

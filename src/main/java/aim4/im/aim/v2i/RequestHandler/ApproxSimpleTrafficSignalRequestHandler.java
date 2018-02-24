@@ -32,16 +32,16 @@ package aim4.im.aim.v2i.RequestHandler;
 
 import aim4.config.Debug;
 import aim4.config.TrafficSignal;
-import java.util.List;
-
 import aim4.im.aim.v2i.policy.BasePolicy;
-import aim4.im.aim.v2i.policy.BasePolicyCallback;
 import aim4.im.aim.v2i.policy.BasePolicy.ProposalFilterResult;
 import aim4.im.aim.v2i.policy.BasePolicy.ReserveParam;
+import aim4.im.aim.v2i.policy.BasePolicyCallback;
 import aim4.map.Road;
 import aim4.msg.aim.i2v.Reject;
 import aim4.msg.aim.v2i.Request;
 import aim4.sim.StatCollector;
+
+import java.util.List;
 
 /**
  * The approximate traffic signal request handler.
@@ -178,7 +178,7 @@ public class ApproxSimpleTrafficSignalRequestHandler implements
    */
   @Override
   public TrafficSignal getSignal(int laneId) {
-    Road road = Debug.currentMap.getRoad(laneId);
+    Road road = Debug.currentAimMap.getRoad(laneId);
 
     double period = greenLightDuration + yellowLightDuration;
     int id = (int) Math.floor(basePolicy.getCurrentTime() / period);
@@ -224,7 +224,7 @@ public class ApproxSimpleTrafficSignalRequestHandler implements
    * @return whether the vehicle can enter the intersection
    */
   private boolean canEnterFromLane(int laneId) {
-    Road road = Debug.currentMap.getRoad(laneId);
+    Road road = Debug.currentAimMap.getRoad(laneId);
 
     double period = greenLightDuration + yellowLightDuration;
     int id = (int) Math.floor(basePolicy.getCurrentTime() / period);
