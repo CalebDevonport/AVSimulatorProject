@@ -2,9 +2,9 @@ package aim4.driver.rim;
 
 import aim4.driver.DriverSimModel;
 import aim4.map.Road;
-import aim4.map.aim.AIMSpawnPoint;
+import aim4.map.rim.RIMSpawnPoint;
 
-public interface RimDriverSimModel extends DriverSimModel {
+public interface RIMDriverSimModel extends DriverSimModel {
     /////////////////////////////////
     // PUBLIC METHODS
     /////////////////////////////////
@@ -16,14 +16,14 @@ public interface RimDriverSimModel extends DriverSimModel {
      *
      * @return the Road where this driver is coming from
      */
-    AIMSpawnPoint getSpawnPoint();
+    RIMSpawnPoint getSpawnPoint();
 
     /**
      * Set where this driver agent is coming from.
      *
      * @param spawnPoint the spawn point that generated the driver
      */
-    void setSpawnPoint(AIMSpawnPoint spawnPoint);
+    void setSpawnPoint(RIMSpawnPoint spawnPoint);
 
     /**
      * Get where this driver is going.
