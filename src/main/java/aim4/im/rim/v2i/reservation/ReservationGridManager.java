@@ -15,7 +15,7 @@ import aim4.util.TiledRimArea;
 import aim4.util.TiledRimArea.Tile;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleUtil;
-import aim4.vehicle.aim.AIMBasicAutoVehicle;
+import aim4.vehicle.rim.RIMBasicAutoVehicle;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -537,7 +537,7 @@ public class ReservationGridManager implements
         ArcSegmentLane departureLane = (ArcSegmentLane) Debug.currentRimMap.getLaneRegistry().get(q.getDepartureLaneId());
 
         // Create a test vehicle to use in the internal simulation
-        AIMBasicAutoVehicle testVehicle =
+        RIMBasicAutoVehicle testVehicle =
                 createTestVehicle(q.getSpec(),
                         q.getArrivalVelocity(),
                         q.getMaxTurnVelocity(),
@@ -613,7 +613,7 @@ public class ReservationGridManager implements
      *
      * @return             whether or not a reservation could be made
      */
-    private AIMBasicAutoVehicle createTestVehicle(
+    private RIMBasicAutoVehicle createTestVehicle(
             Request.VehicleSpecForRequestMsg spec,
             double arrivalVelocity,
             double maxVelocity,
@@ -634,11 +634,11 @@ public class ReservationGridManager implements
                 0.0, // wheelWidth
                 spec.getMaxSteeringAngle(),
                 spec.getMaxTurnPerSecond());
-        AIMBasicAutoVehicle testVehicle = new AIMBasicAutoVehicle(
+        RIMBasicAutoVehicle testVehicle = new RIMBasicAutoVehicle(
                 newSpec,
                 arrivalLane.getEndPoint(), // Vehicle Initial Position
                 ((ArcSegmentLane) arrivalLane.getNextLane()).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
-                spec.getMaxSteeringAngle(), // Steering angle
+                0.0, // Steering angle
                 arrivalVelocity, // velocity
                 0.0, // target velocity
                 0.0, // Acceleration
@@ -704,7 +704,7 @@ public class ReservationGridManager implements
      */
     private FindTileTimesBySimulationResult
     findTileTimesBySimulation(ArcSegmentLane arrivalLane,
-                              AIMBasicAutoVehicle testVehicle,
+                              RIMBasicAutoVehicle testVehicle,
                               Driver dummy,
                               double arrivalTime,
                               boolean accelerating) {
@@ -735,7 +735,7 @@ public class ReservationGridManager implements
         // Now in intersection, drive the test vehicle until it leaves the intersection
         while(VehicleUtil.intersects(testVehicle, areaPlus)) {
             moveTestVehicle(testVehicle, dummy, currentDuration, accelerating);
-            assertVehicleInsideIntersection(arrivalLane, testVehicle, areaPlus);
+            assertVehicleInsideIntersection(testVehicle, areaPlus);
             // Find out which tiles are occupied by the vehicle
             currentIntTime++;  // Record that we've moved forward one time step
             List<Tile> occupied = tiledRimArea.findOccupiedTiles(testVehicle.getShape(staticBufferSize));
@@ -761,7 +761,7 @@ public class ReservationGridManager implements
     }
 
 
-    private void assertVehicleInsideIntersection(ArcSegmentLane arrivalLane, AIMBasicAutoVehicle testVehicle, Area areaPlus) {
+    private void assertVehicleInsideIntersection(RIMBasicAutoVehicle testVehicle, Area areaPlus) {
         // if vehicle totally inside intersection
         if (areaPlus.contains(testVehicle.getPointAtMiddleFront(Constants.DOUBLE_EQUAL_PRECISION)) &&
                 areaPlus.contains(testVehicle.getPointAtRear())) {
@@ -777,12 +777,12 @@ public class ReservationGridManager implements
      * @param accelerating  whether or not to setMaxAccelWithMaxTargetVelocity to maximum velocity
      *                      during the traversal
      */
-    private void moveTestVehicle(AIMBasicAutoVehicle testVehicle,
+    private void moveTestVehicle(RIMBasicAutoVehicle testVehicle,
                                  Driver dummy,
                                  double duration,
                                  boolean accelerating) {
         // Give the CrashTestDummy a chance to steer
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         // Now control the vehicle's acceleration
         if(accelerating) {
             // Accelerate at maximum rate, topping out at maximum velocity

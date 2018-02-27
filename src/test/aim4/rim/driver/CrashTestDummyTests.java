@@ -5,12 +5,10 @@ import aim4.config.SimConfig;
 import aim4.driver.Driver;
 import aim4.driver.rim.CrashTestDummy;
 import aim4.im.rim.RoadBasedIntersection;
-import aim4.im.rim.v2i.reservation.ReservationGrid;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.rim.RimIntersectionMap;
 import aim4.msg.rim.v2i.Request;
-import aim4.util.TiledRimArea;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.aim.AIMBasicAutoVehicle;
@@ -46,7 +44,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -68,7 +66,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -90,7 +88,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -112,7 +110,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -134,7 +132,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -155,7 +153,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -177,7 +175,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -198,7 +196,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -219,7 +217,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -241,7 +239,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -263,7 +261,7 @@ public class CrashTestDummyTests {
 
         //act
         Driver dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -284,7 +282,7 @@ public class CrashTestDummyTests {
 
         //act
         CrashTestDummy dummy = new CrashTestDummy(testVehicle, arrivalLane, departureLane);
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         ArcSegmentLane nextLane = (ArcSegmentLane) arrivalLane.getNextLane();
 
         //assert
@@ -313,11 +311,6 @@ public class CrashTestDummyTests {
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
         INTERSECTION = roadBasedIntersection;
-        TiledRimArea tiledRimArea = new TiledRimArea(
-                roadBasedIntersection.getMinimalCircle(),
-                roadBasedIntersection.getMaximalCircle(),
-                GRANULARITY);
-        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
         Lane arrivalLane = roadBasedIntersection.getRoads().get(entryRoadIndex).getEntryApproachLane();
         Lane exitLane = roadBasedIntersection.getRoads().get(exitRoadIndex).getExitApproachLane();
         Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));

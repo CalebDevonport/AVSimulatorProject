@@ -14,6 +14,7 @@ import aim4.msg.rim.v2i.Request;
 import aim4.msg.rim.v2i.V2IMessage;
 import aim4.vehicle.BasicVehicle;
 import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.VehicleUtil;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -151,8 +152,8 @@ public class ProxyVehicle extends RIMBasicAutoVehicle implements ProxyVehicleSim
     @Override
     public void processReal2ProxyMsg(Real2ProxyMsg msg) {
         if (lastTimeStamp <= msg.receivedTime) {
-            // TODO: maybe currentIM should be put in ProxyDriver.
-            IntersectionManager currentIM =
+            // TODO: maybe currentRIM should be put in ProxyDriver.
+            IntersectionManager currentRIM =
                     getDriver().getCurrentLane().getLaneRIM()
                             .nextIntersectionManager(gaugePosition());
 
@@ -165,14 +166,11 @@ public class ProxyVehicle extends RIMBasicAutoVehicle implements ProxyVehicleSim
                     v2iMsg = convertReal2ProxyRequestToRequest((Real2ProxyRequest)msg);
                     break;
                 case CANCEL:
-                    v2iMsg = new Cancel(getVIN(), currentIM.getId(),
+                    v2iMsg = new Cancel(getVIN(), currentRIM.getId(),
                             ((Real2ProxyCancel)msg).reservationId);
                     break;
                 case DONE:
-                    v2iMsg = new Done(getVIN(), currentIM.getId(), 0);
-
-//        v2iMsg = new Done(getVIN(), currentIM.getId(),
-//                          ((Real2ProxyDone)msg).reservationId);
+                    v2iMsg = new Done(getVIN(), currentRIM.getId(), 0);
                     break;
                 default:
                     assert (false):"Unknown message Real2ProxyMsg type";
@@ -337,19 +335,16 @@ public class ProxyVehicle extends RIMBasicAutoVehicle implements ProxyVehicleSim
         assert msg.vin == vin;  // the VIN number must match up
 
         // TODO: should be in ProxyDriver
-        IntersectionManager currentIM =
+        IntersectionManager currentRIM =
                 getDriver().getCurrentLane().getLaneRIM()
                         .nextIntersectionManager(gaugePosition());
 
         Lane arrivalLane = getDriver().getCurrentLane();
-//    Lane departureLane = null;
-//    // ask driver for the lane object given departureLaneId
-//    double maxTurnVelocity =
-//      VehicleUtil.maxTurnVelocity(spec,
-//                                  arrivalLane,
-//                                  departureLane,
-//                                  currentIM);
-        double maxTurnVelocity = 7.5; // TODO: hard-code for now, need to fix it.
+        Lane departureLane = getDriver().getDestination().getExitApproachLane();
+        double maxTurnVelocity = VehicleUtil.maxTurnVelocity(spec,
+                                  arrivalLane,
+                                  departureLane,
+                                  currentRIM);
 
         List<Request.Proposal> proposals = new LinkedList<Request.Proposal>();
         proposals.add(new Request.Proposal(arrivalLane.getId(),
@@ -365,7 +360,7 @@ public class ProxyVehicle extends RIMBasicAutoVehicle implements ProxyVehicleSim
 
         Request request =
                 new Request(vin, // sourceID
-                        currentIM.getId(), // destinationID
+                        currentRIM.getId(), // destinationID
                         nextRequestId,
                         new Request.VehicleSpecForRequestMsg(spec),
                         proposals);

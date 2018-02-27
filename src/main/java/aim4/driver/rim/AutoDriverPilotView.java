@@ -1,7 +1,7 @@
 package aim4.driver.rim;
 
 import aim4.driver.BasicDriver;
-import aim4.im.aim.IntersectionManager;
+import aim4.im.rim.IntersectionManager;
 import aim4.map.lane.Lane;
 import aim4.vehicle.AutoVehicleDriverModel;
 
@@ -41,7 +41,7 @@ public interface AutoDriverPilotView {
      *         interacting
      *
      */
-    IntersectionManager getCurrentIM();
+    IntersectionManager getCurrentRIM();
 
     /**
      * Find the distance to the next intersection in the Lane in which

@@ -46,7 +46,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
     private static final double ENTRANCE_EXIT_RADIUS =  20.0;
     private static final double LANE_WIDTH =  3.014;
     private static final double LANE_SPEED_LIMIT =  19.44;
-    private static final double ROUNDABOUT_SPEED_LIMIT =  6.04;
+    private static final double ROUNDABOUT_SPEED_LIMIT =  9.7222;
     private static final int VIN =  1;
 
     // Colors taken from AIM Canvas
@@ -58,6 +58,9 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
             new AffineTransform();
     private static final Color GRASS_COLOR = Color.GREEN.darker().darker();
     private static final String GRASS_TILE_FILE = "/images/grass128.png";
+
+    public static int[] xLeadPoints = new int[1000];
+    public static int[] yLeadPoints = new int[1000];
 
     public void paint(Graphics g) {
         // Create the RIM Map
@@ -75,14 +78,14 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                 0,
                 0);
 
-        double scaleFactor = 4;
+        double scaleFactor = 12;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
 
         // Apply AIM transformation
         AffineTransform tf = new AffineTransform();
-        tf.translate(0, 0);
+        tf.translate(-1200, -1200);
         tf.scale(scaleFactor, scaleFactor);
         bgBuffer.setTransform(tf);
 
@@ -116,10 +119,10 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
 
         // Set arrival and departure lanes
         Lane arrivalLane = getNorthRoad().getEntryApproachLane();
-        Lane exitLane = getNorthRoad().getExitApproachLane();
+        Lane exitLane = getEastRoad().getExitApproachLane();
 
         // Set vehicle spec
-        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+        Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
 
         // Set vehicle's driver query
         ReservationGridManager.Query query = new ReservationGridManager.Query(
@@ -276,7 +279,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                 newSpec,
                 arrivalLane.getEndPoint(), // Position
                 ((ArcSegmentLane) arrivalLane.getNextLane()).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
-                spec.getMaxSteeringAngle(), // Steering angle
+                0.0, // Steering angle
                 arrivalVelocity, // velocity
                 0.0, // target velocity
                 0.0, // Acceleration
@@ -342,6 +345,14 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
             }
             currentDuration = reservationGrid.getGridTimeStep();
         }
+
+        bgBuffer.setPaint(Color.RED);
+
+        for(int i = 0; i < 32; i+=2)
+        {
+            bgBuffer.drawLine(xLeadPoints[i] + i,yLeadPoints[i] + i, xLeadPoints[i+1] + i, yLeadPoints[i+1] + i);
+        }
+
     }
 
     private void moveTestVehicle(AIMBasicAutoVehicle testVehicle,
@@ -349,7 +360,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                                  double duration,
                                  boolean accelerating) {
         // Give the CrashTestDummy a chance to steer
-        ((CrashTestDummy)dummy).act(testVehicle.getPosition());
+        dummy.act();
         // Now control the vehicle's acceleration
         if(accelerating) {
             // Accelerate at maximum rate, topping out at maximum velocity

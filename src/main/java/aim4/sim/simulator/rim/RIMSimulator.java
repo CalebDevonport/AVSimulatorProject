@@ -1,6 +1,6 @@
 package aim4.sim.simulator.rim;
 
-import aim4.map.rim.RimIntersectionMap;
+import aim4.map.BasicRIMIntersectionMap;
 import aim4.sim.Simulator;
 import aim4.sim.results.AIMResult;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
@@ -17,7 +17,7 @@ public interface RIMSimulator extends Simulator {
     Set<RIMVehicleSimModel> getActiveVehicles();
 
     @Override
-    RimIntersectionMap getMap();
+    BasicRIMIntersectionMap getMap();
 
     /**
      * Add the proxy vehicle to the simulator for the mixed reality experiments.

@@ -1,7 +1,8 @@
 package aim4.driver.rim;
 
+
 import aim4.driver.BasicDriver;
-import aim4.im.aim.IntersectionManager;
+import aim4.im.rim.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 
@@ -53,7 +54,7 @@ public interface AutoDriverCoordinatorView {
      *         interacting
      *
      */
-    IntersectionManager getCurrentIM();
+    IntersectionManager getCurrentRIM();
 
     /**
      * Find the next IntersectionManager that the Vehicle will need to

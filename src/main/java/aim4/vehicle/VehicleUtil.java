@@ -37,12 +37,14 @@ import aim4.driver.aim.CrashTestDummy;
 import aim4.driver.merge.MergeAutoDriver;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.merge.MergeManager;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.util.GeomMath;
 import aim4.util.Util;
 import aim4.vehicle.aim.AIMBasicAutoVehicle;
 import aim4.vehicle.merge.MergeBasicAutoVehicle;
+import aim4.vehicle.rim.RIMBasicAutoVehicle;
 
 import java.awt.geom.Area;
 import java.util.Arrays;
@@ -135,6 +137,53 @@ public class VehicleUtil {
                                          Lane arrivalLane,
                                          Lane departureLane,
                                          IntersectionManager im) {
+
+        // check to see if the spec has been seem before.
+        if (!memoMaxTurnVelocity.containsKey(spec.getName())) {
+            // if not, create a map for it
+            memoMaxTurnVelocity.put(spec.getName(),
+                    new HashMap<List<Integer>,Double>());
+        }
+
+        // check to see if the max turn velocity has been stored in the cache
+        Map<List<Integer>, Double> mmtvs = memoMaxTurnVelocity.get(spec.getName());
+        List<Integer> key = Arrays.asList(arrivalLane.getId(),
+                departureLane.getId(),
+                im.getId());
+        if (!mmtvs.containsKey(key)) {
+            // if not, calculate it and store it in the cache
+            double mtv = calculateMaxTurnVelocity(spec,
+                    arrivalLane,
+                    departureLane,
+                    im);
+            mmtvs.put(key, mtv);
+        }
+
+        // FIXME try to see why we need this hack
+        return Math.max(mmtvs.get(key), MIN_MAX_TURN_VELOCITY);
+    }
+
+    /**
+     * Get the maximum velocity that this Vehicle should make the
+     * turn between lanes through an intersection.  This method relies heavily
+     * on two types of caches.  First, there is a cache for each instance
+     * that is used if the vehicle is a CUSTOM type.  Second, there is a
+     * cache that belongs to the whole Vehicle class that is indexed by
+     * VehicleType, which essentially keeps a shared cache for each VehicleType.
+     *
+     * @param spec          the vehicle's specification
+     * @param arrivalLane   the Lane from which the Vehicle is turning
+     * @param departureLane the Lane into which the Vehicle is turning
+     * @param im            the IntersectionManager controlling the
+     *                      intersection through which the Vehicle is making
+     *                      the turn
+     * @return              the maximum safe velocity at which the Vehicle
+     *                      should make the turn
+     */
+    public static double maxTurnVelocity(VehicleSpec spec,
+                                         Lane arrivalLane,
+                                         Lane departureLane,
+                                         aim4.im.rim.IntersectionManager im) {
 
         // check to see if the spec has been seem before.
         if (!memoMaxTurnVelocity.containsKey(spec.getName())) {
@@ -297,6 +346,93 @@ public class VehicleUtil {
         // even if it exited in a safe manner.
         if(-1 * minTraversalSteeringAngle > SAFE_TRAVERSAL_STEERING_DELTA &&
                 maxTraversalSteeringAngle > SAFE_TRAVERSAL_STEERING_DELTA) {
+            return false;
+        }
+        // If we're at this point, then the Vehicle is now protruding from the
+        // intersection for the first time.  Let's make sure it is in the right
+        // place.  We need to check three things.  If they are all true, then it
+        // was a safe traversal.  Otherwise, it was unsafe.
+        // First, that it is in the middle of the Lane
+        return (departureLane.nearestDistance(testVehicle.getPosition()) <
+                (departureLane.getWidth() - testVehicle.getSpec().getWidth()) / 3 &&
+                // Second, that it is done steering
+                Math.abs(testVehicle.getSteeringAngle()) <
+                        SAFE_TRAVERSAL_STEERING_THRESHOLD &&
+                // Third, that it is heading in the right direction
+                GeomMath.angleDiff(testVehicle.getHeading(),
+                        im.getIntersection().getExitHeading(departureLane)) <
+                        SAFE_TRAVERSAL_HEADING_THRESHOLD);
+    }
+
+    /**
+     * Determine whether or not it is safe to cross the intersection governed
+     * by the given IntersectionManager, going from the given arrival Lane to
+     * the given departure Lane, while traveling at the given velocity.
+     *
+     * @param spec               the characteristics of the vehicle
+     * @param arrivalLane       the Lane in which the Vehicle will arrive
+     * @param departureLane     the Lane in which the Vehicle will depart
+     * @param im                the IntersectionManager governing the
+     *                          intersection
+     * @param traversalVelocity the velocity at which the Vehicle will attempt
+     *                          to traverse the intersection
+     * @return                  whether or not it is safe to cross with these
+     *                          parameters
+     */
+    public static boolean safeToCross(VehicleSpec spec,
+                                       Lane arrivalLane, Lane departureLane,
+                                       aim4.im.rim.IntersectionManager im,
+                                       double traversalVelocity) {
+        // We can't cross if we're not moving, and we can't go faster than
+        // the vehicle's top speed
+        if(traversalVelocity <= 0 || traversalVelocity > spec.getMaxVelocity()) {
+            return false;
+        }
+        // We don't want this to go on forever, it should take at most the time
+        // to traverse each segment of each lane.
+        double maxTime = im.traversalDistance(arrivalLane, departureLane) /
+                traversalVelocity;
+        // Create a test vehicle that is a copy of this vehicle to use in the
+        // internal simulation
+        RIMBasicAutoVehicle testVehicle = new RIMBasicAutoVehicle(
+                spec,
+                arrivalLane.getEndPoint(), // Position
+                ((ArcSegmentLane) arrivalLane.getNextLane()).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
+                0.0,  // Steering angle
+                traversalVelocity, // velocity
+                0.0, // target velocity
+                0.0, // Acceleration
+                0.0);
+
+        // Create a dummy driver to steer it
+        Driver dummy = new aim4.driver.rim.CrashTestDummy(testVehicle, arrivalLane, departureLane);
+        // Use this to ensure that we don't abort before we actually get into
+        // the intersection
+        boolean enteredIntersection = false;
+        // How long we've been testing
+        double simulatedTime = 0;
+        while(simulatedTime <= maxTime &&
+                (!enteredIntersection ||
+                        departureLane.getLaneRIM().distanceToNextIntersection(
+                                testVehicle.getPosition()) == 0 ||
+                        VehicleUtil.intersects(testVehicle,
+                                im.getIntersection().getArea()))) {
+            // Give the CrashTestDummy a chance to steer
+            dummy.act();
+            // Now move the vehicle. We haven't touched acceleration, so it should
+            // be 0.
+            testVehicle.move(SimConfig.TIME_STEP);
+            // Record whether or not we've entered the intersection
+            if(!enteredIntersection &&
+                    VehicleUtil.intersects(testVehicle,
+                            im.getIntersection().getAreaPlus())) {
+                enteredIntersection = true;
+            }
+            // Increment our simulated time
+            simulatedTime += SimConfig.TIME_STEP;
+        }
+        // If we went over the max time, then it didn't work.
+        if(Math.abs(simulatedTime-maxTime) > 0.1) {
             return false;
         }
         // If we're at this point, then the Vehicle is now protruding from the
@@ -679,6 +815,62 @@ public class VehicleUtil {
                                                    Lane arrivalLane,
                                                    Lane departureLane,
                                                    IntersectionManager im) {
+        // Start the search with a minimum of 0
+        double lowerBound = 0;
+        // and a maximum of the smallest of the Vehicle's maximum velocity,
+        // and the speed limits of the arrival and departure lanes
+        double upperBound = Math.min(spec.getMaxVelocity(),
+                Math.min(arrivalLane.getSpeedLimit(),
+                        departureLane.getSpeedLimit()));
+        // If we're not changing lanes, then no need to compute this.
+        if(arrivalLane == departureLane) {
+            return upperBound; // This one is easy
+        } else {
+            // Now as long as the range we are searching is at least
+            // MAX_TURN_VELOCITY_RESOLUTION, we keep refining the search using
+            // a binary search process.
+            while(upperBound - lowerBound > MAX_TURN_VELOCITY_RESOLUTION) {
+                // Try the velocity right in the middle
+                double trialVelocity = (upperBound + lowerBound) / 2;
+                // Now try to cross the intersection with at this velocity, in
+                // simulation
+                if (VehicleUtil.safeToCross(spec, arrivalLane, departureLane,
+                        im, trialVelocity)) {
+                    // It worked out, so increase the lower bound
+                    lowerBound = trialVelocity;
+                } else {
+                    // It didn't work, so decrease the upper bound
+                    upperBound = trialVelocity;
+                }
+            }
+            // Now we return the lower bound, to be safe.  If we return 0, it means
+            // that we couldn't find a safe velocity at which to take this turn.
+            return lowerBound;
+        }
+    }
+
+    /**
+     * Determine the maximum velocity that this Vehicle should make the
+     * turn between lanes through an intersection.  Works by doing an actual
+     * simulation of the Vehicle through the intersection, using a binary
+     * search&ndash;style method to determine the highest safe velocity.  Once
+     * the parameters of the search are in a small enough range, specified by
+     * {@link #MAX_TURN_VELOCITY_RESOLUTION} it takes the lower end of the
+     * range.
+     *
+     * @param spec            the characteristics of the vehicle
+     * @param arrivalLane    the Lane from which the Vehicle is turning
+     * @param departureLane  the Lane into which the Vehicle is turning
+     * @param im             the IntersectionManager controlling the
+     *                       intersection through which the Vehicle is making
+     *                       the turn
+     * @return               the maximum safe velocity at which the Vehicle
+     *                       should make the turn
+     */
+    public static double calculateMaxTurnVelocity(VehicleSpec spec,
+                                                   Lane arrivalLane,
+                                                   Lane departureLane,
+                                                   aim4.im.rim.IntersectionManager im) {
         // Start the search with a minimum of 0
         double lowerBound = 0;
         // and a maximum of the smallest of the Vehicle's maximum velocity,

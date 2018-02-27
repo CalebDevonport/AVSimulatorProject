@@ -1,7 +1,7 @@
 package aim4.driver.rim;
 
 import aim4.driver.BasicDriver;
-import aim4.driver.DriverUtil;
+import aim4.map.Road;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -27,6 +27,8 @@ public class CrashTestDummy extends BasicDriver {
     /** The Lane in which the vehicle should exit the intersection. */
     private Lane departureLane;
 
+    private boolean isFinalLane;
+
     /////////////////////////////////
     // CLASS CONSTRUCTORS
     /////////////////////////////////
@@ -46,6 +48,7 @@ public class CrashTestDummy extends BasicDriver {
         this.vehicle = vehicle;
         setCurrentLane(arrivalLane);
         this.departureLane = departureLane;
+        this.isFinalLane = false;
     }
 
     /////////////////////////////////
@@ -56,29 +59,68 @@ public class CrashTestDummy extends BasicDriver {
      * Take steering actions to guide a test vehicle through a simulated
      * traversal of the intersection.
      */
-    public void act(Point2D position) {
+    @Override
+    public void act() {
         // todo: handle u turns
         super.act();
-        // If we're not already in the departure lane
-        if(getCurrentLane() != departureLane ||
-                // and we are not already in the first line lane of the departure lane
-                (getCurrentLane() instanceof LineSegmentLane && departureLane instanceof ArcSegmentLane &&
-                        ((ArcSegmentLane) departureLane).getArcLaneDecomposition().get(0) != getCurrentLane())) {
+        LineSegmentLane departureLineLane;
 
+        isFinalLane = getCurrentLane() == departureLane;
+
+        if (getCurrentLane() instanceof LineSegmentLane && departureLane instanceof ArcSegmentLane) {
+            departureLineLane = ((ArcSegmentLane) departureLane).getArcLaneDecomposition().get(0);
+            isFinalLane = getCurrentLane().getEndPoint().distance(departureLineLane.getStartPoint()) < 0.001;
+        }
+
+        // If we're not already in the departure lane
+        if(!isFinalLane)
+        {
             Lane nextLane = getCurrentLane().getNextLane();
             // If next lane is an arc then we are entering the intersection
             if (nextLane instanceof ArcSegmentLane) {
-                setCurrentLane(((ArcSegmentLane) nextLane).getArcLaneDecomposition().get(0));
+                LineSegmentLane arrivalLineLane = ((ArcSegmentLane) nextLane).getArcLaneDecomposition().get(0);
+                setCurrentLane(arrivalLineLane);
             }
             // Else we are already inside the intersection
             else if (nextLane instanceof LineSegmentLane) {
-                // If we still have remaining distance along the current lane
-                if ((float) position.getX() != (float) getCurrentLane().getEndPoint().getX() &&
-                        (float) position.getY() != (float) getCurrentLane().getEndPoint().getY()){
-                    // do nothing as current lane does not change
+                // If we are really close to the next lane
+                double remainingDistanceAlongCurrentLane = getCurrentLane().remainingDistanceAlongLane(vehicle.gaugePosition());
+                if (remainingDistanceAlongCurrentLane < 0.001) {
+                    // Check if need to change roads
+                    Road departureRoad = ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane);
+
+                    // Means we may have to change the road
+                    ArcSegmentLane firstExitDepartureLane = ((ArcSegmentLane) departureRoad.getExitMergingLane());
+                    LineSegmentLane firstExitDepartureLineLane = firstExitDepartureLane.getArcLaneDecomposition().get(0);
+
+                    if (getCurrentLane().getEndPoint().distance(firstExitDepartureLineLane.getStartPoint()) < 0.001) {
+                        // We need to exit at the fist exit
+                        nextLane = firstExitDepartureLineLane;
+                        setCurrentLane(nextLane);
+                    }
+
+                    else {
+                        // Check if we need to exit at the second roundabout exit
+                        ArcSegmentLane secondExitDepartureLane = ((ArcSegmentLane) departureRoad.getContinuousLanes().get(4));
+                        LineSegmentLane secondExitDepartureLineLane = secondExitDepartureLane.getArcLaneDecomposition().get(0);
+
+                        if (getCurrentLane().getEndPoint().distance(secondExitDepartureLineLane.getStartPoint()) < 0.001) {
+                            nextLane = secondExitDepartureLineLane;
+                            setCurrentLane(nextLane);
+                        }
+
+                        else { // We haven't reached an exit point yet
+                            setCurrentLane(nextLane);
+                        }
+                    }
+
                 }
-                // we don't need to change directions
-                else setCurrentLane(nextLane);
+            }
+        }
+        if (isFinalLane) {
+            double remainingDistanceAlongCurrentLane = getCurrentLane().remainingDistanceAlongLane(vehicle.gaugePosition());
+            if (remainingDistanceAlongCurrentLane < 0.001 && getCurrentLane().hasNextLane()) {
+                setCurrentLane(getCurrentLane().getNextLane());
             }
         }
         // Use the basic lane-following behavior
@@ -98,71 +140,29 @@ public class CrashTestDummy extends BasicDriver {
     // class
 
     /**
-     * Turn the wheels to follow the current lane, using the
-     * <code>DEFAULT_LEAD_TIME</code>. This involves first projecting
-     * the Vehicle's current position onto the lane, and then projecting
-     * forward by a distance equal to the Vehicle's velocity multiplied
-     * by the lead time.
-     */
-    private void followCurrentLane() {
-        followCurrentLane(DriverUtil.DEFAULT_LEAD_TIME);
-    }
-
-
-    /**
      * Turn the wheels to follow the current lane, using the given lead time.
      * This involves first projecting the Vehicle's current position onto the
      * lane, and then projecting forward by a distance equal to the Vehicle's
      * velocity multiplied by the lead time.
      *
-     * @param leadTime the lead time to use
      */
-    private void followCurrentLane(double leadTime) {
-        double leadDist = leadTime * vehicle.gaugeVelocity() +
-                DriverUtil.MIN_LEAD_DIST;
+    private void followCurrentLane() {
+        // Lead distance will always be half of every LineLane
+        double leadDist = getCurrentLane().getLength() / 4;
         Point2D aimPoint;
-        double remaining = getCurrentLane().
-                remainingDistanceAlongLane(vehicle.gaugePosition());
-        // If there's not enough room in this Lane and there is a Lane that this
-        // Lane leads into, use the next Lane
-        if((leadDist > remaining) && (getCurrentLane().hasNextLane())) {
-            // First make sure we shouldn't transfer to the next lane
-            if(remaining <= 0) {
-                // Check if needed to exit road at first disjunction
-                if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getX())
-                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getExitMergingLane().getStartPoint().getY())) {
-                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentRimMap)
-                            .getRoadByDecompositionLane(departureLane)
-                            .getExitMergingLane())
-                            .getArcLaneDecomposition()
-                            .get(0));
-                    // Check if needed to exit road at second disjunction
-                } else if ((float) (getCurrentLane().getEndPoint().getX()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getX())
-                        && (float) (getCurrentLane().getEndPoint().getY()) == (float) (((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getExitMergingLane().getStartPoint().getY()) &&
-                        ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane()).getName() != ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane).getName()) {
-                    setCurrentLane(((ArcSegmentLane) ((RimIntersectionMap) currentRimMap)
-                            .getRoadByDecompositionLane(departureLane)
-                            .getContinuousLanes().get(4))
-                            .getArcLaneDecomposition()
-                            .get(0));
-                }   // Keep going on the same road
-                    else {
-                    // Switch to the next Lane
-                    setCurrentLane(getCurrentLane().getNextLane());
-                }
-                // And do this over
-                followCurrentLane(leadTime);
-                return;
-            }
-            // Use what's left over after this Lane to go into the next one.
-            aimPoint = getCurrentLane().getNextLane().getLeadPoint(
-                    getCurrentLane().getNextLane().getStartPoint(),
-                    leadDist - remaining);
-        } else { // Otherwise, use the current Lane
-            aimPoint = getCurrentLane().getLeadPoint(
-                    vehicle.gaugePosition(), leadDist);
+        // Knowing how much of this lane is left
+        double remaining = getCurrentLane().remainingDistanceAlongLane(vehicle.gaugePosition());
+
+        // If nothing left then we may have to change the lane
+        if (remaining < 0.001) {
+            // We may have to change the lane
+            act();
+            return;
         }
-        turnTowardPoint(aimPoint);
+        else {
+            aimPoint = getCurrentLane().getLeadPoint(vehicle.gaugePosition(), leadDist);
+            turnTowardPoint(aimPoint);
+        }
     }
 
 
