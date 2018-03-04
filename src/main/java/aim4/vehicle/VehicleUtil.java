@@ -413,8 +413,6 @@ public class VehicleUtil {
         double simulatedTime = 0;
         while(simulatedTime <= maxTime &&
                 (!enteredIntersection ||
-                        departureLane.getLaneRIM().distanceToNextIntersection(
-                                testVehicle.getPosition()) == 0 ||
                         VehicleUtil.intersects(testVehicle,
                                 im.getIntersection().getArea()))) {
             // Give the CrashTestDummy a chance to steer

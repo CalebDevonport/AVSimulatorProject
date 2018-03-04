@@ -938,7 +938,7 @@ public class V2ICoordinator implements Coordinator{
         List<I2VMessage> msgs = vehicle.pollAllMessagesFromI2VInbox();
         for(I2VMessage msg : msgs) {
             // interpret the message (and potentially change the state)
-            processMessages(msg);
+             processMessages(msg);
         }
     }
 
@@ -1222,8 +1222,8 @@ public class V2ICoordinator implements Coordinator{
     private void initStateHandlers() {
         stateHandlers = new EnumMap<State,StateHandler>(State.class);
 
-//        stateHandlers.put(State.V2I_PLANNING,
-//                new V2IPlanningStateHandler());
+        stateHandlers.put(State.V2I_PLANNING,
+                new V2IPlanningStateHandler());
 //
 //        stateHandlers.put(State.V2I_LANE_CHANGE,
 //                new V2ILaneChangeStateHandler());
@@ -1252,18 +1252,18 @@ public class V2ICoordinator implements Coordinator{
 
 
 
-//    /**
-//     * The state handler for the planning state.
-//     */
-//    private class V2IPlanningStateHandler implements StateHandler {
-//        /**
-//         * {@inheritDoc}
-//         */
-//        @Override
-//        public boolean perform() {
-//            // clean up
-//            removeReservationParameter();
-//            // consider lane changing
+    /**
+     * The state handler for the planning state.
+     */
+    private class V2IPlanningStateHandler implements StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // clean up
+            removeReservationParameter();
+            // consider lane changing
 //            if (Debug.CAN_CHANGE_LANE &&
 //                    vehicle.gaugeTime() >= nextAllowedConsideringLaneChangeTime) {
 //                lcController.reset();
@@ -1272,23 +1272,23 @@ public class V2ICoordinator implements Coordinator{
 //                    return true;
 //                }  // else fall through
 //            }  // else fall through
-//            if (vehicle.gaugeTime() >= nextAllowedSendingRequestTime) {
-//                if (!SimConfig.MUST_STOP_BEFORE_INTERSECTION ||
-//                        driver.distanceToNextIntersection() <=
-//                                V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION +
-//                                        SimConfig.ADDITIONAL_STOP_DIST_BEFORE_INTERSECTION) {
-//                    // prepare reservation
-//                    setState(State.V2I_PREPARING_RESERVATION);
-//                    return true;
-//
-//                }
-//            }
-//            // neither lane changing nor reservation making,
-//            // using default driving behavior
-//            setState(State.V2I_DEFAULT_DRIVING_BEHAVIOR);
-//            return true;
-//        }
-//    }
+            if (vehicle.gaugeTime() >= nextAllowedSendingRequestTime) {
+                if (!SimConfig.MUST_STOP_BEFORE_INTERSECTION ||
+                        driver.distanceToNextIntersection() <=
+                                V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION +
+                                        SimConfig.ADDITIONAL_STOP_DIST_BEFORE_INTERSECTION) {
+                    // prepare reservation
+                    setState(State.V2I_PREPARING_RESERVATION);
+                    return true;
+
+                }
+            }
+            // neither lane changing nor reservation making,
+            // using default driving behavior
+            setState(State.V2I_DEFAULT_DRIVING_BEHAVIOR);
+            return true;
+        }
+    }
 
 //    /**
 //     * The state handler for the lane changing state.
@@ -1470,7 +1470,7 @@ public class V2ICoordinator implements Coordinator{
             // The next Lane, including the one the Vehicle is in, that will enter an
             // intersection, starting at the point in this Lane nearest the Vehicle's
             // current position.
-            Lane l = driver.getCurrentLane().getLaneIM().
+            Lane l = driver.getCurrentLane().getLaneRIM().
                     laneToNextIntersection(vehicle.gaugePosition());
             // Nothing fancy for now, just fill the whole List with the ID of
             // the current Lane
@@ -1548,7 +1548,7 @@ public class V2ICoordinator implements Coordinator{
             List<Lane> departureLanes =
                     new ArrayList<Lane>(MAX_LANES_TO_TRY_PER_ROAD);
             Road departureRoad =
-                    navigator.navigate(Debug.currentAimMap.getRoad(driver.getCurrentLane()),
+                    navigator.navigate(Debug.currentRimMap.getRoad(driver.getCurrentLane()),
                             driver.getCurrentRIM(),
                             driver.getDestination());
             // Let's just take the highest priority Lane from each Road

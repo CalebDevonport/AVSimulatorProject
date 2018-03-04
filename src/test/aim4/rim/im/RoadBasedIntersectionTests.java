@@ -3,6 +3,7 @@ package aim4.rim.im;
 import aim4.config.Constants;
 import aim4.im.rim.RoadBasedIntersection;
 import aim4.map.Road;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.rim.RimIntersectionMap;
 import org.junit.Test;
@@ -16,6 +17,217 @@ public class RoadBasedIntersectionTests {
     private static final double LANE_SPEED_LIMIT =  31.0686;
     private static final double ROUNDABOUT_SPEED_LIMIT =  21.748;
 
+    @Test
+    public void getEntryPoint_withEntryApproachLane_returnsEntryPoint() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        Lane entryApproachLane = map.getRoad(2).getEntryApproachLane();
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getEntryPoint(entryApproachLane) != null;
+    }
+
+    @Test
+    public void getEntryPoint_withNonEntryApproachLane_returnsNull() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        Lane nonEntryApproachLane = map.getRoad(2).getEntryMergingLane();
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getEntryPoint(nonEntryApproachLane) == null;
+    }
+
+    @Test
+    public void getEntryPoint_withLineSegmentLaneOnEntry_returnsEntryPoint() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoad(2).getEntryApproachLane());
+        Lane lane = entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size() - 1);
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getEntryPoint(lane) != null;
+    }
+
+    @Test
+    public void getEntryPoint_withNotLineSegmentLaneOnEntry_returnsNull() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoad(2).getEntryApproachLane());
+        Lane lane = entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size() - 2);
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getEntryPoint(lane) == null;
+    }
+
+    @Test
+    public void getExitPoint_withExitApproachLane_returnsExitPoint() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        Lane exitApproachLane = map.getRoad(2).getExitApproachLane();
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getExitPoint(exitApproachLane) != null;
+    }
+
+    @Test
+    public void getExitPoint_withNotExitApproachLane_returnsNull() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        Lane nonEntryApproachLane = map.getRoad(2).getExitMergingLane();
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getExitPoint(nonEntryApproachLane) == null;
+    }
+
+    @Test
+    public void getExitPoint_withLineSegmentLaneOnExit_returnsExitPoint() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoad(2).getExitApproachLane());
+        Lane lane = exitApproachLane.getArcLaneDecomposition().get(0);
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getExitPoint(lane) != null;
+    }
+
+    @Test
+    public void getExitPoint_withNotLineSegmentLaneOnExit_returnsNull() {
+        //arrange
+        RimIntersectionMap map = new RimIntersectionMap(
+                0,
+                1,
+                1,
+                ROUNDABOUT_DIAMETER[0],
+                ENTRANCE_EXIT_RADIUS,
+                4,
+                LANE_WIDTH,
+                LANE_SPEED_LIMIT,
+                ROUNDABOUT_SPEED_LIMIT,
+                1,
+                0,
+                0);
+        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoad(2).getExitApproachLane());
+        Lane lane = exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size() - 1);
+
+        //act
+
+
+        //assert
+        assert roadBasedIntersection.getExitPoint(lane) == null;
+    }
 
 
     @Test

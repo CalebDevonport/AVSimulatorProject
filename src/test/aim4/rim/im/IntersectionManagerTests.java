@@ -42,9 +42,9 @@ public class IntersectionManagerTests {
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, roadBasedTrackModel, CURRENT_TIME, registry);
 
         //assert
-        roadBasedIntersection.getLanes().forEach( lane -> {
-            assert lane.getLaneRIM().firstIntersectionManager().getId() == intersectionManager.getId();
+        intersectionManager.getIntersection().getLanes().forEach( lane -> {
             if (lane instanceof ArcSegmentLane) {
+                assert lane.getLaneRIM().firstIntersectionManager().getId() == intersectionManager.getId();
                 ((ArcSegmentLane) lane).getArcLaneDecomposition().forEach(lineLane -> {
                     assert lineLane.getLaneRIM().firstIntersectionManager().getId() == intersectionManager.getId();
                 });

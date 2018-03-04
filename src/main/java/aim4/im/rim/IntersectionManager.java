@@ -69,13 +69,14 @@ public class IntersectionManager {
     private void registerWithLanes() {
         for(Lane lane : intersection.getLanes()) {
             // If Arc Lane then we want every Line Lane of each Arc Lane to belong to the IM the arc lane belongs to
-            if (lane instanceof ArcSegmentLane) {
+            if (lane instanceof ArcSegmentLane){
+                lane.getLaneRIM().registerIntersectionManager(this, null);
                 ((ArcSegmentLane) lane).getArcLaneDecomposition().forEach( lineLane -> {
-                    lineLane.getLaneRIM().registerIntersectionManager(this);
+                    lineLane.getLaneRIM().registerIntersectionManager(this, (ArcSegmentLane) lane);
                 });
             } // It's a line lane
             else {
-                lane.getLaneRIM().registerIntersectionManager(this);
+                lane.getLaneRIM().registerIntersectionManager(this, null);
             }
         }
     }

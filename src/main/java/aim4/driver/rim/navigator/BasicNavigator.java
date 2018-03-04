@@ -4,12 +4,12 @@ import aim4.config.Debug;
 import aim4.im.rim.IntersectionManager;
 import aim4.map.BasicRIMIntersectionMap;
 import aim4.map.Road;
-import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
-import aim4.vehicle.VehicleUtil;
 
-import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A base class for an agent that chooses which way a vehicle should go.
@@ -227,7 +227,8 @@ public class BasicNavigator implements Navigator{
      */
     @Override
     public Road navigate(Road current, IntersectionManager im, Road destination) {
-        return fastestPath(current, im, destination);
+//        return fastestPath(current, im, destination);
+        return null;
     }
 
 
@@ -235,141 +236,141 @@ public class BasicNavigator implements Navigator{
     // PRIVATE METHODS
     /////////////////////////////////
 
-    /**
-     * Find the fastest path
-     *
-     * @param currentRoad     the Road on which the vehicle is currently traveling
-     * @param im          the IntersectionManager the vehicle is approaching
-     * @param destinationRoad the Road on which the vehicle would ultimately like to
-     *                    end up
-     * @return  The fastest road
-     */
-    private Road fastestPath(Road currentRoad, IntersectionManager im,
-                             Road destinationRoad) {
-        List<Integer> key = Arrays.asList(currentRoad.getIndexLane().getId(),
-                im.getId(),
-                destinationRoad.getIndexLane().getId());
-        if(!fastestMap.containsKey(key)) {
-            // Otherwise, we do an A* search for the route
-            Node np = aStarSearchFastest(currentRoad, im, destinationRoad);
-            List<Integer> path = np.getPath();
-            List<Integer> pathIMs = np.getPathIMs();
-            for(int i = 1; i < path.size(); i++) {
-                List<Integer> currKey =
-                        Arrays.asList(path.get(i-1), pathIMs.get(i-1),
-                                destinationRoad.getIndexLane().getId());
-                fastestMap.put(currKey, Debug.currentRimMap.getRoad(path.get(i)));
-            }
-        }
-        return fastestMap.get(key);
-    }
+//    /**
+//     * Find the fastest path
+//     *
+//     * @param currentRoad     the Road on which the vehicle is currently traveling
+//     * @param im          the IntersectionManager the vehicle is approaching
+//     * @param destinationRoad the Road on which the vehicle would ultimately like to
+//     *                    end up
+//     * @return  The fastest road
+//     */
+//    private Road fastestPath(Road currentRoad, IntersectionManager im,
+//                             Road destinationRoad) {
+//        List<Integer> key = Arrays.asList(currentRoad.getIndexLane().getId(),
+//                im.getId(),
+//                destinationRoad.getIndexLane().getId());
+//        if(!fastestMap.containsKey(key)) {
+//            // Otherwise, we do an A* search for the route
+//            Node np = aStarSearchFastest(currentRoad, im, destinationRoad);
+//            List<Integer> path = np.getPath();
+//            List<Integer> pathIMs = np.getPathIMs();
+//            for(int i = 1; i < path.size(); i++) {
+//                List<Integer> currKey =
+//                        Arrays.asList(path.get(i-1), pathIMs.get(i-1),
+//                                destinationRoad.getIndexLane().getId());
+//                fastestMap.put(currKey, Debug.currentRimMap.getRoad(path.get(i)));
+//            }
+//        }
+//        return fastestMap.get(key);
+//    }
 
 
-    /**
-     * Find the fastest path by A* search
-     *
-     * @param currentRoad     the Road on which the vehicle is currently traveling
-     * @param im          the IntersectionManager the vehicle is approaching
-     * @param destRoad the Road on which the vehicle would ultimately like to
-     *                    end up
-     * @return  The fastest road
-     */
-    private Node aStarSearchFastest(Road currentRoad, IntersectionManager im,
-                                    Road destRoad) {
-        // the queue
-        PriorityQueue<Node> queue = new PriorityQueue<Node>();
-
-        // initial point
-        Point2D initPoint = im.getIntersection().getEntryPoint(
-                currentRoad.getIndexLane());
-
-        // the initial node
-        double estMeas = initPoint.distance(destRoad.getIndexLane().getEndPoint()) /
-                currentRoad.getMaximumConnectedSpeedLimit();
-
-        Node initialNode = new Node(currentRoad.getIndexLane().getId(),
-                im.getId(),
-                0.0, // actual measure
-                estMeas);   // remaining estimate
-        // kick off
-        queue.add(initialNode);
-
-        // Now we just do A* search. We remove items from the Queue.  If they are
-        // complete, then YAY we have found the path.  If not, we explore the
-        // neighbors, update and add them all.
-        while(!queue.isEmpty() && !queue.peek().isComplete()) {
-            Node node = queue.poll();  // the current node
-            IntersectionManager nodeIM =
-                    basicRIMIntersectionMap.getImRegistry().get(node.getLastIMid());
-            Road nodeRoad = node.getLastRoad();
-
-            // for each departure road of the current node
-            for(Road r : nodeIM.getIntersection().getExitRoads()) {
-
-                // Don't come out the way we went in
-                if(r == nodeRoad.getDual()) {
-                    continue;  // skip this node
-                }
-
-                // We need to find out how long it will take to cross the IM,
-                // and get to the subsequent IM
-                // Find out how fast we can take the turn
-                double maxTurnVelocity =
-                        VehicleUtil.maxTurnVelocity(vehicleSpec,
-                                nodeRoad.getIndexLane(),
-                                r.getIndexLane(),
-                                nodeIM);
-
-                // If this is 0, then we can't take this turn, so this is a no go
-                if (Util.isDoubleZero(maxTurnVelocity)) {
-                    continue;  // skip this node
-                }
-
-                // Otherwise, we're good.
-                double actualMeas = nodeIM.traversalDistance(nodeRoad, r) /
-                        maxTurnVelocity;
-
-                // Okay, now that we've accounted for crossing the intersection,
-                // we have to figure out how far it is to the next intersection
-                // after that.
-                IntersectionManager nextIM =
-                        r.getIndexLane().getLaneRIM().nextIntersectionManager(nodeIM);
-
-                if(nextIM != null) {  // There is another IM to deal with
-                    // So find out how long it will take to get there
-                    actualMeas +=
-                            r.getIndexLane().getLaneRIM().
-                                    timeToNextIntersectionManager(nodeIM,
-                                            vehicleSpec.getMaxVelocity());
-                    // Then estimate how long it will take to get from the
-                    // next intersection manager to the final destination.
-                    double estRemainingMeas =
-                            initPoint.distance(destRoad.getIndexLane().getEndPoint()) /
-                                    currentRoad.getMaximumConnectedSpeedLimit();
-                    // Update with road we're going out on, the next IM
-                    queue.add(node.makeUpdatedNode(r.getIndexLane().getId(),
-                            nextIM.getId(),
-                            actualMeas,
-                            estRemainingMeas));
-
-                } else if (r == destRoad) { //End of line,Are we where we want to be?
-                    // If so, this is how long it will take us to get out
-                    actualMeas +=
-                            r.getIndexLane().getLaneIM().
-                                    remainingDistanceFromLastIntersection() /
-                                    Math.min(r.getIndexLane().getSpeedLimit(),
-                                            vehicleSpec.getMaxVelocity());
-                    double estRemainingMeas = 0;
-                    // Update with road we're going out on, the next IM
-                    queue.add(node.makeUpdatedNode(r.getIndexLane().getId(),
-                            -1,
-                            actualMeas,
-                            estRemainingMeas));
-
-                } // If not, then this is not a viable path, so just drop it.
-            }
-        }
-        // Okay now either the queue is empty or the first one is complete
-        return queue.peek();
-    }
+//    /**
+//     * Find the fastest path by A* search
+//     *
+//     * @param currentRoad     the Road on which the vehicle is currently traveling
+//     * @param im          the IntersectionManager the vehicle is approaching
+//     * @param destRoad the Road on which the vehicle would ultimately like to
+//     *                    end up
+//     * @return  The fastest road
+//     */
+//    private Node aStarSearchFastest(Road currentRoad, IntersectionManager im,
+//                                    Road destRoad) {
+//        // the queue
+//        PriorityQueue<Node> queue = new PriorityQueue<Node>();
+//
+//        // initial point
+//        Point2D initPoint = im.getIntersection().getEntryPoint(
+//                currentRoad.getIndexLane());
+//
+//        // the initial node
+//        double estMeas = initPoint.distance(destRoad.getIndexLane().getEndPoint()) /
+//                currentRoad.getMaximumConnectedSpeedLimit();
+//
+//        Node initialNode = new Node(currentRoad.getIndexLane().getId(),
+//                im.getId(),
+//                0.0, // actual measure
+//                estMeas);   // remaining estimate
+//        // kick off
+//        queue.add(initialNode);
+//
+//        // Now we just do A* search. We remove items from the Queue.  If they are
+//        // complete, then YAY we have found the path.  If not, we explore the
+//        // neighbors, update and add them all.
+//        while(!queue.isEmpty() && !queue.peek().isComplete()) {
+//            Node node = queue.poll();  // the current node
+//            IntersectionManager nodeIM =
+//                    basicRIMIntersectionMap.getImRegistry().get(node.getLastIMid());
+//            Road nodeRoad = node.getLastRoad();
+//
+//            // for each departure road of the current node
+//            for(Road r : nodeIM.getIntersection().getExitRoads()) {
+//
+//                // Don't come out the way we went in
+//                if(r == nodeRoad.getDual()) {
+//                    continue;  // skip this node
+//                }
+//
+//                // We need to find out how long it will take to cross the IM,
+//                // and get to the subsequent IM
+//                // Find out how fast we can take the turn
+//                double maxTurnVelocity =
+//                        VehicleUtil.maxTurnVelocity(vehicleSpec,
+//                                nodeRoad.getIndexLane(),
+//                                r.getIndexLane(),
+//                                nodeIM);
+//
+//                // If this is 0, then we can't take this turn, so this is a no go
+//                if (Util.isDoubleZero(maxTurnVelocity)) {
+//                    continue;  // skip this node
+//                }
+//
+//                // Otherwise, we're good.
+//                double actualMeas = nodeIM.traversalDistance(nodeRoad, r) /
+//                        maxTurnVelocity;
+//
+//                // Okay, now that we've accounted for crossing the intersection,
+//                // we have to figure out how far it is to the next intersection
+//                // after that.
+//                IntersectionManager nextIM =
+//                        r.getIndexLane().getLaneRIM().nextIntersectionManager(nodeIM);
+//
+//                if(nextIM != null) {  // There is another IM to deal with
+//                    // So find out how long it will take to get there
+//                    actualMeas +=
+//                            r.getIndexLane().getLaneRIM().
+//                                    timeToNextIntersectionManager(nodeIM,
+//                                            vehicleSpec.getMaxVelocity());
+//                    // Then estimate how long it will take to get from the
+//                    // next intersection manager to the final destination.
+//                    double estRemainingMeas =
+//                            initPoint.distance(destRoad.getIndexLane().getEndPoint()) /
+//                                    currentRoad.getMaximumConnectedSpeedLimit();
+//                    // Update with road we're going out on, the next IM
+//                    queue.add(node.makeUpdatedNode(r.getIndexLane().getId(),
+//                            nextIM.getId(),
+//                            actualMeas,
+//                            estRemainingMeas));
+//
+//                } else if (r == destRoad) { //End of line,Are we where we want to be?
+//                    // If so, this is how long it will take us to get out
+//                    actualMeas +=
+//                            r.getIndexLane().getLaneIM().
+//                                    remainingDistanceFromLastIntersection() /
+//                                    Math.min(r.getIndexLane().getSpeedLimit(),
+//                                            vehicleSpec.getMaxVelocity());
+//                    double estRemainingMeas = 0;
+//                    // Update with road we're going out on, the next IM
+//                    queue.add(node.makeUpdatedNode(r.getIndexLane().getId(),
+//                            -1,
+//                            actualMeas,
+//                            estRemainingMeas));
+//
+//                } // If not, then this is not a viable path, so just drop it.
+//            }
+//        }
+//        // Okay now either the queue is empty or the first one is complete
+//        return queue.peek();
+//    }
 }

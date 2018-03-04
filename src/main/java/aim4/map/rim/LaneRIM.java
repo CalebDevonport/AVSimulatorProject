@@ -1,10 +1,11 @@
 package aim4.map.rim;
 
 import aim4.im.rim.IntersectionManager;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
+import aim4.map.lane.LineSegmentLane;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -59,9 +60,9 @@ public class LaneRIM {
      *
      * @param im the IntersectionManager to register
      */
-    public void registerIntersectionManager(IntersectionManager im) {
+    public void registerIntersectionManager(IntersectionManager im, ArcSegmentLane parentLane) {
         // Only do this if this lane is managed by this intersection
-        if(im.manages(lane)) {
+        if((parentLane ==  null && im.manages(lane)) || (parentLane != null && im.manages(parentLane))) {
             // Reset this cache
             memoGetSubsequentIntersectionManager = null;
             // Find out where this lane exits the intersection
@@ -86,12 +87,7 @@ public class LaneRIM {
      *         into enters
      */
     public IntersectionManager firstIntersectionManager() {
-        if(intersectionManagers.isEmpty()) {
-            if(lane.hasNextLane()) {
-                return lane.getNextLane().getLaneRIM().firstIntersectionManager();
-            }
-            return null;
-        }
+        assert !intersectionManagers.isEmpty();
         return intersectionManagers.get(intersectionManagers.firstKey());
     }
 
@@ -107,20 +103,41 @@ public class LaneRIM {
      *         IntersectionManager exists
      */
     public double distanceToFirstIntersection() {
-        if(intersectionManagers.isEmpty()) {
-            if(lane.hasNextLane()) {
-                return lane.getLength() +
-                        lane.getNextLane().getLaneRIM().distanceToFirstIntersection();
-            }
+        assert lane instanceof LineSegmentLane;
+        assert !intersectionManagers.isEmpty();
+        IntersectionManager im = intersectionManagers.get(intersectionManagers.firstKey());
+        Point2D entry = im.getIntersection().getEntryPoint(lane);
+        Point2D exit = im.getIntersection().getExitPoint(lane);
+        // Means we exited the intersection
+        if (exit != null) {
             return Double.MAX_VALUE;
         }
-        // Otherwise, it's the distance from the start of the Lane to the entry
-        // point of the first IntersectionManager
-        IntersectionManager firstIM =
-                intersectionManagers.get(intersectionManagers.firstKey());
-        Point2D entry = firstIM.getIntersection().getEntryPoint(lane);
+        double distance = 0.0;
+        // If we haven't reached the entry
         if(entry == null) {
-            return 0; // The Lane starts out in the intersection.
+            distance += lane.getLength();
+            if (lane.hasNextLane()) {
+                Lane nextLane = lane.getNextLane();
+                distance += nextLane.getLength();
+                entry = im.getIntersection().getEntryPoint(nextLane);
+                exit = im.getIntersection().getExitPoint(nextLane);
+                while (nextLane.hasNextLane() && entry == null && exit == null) {
+                    nextLane = nextLane.getNextLane();
+                    distance += nextLane.getLength();
+                    entry = im.getIntersection().getEntryPoint(nextLane);
+                    exit = im.getIntersection().getExitPoint(nextLane);
+                }
+            }
+
+            // Means we are inside the intersection
+            if (entry == null && exit != null) {
+                return 0;
+            }
+            // Means we passed the intersection
+            if (entry == null && exit == null) {
+                return Double.MAX_VALUE;
+            }
+            else return distance;
         }
         // Otherwise just return the distance from the start of this Lane to
         // the place it enters the first intersection
@@ -135,6 +152,7 @@ public class LaneRIM {
      *          is, that enters an intersection, at any point
      */
     public Lane laneToFirstIntersection() {
+        assert lane instanceof LineSegmentLane;
         // If there aren't any more in this lane
         if(intersectionManagers.isEmpty()) {
             // Check the next Lane
@@ -150,23 +168,6 @@ public class LaneRIM {
     }
 
     /**
-     * Get the last IntersectionManager that this Lane, or any Lane that leads
-     * into it enters.  Recursively searches through all previous Lanes.
-     *
-     * @return the last IntersectionManager this Lane, or any Lane that leads
-     *         into it enters.
-     */
-    public IntersectionManager lastIntersectionManager() {
-        if(intersectionManagers.isEmpty()) {
-            if(lane.hasPrevLane()) {
-                return lane.getPrevLane().getLaneRIM().lastIntersectionManager();
-            }
-            return null;
-        }
-        return intersectionManagers.get(intersectionManagers.lastKey());
-    }
-
-    /**
      * Get the distance from the end of this Lane to the last
      * IntersectionManager that this Lane, or any Lane that leads into it
      * entered.  Recursively searches through all previous Lanes.  Returns
@@ -178,17 +179,48 @@ public class LaneRIM {
      *         IntersectionManager exists
      */
     public double remainingDistanceFromLastIntersection() {
-        if(intersectionManagers.isEmpty()) {
-            if(lane.hasPrevLane()) {
-                return lane.getLength() +
-                        lane.getPrevLane().getLaneRIM().
-                                remainingDistanceFromLastIntersection();
-            } else {
+        assert lane instanceof LineSegmentLane;
+        assert !intersectionManagers.isEmpty();
+        IntersectionManager im = intersectionManagers.get(intersectionManagers.firstKey());
+        Point2D entry = im.getIntersection().getEntryPoint(lane);
+        Point2D exit = im.getIntersection().getExitPoint(lane);
+        double distance = 0.0;
+        // Means we just entered the intersection
+        if (entry != null) {
+            return Double.MAX_VALUE;
+        }
+        // If we haven't reached the intersection
+        if(exit == null) {
+            distance += lane.getLength();
+            if (lane.hasPrevLane()) {
+                Lane prevLane = lane.getPrevLane();
+                distance += prevLane.getLength();
+                entry = im.getIntersection().getEntryPoint(prevLane);
+                exit = im.getIntersection().getExitPoint(prevLane);
+                while (prevLane.hasPrevLane() && entry == null && exit == null) {
+                    prevLane = prevLane.getPrevLane();
+                    distance += prevLane.getLength();
+                    entry = im.getIntersection().getEntryPoint(prevLane);
+                    exit = im.getIntersection().getExitPoint(prevLane);
+                }
+            }
+
+            // Means we reached the intersection
+            if (entry == null && exit != null) {
+                return distance;
+            }
+            // Means we haven't even entered the intersection
+            if (entry == null && exit == null) {
                 return Double.MAX_VALUE;
             }
-        } else {
-            return (1 - intersectionManagers.lastKey()) * lane.getLength();
+            // Means we were inside the intersection the whole time
+           else return 0;
         }
+        else {
+            distance = lane.getLength();
+            return distance;
+        }
+
     }
 
 
@@ -204,6 +236,7 @@ public class LaneRIM {
      *          <code>null</code> if none
      */
     public IntersectionManager nextIntersectionManager(Point2D p) {
+        assert lane instanceof LineSegmentLane;
         // First find how far along the point is.
         double index = lane.normalizedDistanceAlongLane(p);
         SortedMap<Double, IntersectionManager> remaining =
@@ -231,39 +264,15 @@ public class LaneRIM {
      *          intersection, return Double.MAX_VALUE
      */
     public double distanceToNextIntersection(Point2D p) {
+        // Will always be the first intersection manager if we have just one intersection
         // First determine how far along the Lane we are
+        assert lane instanceof LineSegmentLane;
         double index = lane.normalizedDistanceAlongLane(p);
-        // Now find all IntersectionManagers that are after this point (remember
-        // they are indexed by exit point)
-        SortedMap<Double, IntersectionManager> remaining =
-                intersectionManagers.tailMap(index);
-        // If there aren't any more in this lane
-        if (remaining.isEmpty()) {
-            // Check the next Lane
-            if (lane.hasNextLane()) {
-                return ((1 - index) * lane.getLength()) +
-                        lane.getNextLane().getLaneRIM().distanceToFirstIntersection();
-            } else {
-                // Otherwise, just say it is really really far away
-                return Double.MAX_VALUE;
-            }
-        } else {
-            // Otherwise, we need to figure out where we are and where the current
-            // Lane intersects the next intersection.
-            IntersectionManager nextIM = remaining.get(remaining.firstKey());
-            Point2D entry = nextIM.getIntersection().getEntryPoint(lane);
-            // Where does this Lane enter?
-            if (entry == null) { // It doesn't! It just exits! That means we're in it!
-                return 0.0;
-            } else {
-                // Otherwise, there is an entry point.  Find out how far along it is in
-                // the Lane
-                double entryFraction = lane.normalizedDistanceAlongLane(entry);
-                // Now, we want to return 0 if we are past the entry point, or the
-                // distance to the entry point otherwise
-                return Math.max(0.0, (entryFraction - index) * lane.getLength());
-            }
+        if (index >= 0) {
+            return lane.getLaneRIM().distanceToFirstIntersection() - index * lane.getLength();
         }
+        // Otherwise the point is not on the lane
+        return Double.MAX_VALUE;
     }
 
     /**
@@ -302,7 +311,7 @@ public class LaneRIM {
     /**
      * Find the distance from a point, projected onto the Lane, to the previous
      * intersection that a vehicle at that position on the Lane would have
-     * encountered.
+     * encountered. Returns Double.MAX_VALUE if point not on the lane or no previous intersection
      *
      * @param p the current location of the vehicle
      * @return  the distance from a point, projected onto the Lane, to the
@@ -310,30 +319,19 @@ public class LaneRIM {
      *          Lane would have encountered
      */
     public double distanceFromPrevIntersection(Point2D p) {
+        assert lane instanceof LineSegmentLane;
+        assert !intersectionManagers.isEmpty();
         // First determine how far along the Lane we are
         double index = lane.normalizedDistanceAlongLane(p);
-        // Now find all IntersectionManagers that are before this point (remember
-        // they are indexed by exit point)
-        SortedMap<Double, IntersectionManager> preceding =
-                intersectionManagers.headMap(index);
-        // If there aren't any in this lane
-        if(preceding.isEmpty()) {
-            // Check the previous Lane
-            if(lane.hasPrevLane()) {
-                return (index * lane.getLength()) +
-                        lane.getNextLane().getLaneRIM().
-                                remainingDistanceFromLastIntersection();
+        if (index >= 0) {
+            double distance = lane.getLaneRIM().remainingDistanceFromLastIntersection() - (1-index) * lane.getLength();
+            // Means we just got into the intersection
+            if (distance < 0) {
+                return 0.0;
             }
-            // Otherwise, just say it is really really far away
-            return Double.MAX_VALUE;
+            else return distance;
         }
-        // preceding.lastKey() is the relative distance to the exit point of the
-        // last Intersection in the Lane before our position, so we subtract that
-        // from our current relative position (index) to get the total relative
-        // distance. Then, multiply that by length to get an absolute distance.
-        // This can't be negative because the last key must be before index
-        // since we did a headMap.
-        return (index - preceding.lastKey()) * lane.getLength();
+        else return Double.MAX_VALUE;
     }
 
     // given an im
@@ -347,118 +345,56 @@ public class LaneRIM {
      *           into enters, after the given IntersectionManager
      */
     public IntersectionManager nextIntersectionManager(IntersectionManager im) {
-        // Build the cache if it doesn't exist
-        if(memoGetSubsequentIntersectionManager == null) {
-            memoGetSubsequentIntersectionManager =
-                    new HashMap<IntersectionManager, IntersectionManager>();
-            IntersectionManager lastIM = null;
-            // Now run through the IntersectionManagers in order and set up
-            // the cache
-            for(IntersectionManager currIM : intersectionManagers.values()) {
-                // Don't include the first one as a value, since it isn't subsequent
-                // to anything
-                if(lastIM != null) {
-                    memoGetSubsequentIntersectionManager.put(lastIM, currIM);
-                }
-                lastIM = currIM;
-            }
-            // Link up to the next Lane
-            if(lastIM != null && lane.hasNextLane()) {
-                memoGetSubsequentIntersectionManager.put(lastIM,
-                        lane.getNextLane().
-                                getLaneRIM().
-                                firstIntersectionManager());
-            }
-        }
-        return memoGetSubsequentIntersectionManager.get(im);
+        // There are no more intersection managers after this one
+        return null;
     }
 
-    /**
-     * Get the distance from the given IntersectionManager to the next
-     * one that that this Lane, or any Lane it leads into enters.
-     *
-     * @param im          the IntersectionManager at which to start
-     * @return            the distance, in meters, departing the given
-     *                    IntersectionManager, to reach the next
-     *                    IntersectionManager
-     */
-    public double distanceToNextIntersectionManager(IntersectionManager im) {
-        // Two cases: either the next intersection is in this Lane, or it is
-        // in a Lane connected to this one
-        IntersectionManager nextIM = nextIntersectionManager(im);
-        if(nextIM == null) {
-            // If there's no next intersection, we just return 0 since the
-            // behavior isn't well defined
-            return 0;
-        }
-        if(nextIM.getIntersection().isEnteredBy(lane)) {
-            // This is the easy case: just find the distance to the next
-            // intersection and divide by the speed limit
-            return im.getIntersection().getExitPoint(lane).distance(
-                    nextIM.getIntersection().getEntryPoint(lane));
-        } else {
-            // This is more challenging.  We need to keep adding it up the Lanes
-            // in between until we find it
-            // Start with the distance to the end of this Lane
-            double totalDist = remainingDistanceFromLastIntersection();
-            Lane currLane = lane.getNextLane();
-            // Okay, add up all the lanes until the IM
-            while(!nextIM.getIntersection().isEnteredBy(currLane)) {
-                totalDist += currLane.getLength();
-                currLane = currLane.getNextLane();
-            }
-            // Now we're at the Lane that actually enters the next IM
-            totalDist += currLane.getLaneRIM().distanceToFirstIntersection();
-            return totalDist;
-        }
-    }
-
-    /**
-     * Get the approximate time from the given IntersectionManager to the next
-     * one that that this Lane, or any Lane it leads into enters, based on
-     * distances and speed limits.
-     *
-     * @param im          the IntersectionManager at which to start
-     * @param maxVelocity the maximum velocity of the vehicle
-     * @return            the time, in seconds, that it should take once
-     *                    departing the given IntersectionManager, to reach the
-     *                    next IntersectionManager
-     */
-    public double timeToNextIntersectionManager(IntersectionManager im,
-                                                double maxVelocity) {
-        // Two cases: either the next intersection is in this Lane, or it is
-        // in a Lane connected to this one
-        IntersectionManager nextIM = nextIntersectionManager(im);
-        if(nextIM == null) {
-            // If there's no next intersection, we just return 0 since the
-            // behavior isn't well defined
-            return 0;
-        }
-        if(nextIM.getIntersection().isEnteredBy(lane)) {
-            // This is the easy case: just find the distance to the next
-            // intersection and divide by the speed limit
-            return im.getIntersection().getExitPoint(lane).distance(
-                    nextIM.getIntersection().getEntryPoint(lane)) /
-                    Math.min(lane.getSpeedLimit(), maxVelocity);
-        } else {
-            // This is more challenging.  We need to keep adding it up the Lanes
-            // in between until we find it
-            // Start with the distance to the end of this Lane
-            double totalTime = remainingDistanceFromLastIntersection() /
-                    lane.getSpeedLimit();
-            Lane currLane = lane.getNextLane();
-            // Okay, add up all the lanes until the IM
-            while(!nextIM.getIntersection().isEnteredBy(currLane)) {
-                totalTime += currLane.getLength() /
-                        Math.min(currLane.getSpeedLimit(), maxVelocity);
-                currLane = currLane.getNextLane();
-            }
-            // Now we're at the Lane that actually enters the next IM
-            totalTime += currLane.getLaneRIM().distanceToFirstIntersection() /
-                    Math.min(currLane.getSpeedLimit(), maxVelocity);
-            return totalTime;
-        }
-    }
+//    /**
+//     * Get the approximate time from the given IntersectionManager to the next
+//     * one that that this Lane, or any Lane it leads into enters, based on
+//     * distances and speed limits.
+//     *
+//     * @param im          the IntersectionManager at which to start
+//     * @param maxVelocity the maximum velocity of the vehicle
+//     * @return            the time, in seconds, that it should take once
+//     *                    departing the given IntersectionManager, to reach the
+//     *                    next IntersectionManager
+//     */
+//    public double timeToNextIntersectionManager(IntersectionManager im,
+//                                                double maxVelocity) {
+//        // Two cases: either the next intersection is in this Lane, or it is
+//        // in a Lane connected to this one
+//        IntersectionManager nextIM = nextIntersectionManager(im);
+//        if(nextIM == null) {
+//            // If there's no next intersection, we just return 0 since the
+//            // behavior isn't well defined
+//            return 0;
+//        }
+//        if(nextIM.getIntersection().isEnteredBy(lane)) {
+//            // This is the easy case: just find the distance to the next
+//            // intersection and divide by the speed limit
+//            return im.getIntersection().getExitPoint(lane).distance(
+//                    nextIM.getIntersection().getEntryPoint(lane)) /
+//                    Math.min(lane.getSpeedLimit(), maxVelocity);
+//        } else {
+//            // This is more challenging.  We need to keep adding it up the Lanes
+//            // in between until we find it
+//            // Start with the distance to the end of this Lane
+//            double totalTime = remainingDistanceFromLastIntersection() /
+//                    lane.getSpeedLimit();
+//            Lane currLane = lane.getNextLane();
+//            // Okay, add up all the lanes until the IM
+//            while(!nextIM.getIntersection().isEnteredBy(currLane)) {
+//                totalTime += currLane.getLength() /
+//                        Math.min(currLane.getSpeedLimit(), maxVelocity);
+//                currLane = currLane.getNextLane();
+//            }
+//            // Now we're at the Lane that actually enters the next IM
+//            totalTime += currLane.getLaneRIM().distanceToFirstIntersection() /
+//                    Math.min(currLane.getSpeedLimit(), maxVelocity);
+//            return totalTime;
+//        }
+//    }
 
 
 }
