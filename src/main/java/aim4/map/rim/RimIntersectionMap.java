@@ -130,8 +130,6 @@ public class RimIntersectionMap implements BasicRIMIntersectionMap {
     // CLASS CONSTRUCTORS
     /////////////////////////////////
 
-    //todo: For each road have only one segment lane for inside roundabout c1-c4
-
     /**
      * Create a grid map.
      *

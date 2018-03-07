@@ -78,7 +78,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                 0,
                 0);
 
-        double scaleFactor = 12;
+        double scaleFactor = 18;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
@@ -119,7 +119,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
 
         // Set arrival and departure lanes
         Lane arrivalLane = getNorthRoad().getEntryApproachLane();
-        Lane exitLane = getEastRoad().getExitApproachLane();
+        Lane exitLane = getWestRoad().getExitApproachLane();
 
         // Set vehicle spec
         Request.VehicleSpecForRequestMsg vehicleSpecForRequestMsg = new Request.VehicleSpecForRequestMsg(VehicleSpecDatabase.getVehicleSpecByName("VAN"));
