@@ -178,6 +178,16 @@ public class RIMAutoDriver extends RIMDriver implements AutoDriverCoordinatorVie
     }
 
     /**
+     * Get the distance to the fist approach lane of the intersection
+     *
+     * @return the distance to the next intersection given the current Lane
+     *         and position of the Vehicle.
+     */
+    public double distanceToNextApproachLane() {
+        return super.distanceToNextApproachingLane();
+    }
+
+    /**
      * Find the distance from the previous intersection in the Lane in which
      * the Vehicle is, from the position at which the Vehicle is.  This
      * subtracts the length of the Vehicle from the distance from the front

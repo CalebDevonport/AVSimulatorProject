@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver;
 
+import aim4.config.Debug;
+import aim4.map.rim.RimIntersectionMap;
 import aim4.vehicle.VehicleDriverModel;
 
 /**
@@ -86,6 +88,21 @@ public class DriverUtil {
     // Whichever's smaller - speed limit or max velocity of the vehicle
     return Math.min(vehicle.getSpec().getMaxVelocity(),
                     vehicle.getDriver().getCurrentLane().getSpeedLimit());
+  }
+
+  /**
+   * Determine the maximum velocity at which the Vehicle should travel
+   * given the Lane in which it is.
+   *
+   * @param vehicle  the vehicle
+   * @return the maximum velocity at which the Vehicle should travel
+   *         given the Lane in which it is
+   */
+  public static double calculateMaxFeasibleVelocityForRoundaboutLane(VehicleDriverModel vehicle) {
+    // TODO: should remove this function
+    // Whichever's smaller - speed limit or max velocity of the vehicle
+    return Math.min(vehicle.getSpec().getMaxVelocity(),
+            ((RimIntersectionMap) Debug.currentRimMap).getMaximumRoundaboutSpeedLimit());
   }
 
 

@@ -97,6 +97,17 @@ public abstract class RIMDriver extends BasicDriver implements RIMDriverSimModel
     }
 
     /**
+     * Find the distance to the next approaching lane of the roundabout
+     *
+     * @return the distance to the next approaching lane given the current Lane
+     *         and position of the Vehicle.
+     */
+    protected double distanceToNextApproachingLane() {
+        return getCurrentLane().getLaneRIM().
+                distanceToNextApproachingLane(getVehicle().gaugePosition());
+    }
+
+    /**
      * Find the distance from the previous intersection in the Lane in which
      * the Vehicle is, from the position at which the Vehicle is.  This
      * subtracts the length of the Vehicle from the distance from the front

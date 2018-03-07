@@ -370,6 +370,22 @@ public class RoadBasedIntersection implements Intersection{
     }
 
     /**
+     * Get the Roads incident to the space governed by this intersection by lane it contains.
+     *
+     * @return the roads managed by this intersection.
+     */
+    public Road getRoadByLane(Lane lane) {
+        Road roadByLane = null;
+        for (Road road : roads) {
+            if (road.getContinuousLanes().contains(lane)){
+                roadByLane = road;
+                break;
+            }
+        }
+        return roadByLane;
+    }
+
+    /**
      * Get the Lanes incident to the space governed by this intersection.
      *
      * @return the lanes managed by this intersection.

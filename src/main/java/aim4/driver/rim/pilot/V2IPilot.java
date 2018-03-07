@@ -175,6 +175,9 @@ public class V2IPilot {
      *
      */
     public void followCurrentLane(ReservationParameter rp) {
+        if (rp == null) {
+            return;
+        }
         // Lead distance will always be half of every LineLane
         double leadDist = driver.getCurrentLane().getLength() / 4;
         Point2D aimPoint;
