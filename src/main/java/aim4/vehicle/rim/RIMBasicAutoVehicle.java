@@ -188,6 +188,10 @@ public class RIMBasicAutoVehicle extends BasicAutoVehicle implements RIMAutoVehi
         return v2iOutbox;
     }
 
+    public Queue<I2VMessage> getI2VInbox() {
+        return i2vInbox;
+    }
+
     /**
      * {@inheritDoc}
      */
