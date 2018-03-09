@@ -1,5 +1,6 @@
 package aim4.map.rim;
 
+import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.im.rim.RoadBasedIntersection;
 import aim4.im.rim.RoadBasedTrackModel;
@@ -9,6 +10,7 @@ import aim4.im.rim.v2i.policy.BasePolicy;
 import aim4.im.rim.v2i.reservation.ReservationGridManager;
 import aim4.map.Road;
 import aim4.map.rim.destination.DestinationSelector;
+import aim4.map.rim.destination.RandomDestinationSelector;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -70,6 +72,20 @@ public class RimMapUtil {
             sp.setVehicleSpecChooser(
                     new RimMapUtil.UniformSpawnSpecGenerator(trafficLevel)
             );
+        }
+    }
+
+    /**
+     * Set the uniform random spawn points.
+     *
+     * @param map           the map
+     * @param trafficLevel  the traffic level
+     */
+    public static void setUniformRandomSpawnPoints(final RimIntersectionMap map, //TODO: Remove finality
+                                                   double trafficLevel) {
+        for(RIMSpawnPoint sp : map.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new UniformSpawnSpecGenerator(trafficLevel,new RandomDestinationSelector(map)));
         }
     }
 
@@ -219,8 +235,8 @@ public class RimMapUtil {
                 if (Util.random.nextDouble() < prob) {
                     int i = Util.randomIndex(proportion);
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
-                    Road destinationRoad =
-                            destinationSelector.selectDestination(spawnPoint.getLane());
+                    Road destinationRoad = Debug.currentRimMap.getRoad(2);
+//                            destinationSelector.selectDestination(spawnPoint.getLane());
 
                     // maybe spawnPoint.getCurrentTime() is incorrect
                     result.add(new RIMSpawnPoint.RIMSpawnSpec(spawnPoint.getCurrentTime(),

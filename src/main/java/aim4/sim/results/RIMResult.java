@@ -303,8 +303,6 @@ public class RIMResult implements SimulatorResult{
         for(RIMVehicleResult vr : vehicleResults){
             sb.append(vr.getVin());
             sb.append(',');
-            sb.append(vr.getStartingRoad());
-            sb.append(',');
             sb.append(vr.getSpecType());
             sb.append(',');
             sb.append(vr.getStartTime());

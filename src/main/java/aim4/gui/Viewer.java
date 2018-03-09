@@ -31,10 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.gui;
 
 import aim4.config.Debug;
-import aim4.gui.viewer.AIMSimViewer;
-import aim4.gui.viewer.CPMSimViewer;
-import aim4.gui.viewer.MergeSimViewer;
-import aim4.gui.viewer.SimViewer;
+import aim4.gui.viewer.*;
 import aim4.sim.Simulator;
 
 import javax.swing.*;
@@ -48,7 +45,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * The viewer is a Graphical User Interface (GUI) that allows a user to run the
@@ -104,6 +101,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private SimViewer selectedViewer;
     /** Panel containing the AIMSimViewer*/
     private AIMSimViewer aimViewer;
+    /** Panel containing the RIMSimViewer*/
+    private RIMSimViewer rimViewer;
     /** Panel containing the MergeSimViewer*/
     private MergeSimViewer mergeViewer;
     /** Panel containing the CPMSimViewer*/
@@ -358,10 +357,12 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         });
 
         aimViewer = new AIMSimViewer(statusPanel, this);
+        rimViewer = new RIMSimViewer(statusPanel, this);
         mergeViewer = new MergeSimViewer(statusPanel, this);
         cpmViewer = new CPMSimViewer(statusPanel, this);
 
         tabbedPane.add("AIM", aimViewer);
+        tabbedPane.add("RIM", rimViewer);
         tabbedPane.add("MERGE", mergeViewer);
         tabbedPane.add("CPM", cpmViewer);
 
@@ -598,9 +599,15 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
             startUdpListenerMenuItem.setEnabled(false);
             stopUdpListenerMenuItem.setEnabled(true);
             ((AIMSimViewer) selectedViewer).startUdpListening();
-        } else {
+        }
+        else if (((RIMSimViewer) selectedViewer).udpListenerHasStarted()) {
+            startUdpListenerMenuItem.setEnabled(false);
+            stopUdpListenerMenuItem.setEnabled(true);
+            ((RIMSimViewer) selectedViewer).startUdpListening();
+        }else {
             System.err.printf("Failed to start UDP listener...\n");
         }
+
     }
 
     /**
@@ -614,7 +621,12 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
             stopUdpListenerMenuItem.setEnabled(false);
             ((AIMSimViewer) selectedViewer).stopUdpListening();
             ((AIMSimViewer) selectedViewer).removeUdpListener();
-        } else {
+        } else if (!((RIMSimViewer) selectedViewer).udpListenerHasStarted()) {
+            startUdpListenerMenuItem.setEnabled(true);
+            stopUdpListenerMenuItem.setEnabled(false);
+            ((RIMSimViewer) selectedViewer).stopUdpListening();
+            ((RIMSimViewer) selectedViewer).removeUdpListener();
+        }else {
             System.err.printf("Failed to stop UDP listener...\n");
         }
     }
@@ -774,6 +786,13 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                 ((AIMSimViewer) selectedViewer).setIsShowIMDebugShapes(true);
             } else {
                 ((AIMSimViewer) selectedViewer).setIsShowIMDebugShapes(false);
+            }
+            selectedViewer.updateCanvas();
+        } else if (source == showIMShapesMenuItem && selectedViewer.equals(rimViewer)) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                ((RIMSimViewer) selectedViewer).setIsShowIMDebugShapes(true);
+            } else {
+                ((RIMSimViewer) selectedViewer).setIsShowIMDebugShapes(false);
             }
             selectedViewer.updateCanvas();
         }

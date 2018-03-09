@@ -375,14 +375,22 @@ public class RoadBasedIntersection implements Intersection{
      * @return the roads managed by this intersection.
      */
     public Road getRoadByLane(Lane lane) {
-        Road roadByLane = null;
+        final Road[] roadByLane = {null};
         for (Road road : roads) {
             if (road.getContinuousLanes().contains(lane)){
-                roadByLane = road;
+                roadByLane[0] = road;
                 break;
+            } else {
+                road.getContinuousLanes().forEach(continuousLane -> {
+                    if (continuousLane instanceof ArcSegmentLane) {
+                        if (((ArcSegmentLane) continuousLane).getArcLaneDecomposition().contains(lane)) {
+                            roadByLane[0] = road;
+                        }
+                    }
+                });
             }
         }
-        return roadByLane;
+        return roadByLane[0];
     }
 
     /**

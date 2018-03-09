@@ -5,11 +5,16 @@ import aim4.sim.setup.rim.BasicSimSetup;
 
 import javax.swing.*;
 
-public class RimParamPanel extends JPanel {
+/**
+ * The autonomous driver only simulation parameter panel.
+ */
+public class AutoDriverOnlyParamPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     LabeledSlider trafficRateSlider;
-    LabeledSlider speedLimitSlider;
+    LabeledSlider roundaboutDiameterSlider;
+    LabeledSlider laneSpeedLimitSlider;
+    LabeledSlider roundaboutSpeedLimitSlider;
     LabeledSlider stopDistToIntersectionSlider;
     LabeledSlider numOfColumnSlider;
     LabeledSlider numOfRowSlider;
@@ -20,26 +25,42 @@ public class RimParamPanel extends JPanel {
      *
      * @param simSetup  the simulation setup
      */
-    public RimParamPanel(BasicSimSetup simSetup) {
+    public AutoDriverOnlyParamPanel(BasicSimSetup simSetup) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         // create the components
 
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
-                        simSetup.getTrafficLevel() * 3600.0,
-                        500.0, 100.0,
+                        0.0005 * 3600.0,
+                        500, 1,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
         add(trafficRateSlider);
 
-        speedLimitSlider =
-                new LabeledSlider(0.0, 80.0,
-                        simSetup.getSpeedLimit(),
-                        10.0, 5.0,
-                        "Speed Limit: %.0f meters/second",
+        roundaboutDiameterSlider =
+                new LabeledSlider(30.0, 45.0,
+                        simSetup.getRoundaboutDiameter(),
+                        35.0, 1.0,
+                        "Roundabout diameter: %.0f meters",
                         "%.0f");
-        add(speedLimitSlider);
+        add(roundaboutDiameterSlider);
+
+        laneSpeedLimitSlider =
+                new LabeledSlider(0.0, 13.88,
+                        simSetup.getLaneSpeedLimit(),
+                        1, 1,
+                        "Lane Speed Limit: %.0f meters/second",
+                        "%.0f");
+        add(laneSpeedLimitSlider);
+
+        roundaboutSpeedLimitSlider =
+                new LabeledSlider(0.0, 9.72,
+                        simSetup.getRoundaboutSpeedLimit(),
+                        1.0, 1.0,
+                        "Roundabout Speed Limit: %.0f meters/second",
+                        "%.0f");
+        add(roundaboutSpeedLimitSlider);
 
         stopDistToIntersectionSlider =
                 new LabeledSlider(0.0, 50.0,
@@ -50,7 +71,7 @@ public class RimParamPanel extends JPanel {
         add(stopDistToIntersectionSlider);
 
         numOfColumnSlider =
-                new LabeledSlider(1.0, 5.0,
+                new LabeledSlider(1.0, 1,
                         simSetup.getColumns(),
                         1.0, 1.0,
                         "Number of North-bound/South-bound Roads: %.0f",
@@ -58,7 +79,7 @@ public class RimParamPanel extends JPanel {
         add(numOfColumnSlider);
 
         numOfRowSlider =
-                new LabeledSlider(1.0, 5.0,
+                new LabeledSlider(1.0, 1,
                         simSetup.getColumns(),
                         1.0, 1.0,
                         "Number of East-bound/West-bound Roads: %.0f",
@@ -66,7 +87,7 @@ public class RimParamPanel extends JPanel {
         add(numOfRowSlider);
 
         lanesPerRoadSlider =
-                new LabeledSlider(1.0, 8.0,
+                new LabeledSlider(1.0, 1,
                         simSetup.getLanesPerRoad(),
                         1.0, 1.0,
                         "Number of Lanes per Road: %.0f",
@@ -86,12 +107,30 @@ public class RimParamPanel extends JPanel {
     }
 
     /**
-     * Get the speed limit.
+     * Get the roundabout diameter.
      *
      * @return the speed limit
      */
-    public double getSpeedLimit() {
-        return speedLimitSlider.getValue();
+    public double getRoundaboutDiameter() {
+        return roundaboutDiameterSlider.getValue();
+    }
+
+    /**
+     * Get the lane speed limit.
+     *
+     * @return the speed limit
+     */
+    public double getLaneSpeedLimit() {
+        return laneSpeedLimitSlider.getValue();
+    }
+
+    /**
+     * Get the lane speed limit.
+     *
+     * @return the speed limit
+     */
+    public double getRoundaboutSpeedLimit() {
+        return roundaboutSpeedLimitSlider.getValue();
     }
 
     /**
