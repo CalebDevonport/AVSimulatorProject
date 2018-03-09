@@ -4,7 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/aim4/driver/rim/coordinator/V2ICoordinator.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="Added test case when DA makes a request, the IM accepts it">
+    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
       <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/parampanel/rim/AutoDriverOnlyParamPanel.java" />
       <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/screen/rim/RIMCanvas.java" />
       <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/RIMSimSetupPanel.java" />
@@ -1352,7 +1352,14 @@
       <option name="project" value="LOCAL" />
       <updated>1520454599885</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Added simulation + gui">
+      <created>1520624890988</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1520624890988</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1433,7 +1440,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added intersection concept to IMGR" />
     <MESSAGE value="Add a special tile class for Rim, reservation calls and new applet to test granularity and occupied tiles" />
     <MESSAGE value="the array of reservations" />
     <MESSAGE value="the reservation grid for rim" />
@@ -1458,7 +1464,8 @@
     <MESSAGE value="minor change to suit a 4k display screen" />
     <MESSAGE value="Added DA capability to make requests to IM and estimate arrival" />
     <MESSAGE value="Added test case when DA makes a request, the IM accepts it" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test case when DA makes a request, the IM accepts it" />
+    <MESSAGE value="Added simulation + gui" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added simulation + gui" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -2076,10 +2083,10 @@ double decel = vehicle.getSpec().getMaxDeceleration();</expression-string>
         <state relative-caret-position="351">
           <caret line="397" column="0" lean-forward="false" selection-start-line="397" selection-start-column="0" selection-end-line="397" selection-end-column="0" />
           <folding>
-            <element signature="e#36269#36270#0" expanded="true" />
-            <element signature="e#36326#36327#0" expanded="true" />
-            <element signature="e#36366#36367#0" expanded="true" />
-            <element signature="e#36418#36419#0" expanded="true" />
+            <element signature="e#36213#36214#0" expanded="true" />
+            <element signature="e#36270#36271#0" expanded="true" />
+            <element signature="e#36310#36311#0" expanded="true" />
+            <element signature="e#36362#36363#0" expanded="true" />
           </folding>
         </state>
       </provider>
