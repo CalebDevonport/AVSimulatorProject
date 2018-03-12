@@ -758,12 +758,12 @@ public class V2ICoordinator implements Coordinator{
                 goBackToPlanningStateUponRejection(msg);
                 break;
             case BEFORE_NEXT_ALLOWED_COMM:
-                throw new RuntimeException("V2ICoordinator: Cannot send reqest "+
+                throw new RuntimeException("V2ICoordinator: Cannot send request "+
                         "message before the next allowed " +
                         "communication time");
             case ARRIVAL_TIME_TOO_LARGE:
                 System.err.printf("vin %d\n", vehicle.getVIN());
-                throw new RuntimeException("V2ICoordinator: cannot make reqest whose "+
+                throw new RuntimeException("V2ICoordinator: cannot make request whose "+
                         "arrival time is too far in the future");
             case ARRIVAL_TIME_TOO_LATE:
                 // This means that by the time our message got to IM, the arrival time
@@ -1562,7 +1562,7 @@ public class V2ICoordinator implements Coordinator{
         double d2 = VehicleUtil.distanceToCarInFront(vehicle);
         if (d2 >= Double.MAX_VALUE) return true;  // no car in front
         double d3 = d1 - d2;
-        return (d3 >= V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION);
+        return (d3 <= V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION);
     }
 
 

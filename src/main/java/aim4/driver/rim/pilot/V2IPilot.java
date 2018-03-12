@@ -166,6 +166,27 @@ public class V2IPilot {
         followCurrentLane(rp);
     }
 
+    /**
+     * Set the steering action when the vehicle is approaching the intersection.
+     */
+    public void takeSteeringActionForThrottle() {
+
+        double remainingDistanceAlongCurrentLane = driver.getCurrentLane().remainingDistanceAlongLane(vehicle.gaugePosition());
+        if (remainingDistanceAlongCurrentLane < 0.001 && driver.getCurrentLane().hasNextLane()) {
+            Lane nextLane;
+            if (driver.getCurrentLane().getNextLane() instanceof ArcSegmentLane) {
+                nextLane = ((ArcSegmentLane) driver.getCurrentLane().getNextLane()).getArcLaneDecomposition().get(0);
+            }
+            else {
+                nextLane = driver.getCurrentLane().getNextLane();
+            }
+            driver.setCurrentLane(nextLane);
+        }
+
+        // Use the basic lane-following behavior
+        followCurrentLane(null);
+    }
+
 
     /**
      * Turn the wheels to follow the current lane, using the given lead time.
@@ -175,9 +196,6 @@ public class V2IPilot {
      *
      */
     public void followCurrentLane(ReservationParameter rp) {
-        if (rp == null) {
-            return;
-        }
         // Lead distance will always be half of every LineLane
         double leadDist = driver.getCurrentLane().getLength() / 4;
         Point2D aimPoint;
@@ -185,10 +203,24 @@ public class V2IPilot {
         double remaining = driver.getCurrentLane().remainingDistanceAlongLane(vehicle.gaugePosition());
 
         // If nothing left then we may have to change the lane
+//        if (rp == null && remaining > 0){
+//            aimPoint = driver.getCurrentLane().getNextLane().getStartPoint();
+//            getVehicle().turnTowardPoint(aimPoint);
+//            return;
+//        }
         if (remaining < 0.001) {
-            // We may have to change the lane
-            takeSteeringActionForTraversing(rp);
-            return;
+            if (rp == null){
+                if (remaining < 0 && driver.getCurrentLane().hasNextLane()) {
+                    takeSteeringActionForThrottle();
+                    return;
+                } else if (remaining >= 0.0) {
+                    return;
+                }
+            } else {
+                // We may have to change the lane
+                takeSteeringActionForTraversing(rp);
+                return;
+            }
         }
         else {
             aimPoint = driver.getCurrentLane().getLeadPoint(vehicle.gaugePosition(), leadDist);
