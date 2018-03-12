@@ -73,28 +73,17 @@ public class TrafficVolume {
         leftTurnRoad.put(roadNameToRoadObj.get("WB"), roadNameToRoadObj.get("SB"));
         rightTurnRoad.put(roadNameToRoadObj.get("WB"), roadNameToRoadObj.get("NB"));
 
-        Map<String, List<Lane>> roadToLeftmostLanes =
-                new HashMap<String, List<Lane>>();
         Map<String, List<Lane>> roadToMiddleLanes =
-                new HashMap<String, List<Lane>>();
-        Map<String, List<Lane>> roadToRightmostLanes =
                 new HashMap<String, List<Lane>>();
 
         for(String roadName : roadNameTranslation.keySet()) {
             for (Road road : map.getRoads()) {
                 if (road.getName().equals(roadNameTranslation.get(roadName))) {
-                    roadToLeftmostLanes.put(roadName, new LinkedList<Lane>());
                     roadToMiddleLanes.put(roadName, new LinkedList<Lane>());
-                    roadToRightmostLanes.put(roadName, new LinkedList<Lane>());
 
                     Lane lane = road.getFirstLane();
-                    if (!lane.hasLeftNeighbor()) {
-                        roadToLeftmostLanes.get(roadName).add(lane);
-                    } else if (!lane.hasRightNeighbor()) {
-                        roadToRightmostLanes.get(roadName).add(lane);
-                    } else {
-                        roadToMiddleLanes.get(roadName).add(lane);
-                    }
+                    roadToMiddleLanes.get(roadName).add(lane);
+
                 }
             }
         }
@@ -103,43 +92,19 @@ public class TrafficVolume {
             String[] tokens = strs.get(i).split(",");
 
             if (tokens[1].equals("Left")) {
-                for(Lane lane : roadToLeftmostLanes.get(tokens[0])) {
-                    leftTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
                 for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
                     leftTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[3]) / Constants.numOfSecondPerHour);
-                }
-                for (Lane lane : roadToRightmostLanes.get(tokens[0])) {
-                    leftTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[4]) / Constants.numOfSecondPerHour);
+                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
                 }
             } else if (tokens[1].equals("Through")) {
-                for (Lane lane : roadToLeftmostLanes.get(tokens[0])) {
-                    throughVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
                 for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
                     throughVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[3]) / Constants.numOfSecondPerHour);
-                }
-                for (Lane lane : roadToRightmostLanes.get(tokens[0])) {
-                    throughVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[4]) / Constants.numOfSecondPerHour);
+                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
                 }
             } else if (tokens[1].equals("Right")) {
-                for (Lane lane : roadToLeftmostLanes.get(tokens[0])) {
-                    rightTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
                 for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
                     rightTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[3]) / Constants.numOfSecondPerHour);
-                }
-                for (Lane lane : roadToRightmostLanes.get(tokens[0])) {
-                    rightTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[4]) / Constants.numOfSecondPerHour);
+                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
                 }
             } else {
                 throw new RuntimeException("Invalid data file.\n");

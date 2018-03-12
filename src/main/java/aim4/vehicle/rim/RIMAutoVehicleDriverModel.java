@@ -82,4 +82,8 @@ public interface RIMAutoVehicleDriverModel extends AutoVehicleDriverModel{
      * @return the number of bits this Vehicle has transmitted
      */
     int getBitsTransmitted();
+
+    void setPrecedingVehicleVIN(int vin);
+
+    int getPrecedingVehicleVIN();
 }

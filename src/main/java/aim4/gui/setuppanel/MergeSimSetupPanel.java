@@ -21,7 +21,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
      * Merge types for Merge Combobox
      */
     final static String S2S_MERGE_TITLE = "Single-to-Single Merge";
-    final static String SINGLE_LANE_TEST = "Single Lane RimMapTestApplet";
+    final static String SINGLE_LANE_TEST = "Single Lane Test";
 
     //GUI ELEMENTS//
     private JComboBox mergeComboBox;

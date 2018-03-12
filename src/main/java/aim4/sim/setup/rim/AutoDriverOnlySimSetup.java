@@ -4,10 +4,13 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.rim.pilot.V2IPilot;
 import aim4.im.rim.v2i.reservation.ReservationGridManager;
+import aim4.map.BasicRIMIntersectionMap;
 import aim4.map.rim.RimIntersectionMap;
 import aim4.map.rim.RimMapUtil;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
+
+import java.io.File;
 
 /**
  * The setup for the simulator in which all vehicles are autonomous.
@@ -27,7 +30,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
      */
     public enum TrafficType {
         UNIFORM_RANDOM,
-        UNIFORM_TURNBASED,
+        UNIFORM_RATIO,
         FILE,
     }
 
@@ -40,7 +43,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     /** Whether the batch mode is on */
     private boolean isBatchMode = false;
     /** The traffic type */
-    private TrafficType trafficType = TrafficType.UNIFORM_RANDOM;
+    private TrafficType trafficType = TrafficType.FILE;
     /** The static buffer size */
     private double staticBufferSize = 0.25;
     /** The time buffer for internal tiles */
@@ -49,6 +52,9 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     private double granularity = 6.0;
     /** The name of the file about the traffic volume */
     private String trafficVolumeFileName = null;
+
+    //Set Json files
+    private File uploadTrafficSchedule;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -101,6 +107,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     // PUBLIC METHODS
     /////////////////////////////////
 
+    public void setUploadTrafficSchedule(File uploadTrafficSchedule) { this.uploadTrafficSchedule = uploadTrafficSchedule;}
     /**
      * Turn on or off the base line mode.
      *
@@ -127,7 +134,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
      * @param trafficLevel the traffic level
      */
     public void setUniformTurnBasedTraffic(double trafficLevel) {
-        this.trafficType = TrafficType.UNIFORM_TURNBASED;
+        this.trafficType = TrafficType.UNIFORM_RATIO;
         this.trafficLevel = trafficLevel;
     }
 
@@ -183,7 +190,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
         /* standard */
         ReservationGridManager.Config gridConfig =
                 new ReservationGridManager.Config(SimConfig.TIME_STEP,
-                        SimConfig.GRID_TIME_STEP,
+                        SimConfig.RIM_TIME_STEP,
                         staticBufferSize,
                         internalTileTimeBufferSize,
                         granularity);  // granularity
@@ -227,22 +234,30 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
                 case UNIFORM_RANDOM:
                     RimMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
                     break;
-//                case UNIFORM_TURNBASED:
-//                    RimMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
-//                    break;
-//
-//                case FILE:
-//                    RimMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
-//                    break;
+                case UNIFORM_RATIO:
+                    String trafficLevelVolumeName = "traffic_volumes.csv";
+                    RimMapUtil.setUniformRatioSpawnPoints(layout, trafficLevelVolumeName);
+                    break;
+                case FILE:
+                    setSpawnSpecs(layout);
+                    break;
             }
         } else {
             RimMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
-//            RimMapUtil.setBaselineSpawnPoints(layout, 12.0);
         }
 
 
         V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
                 stopDistBeforeIntersection;
         return new AutoDriverOnlySimulator(layout);
+    }
+
+    private void setSpawnSpecs(BasicRIMIntersectionMap layout) {
+        assert layout instanceof RimIntersectionMap;
+        if(uploadTrafficSchedule == null)
+            RimMapUtil.setUniformRandomSpawnPoints((RimIntersectionMap)layout, trafficLevel);
+        else
+            RimMapUtil.setJSONScheduleSpawnSpecGenerator((RimIntersectionMap)layout, uploadTrafficSchedule);
+
     }
 }

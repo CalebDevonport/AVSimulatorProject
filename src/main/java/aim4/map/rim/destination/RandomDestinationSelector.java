@@ -50,8 +50,7 @@ public class RandomDestinationSelector implements DestinationSelector {
         Road dest =
                 destinationRoads.get(Util.random.nextInt(destinationRoads.size()));
         while(dest.getDual() == currentRoad) {
-            dest =
-                    destinationRoads.get(Util.random.nextInt(destinationRoads.size()));
+            dest = destinationRoads.get(Util.random.nextInt(destinationRoads.size()));
         }
         return dest;
     }

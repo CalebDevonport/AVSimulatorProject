@@ -1113,6 +1113,16 @@ public class RimIntersectionMap implements BasicRIMIntersectionMap {
         return laneToRoad.get(lane);
     }
 
+    public Road getRoadByName(String nameOfRoad) {
+        final Road[] roadByName = {null};
+        roads.forEach(road -> {
+            if (road.getName().compareTo(nameOfRoad) == 0) {
+                roadByName[0] = road;
+            }
+        });
+        return roadByName[0];
+    }
+
     /**
      * Given any lane in the intersection, get the road it belongs.
      * Applies to all lanes (including line lanes from arc lanes).

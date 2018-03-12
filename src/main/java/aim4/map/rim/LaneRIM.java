@@ -87,8 +87,10 @@ public class LaneRIM {
      *         into enters
      */
     public IntersectionManager firstIntersectionManager() {
-        assert !intersectionManagers.isEmpty();
-        return intersectionManagers.get(intersectionManagers.firstKey());
+        if (intersectionManagers.isEmpty())
+            return null;
+        else
+            return intersectionManagers.get(intersectionManagers.firstKey());
     }
 
     /**
@@ -105,6 +107,13 @@ public class LaneRIM {
     public double distanceToFirstIntersection() {
         assert lane instanceof LineSegmentLane;
         assert !intersectionManagers.isEmpty();
+        if(intersectionManagers.isEmpty()) {
+            if(lane.hasNextLane()) {
+                return lane.getLength() +
+                        lane.getNextLane().getLaneRIM().distanceToFirstIntersection();
+            }
+            return Double.MAX_VALUE;
+        }
         IntersectionManager im = intersectionManagers.get(intersectionManagers.firstKey());
         Point2D entry = im.getIntersection().getEntryPoint(lane);
         Point2D exit = im.getIntersection().getExitPoint(lane);

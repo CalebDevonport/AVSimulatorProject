@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 
 /**
  * The simulation setup panel.
@@ -18,7 +19,7 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
 
     final static String AUTO_DRIVER_ONLY_SETUP_PANEL = "RIM Protocol";
 
-    /** The combox box */
+    /** The combo box */
     private JComboBox comboBox;
     /** The card panel */
     private JPanel cards; //a panel that uses CardLayout
@@ -91,6 +92,16 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
             simSetup2.setNumOfColumns(autoDriverOnlySetupPanel.getNumOfColumns());
             simSetup2.setNumOfRows(autoDriverOnlySetupPanel.getNumOfRows());
             simSetup2.setLanesPerRoad(autoDriverOnlySetupPanel.getLanesPerRoad());
+            if(autoDriverOnlySetupPanel.uploadTrafficSchedule != null) {
+
+                    autoDriverOnlySetupPanel.uploadTrafficSchedule = new File(autoDriverOnlySetupPanel.uploadTrafficScheduleTextbox.getText());
+                    simSetup2.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+
+
+            } else {
+                autoDriverOnlySetupPanel.uploadTrafficSchedule = null;
+                simSetup2.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+            }
             return simSetup2;
         } else {
             throw new RuntimeException(

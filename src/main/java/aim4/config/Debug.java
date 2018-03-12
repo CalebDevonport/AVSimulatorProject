@@ -229,13 +229,13 @@ public class Debug {
    * Whether or not the simulator shows the (expected) arrival time of the
    * request (if any) of the vehicles on screen.
    */
-  public static final boolean SHOW_ARRIVAL_TIME = false;
+  public static final boolean SHOW_ARRIVAL_TIME = true;
 
   /**
    * Whether or not the simulator shows the (expected) arrival time of the
    * request (if any) of the vehicles minus the current time on screen.
    */
-  public static final boolean SHOW_REMAINING_ARRIVAL_TIME = false;
+  public static final boolean SHOW_REMAINING_ARRIVAL_TIME = true;
 
   /**
    * Whether or not the simulator prints out the stage of the simulation in

@@ -102,6 +102,7 @@ public class RIMBasicAutoVehicle extends BasicAutoVehicle implements RIMAutoVehi
     private double minVelocity;
     private double finalXPos;
     private double finalYPos;
+    private int precedingVehicleVIN;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -224,6 +225,16 @@ public class RIMBasicAutoVehicle extends BasicAutoVehicle implements RIMAutoVehi
     public void receive(I2VMessage msg) {
         i2vInbox.add(msg);
         bitsReceived += msg.getSize();
+    }
+
+    @Override
+    public void setPrecedingVehicleVIN(int vin) {
+        this.precedingVehicleVIN = vin;
+    }
+
+    @Override
+    public int getPrecedingVehicleVIN() {
+        return this.precedingVehicleVIN;
     }
 
     /**

@@ -12,17 +12,15 @@ import aim4.map.Road;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
-import aim4.map.rim.RIMSpawnPoint;
 import aim4.msg.rim.i2v.I2VMessage;
 import aim4.msg.rim.v2i.V2IMessage;
 import aim4.sim.results.RIMResult;
 import aim4.sim.results.RIMVehicleResult;
-import aim4.vehicle.VehicleSpec;
+import aim4.sim.simulator.rim.helper.SpawnHelper;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.rim.ProxyVehicleSimModel;
 import aim4.vehicle.rim.RIMAutoVehicleSimModel;
-import aim4.vehicle.rim.RIMBasicAutoVehicle;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.*;
@@ -88,11 +86,9 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
 
     //Results aids//
     private List<RIMVehicleResult> vehiclesRecord;
-//    private Map<String, Double> specToExpectedTimeMergeLane;
-//    private Map<String, Double> specToExpectedTimeTargetLane;
 
-//    //Merge aids//
-//    private boolean mergeMode;
+    //HELPERS//
+    SpawnHelper spawnHelper;
 
     /////////////////////////////////
     // CLASS CONSTRUCTORS
@@ -104,41 +100,15 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
      * @param basicRIMIntersectionMap             the map of the simulation
      */
     public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
-        this(basicRIMIntersectionMap, false, null, null);
-    }
-
-    public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap, boolean mergeMode) {
-        this(basicRIMIntersectionMap, mergeMode, null, null);
-    }
-
-    //Only used with MergeMimicSimSetup
-    public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap,
-                                   boolean mergeMode,
-                                   Map<String, Double> specToExpectedTimeMergeLane,
-                                   Map<String, Double> specToExpectedTimeTargetLane){
-//        this.mergeMode = mergeMode;
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
-//        if(mergeMode) {
-//            Map<String, Double> fakeDelayTimes = new HashMap<String, Double>();
-//            for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++)
-//                fakeDelayTimes.put(VehicleSpecDatabase.getVehicleSpecById(specID).getName(), new Double(0));
-//            this.vehiclesRecord = new ArrayList<RIMVehicleResult>();
-//            if(specToExpectedTimeMergeLane != null)
-//                this.specToExpectedTimeMergeLane = specToExpectedTimeMergeLane;
-//            else
-//                this.specToExpectedTimeMergeLane = fakeDelayTimes;
-//            if(specToExpectedTimeTargetLane != null)
-//                this.specToExpectedTimeTargetLane = specToExpectedTimeMergeLane;
-//            else
-//                this.specToExpectedTimeTargetLane = fakeDelayTimes;
-//            this.specToExpectedTimeTargetLane = specToExpectedTimeTargetLane;
-//        }
+        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
+
     }
 
     /////////////////////////////////
@@ -156,7 +126,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
             System.err.printf("--------------------------------------\n");
             System.err.printf("------SIM:spawnVehicles---------------\n");
         }
-        spawnVehicles(timeStep);
+        spawnHelper.spawnVehicles(timeStep);
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:provideSensorInput---------------\n");
         }
@@ -311,90 +281,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     // PRIVATE METHODS
     /////////////////////////////////
 
-    /////////////////////////////////
-    // STEP 1
-    /////////////////////////////////
-
-    /**
-     * Spawn vehicles.
-     *
-     * @param timeStep  the time step
-     */
-    private void spawnVehicles(double timeStep) {
-        for(RIMSpawnPoint spawnPoint : basicRIMIntersectionMap.getSpawnPoints()) {
-            List<RIMSpawnPoint.RIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
-            if (!spawnSpecs.isEmpty()) {
-                if (canSpawnVehicle(spawnPoint)) {
-                    for(RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
-                        RIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        break; // only handle the first spawn vehicle
-                        // TODO: need to fix this
-                    }
-                } // else ignore the spawnSpecs and do nothing
-            }
-        }
-    }
-
-    /**
-     * Whether a spawn point can spawn any vehicle
-     *
-     * @param spawnPoint  the spawn point
-     * @return Whether the spawn point can spawn any vehicle
-     */
-    private boolean canSpawnVehicle(RIMSpawnPoint spawnPoint) {
-        // TODO: can be made much faster.
-        assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
-        Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
-        for(RIMVehicleSimModel vehicle : vinToVehicles.values()) {
-            if (vehicle.getShape().intersects(noVehicleZone)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Create a vehicle at a spawn point.
-     *
-     * @param spawnPoint  the spawn point
-     * @param spawnSpec   the spawn specification
-     * @return the vehicle
-     */
-    private RIMVehicleSimModel makeVehicle(RIMSpawnPoint spawnPoint,
-                                           RIMSpawnPoint.RIMSpawnSpec spawnSpec) {
-        VehicleSpec spec = spawnSpec.getVehicleSpec();
-        Lane lane = spawnPoint.getLane();
-        // Now just take the minimum of the max velocity of the vehicle, and
-        // the speed limit in the lane
-        double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
-        // Obtain a Vehicle
-        RIMAutoVehicleSimModel vehicle =
-                new RIMBasicAutoVehicle(spec,
-                        spawnPoint.getPosition(),
-                        spawnPoint.getHeading(),
-                        spawnPoint.getSteeringAngle(),
-                        initVelocity, // velocity
-                        initVelocity,  // target velocity
-                        spawnPoint.getAcceleration(),
-                        spawnSpec.getSpawnTime());
-        vehicle.setStartTime(spawnPoint.getCurrentTime());
-        vehicle.setMinVelocity(initVelocity);
-        vehicle.setMaxVelocity(initVelocity);
-//        if(spawnPoint.getHeading() == 0)
-//            vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
-//        else
-//            vehicle.setStartingRoad(RoadNames.MERGING_ROAD);
-        // Set the driver
-        RIMAutoDriver driver = new RIMAutoDriver(vehicle, basicRIMIntersectionMap);
-        driver.setCurrentLane(lane);
-        driver.setSpawnPoint(spawnPoint);
-        driver.setDestination(spawnSpec.getDestinationRoad());
-        vehicle.setDriver(driver);
-
-        return vehicle;
-    }
 
     /////////////////////////////////
     // STEP 2
