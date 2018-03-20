@@ -333,7 +333,8 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                     // Now check if this vehicle intersects any other lanes
                     for (Road road : Debug.currentRimMap.getRoads()) {
                         for (Lane otherLane : road.getContinuousLanes()) {
-                            if (otherLane.getId() != lane.getId()) {
+                            if (otherLane.getId() != lane.getId() &&
+                                    otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
                                 if (otherLane instanceof ArcSegmentLane) {
                                     for (LineSegmentLane otherLineLane : ((ArcSegmentLane) otherLane).getArcLaneDecomposition()){
                                         if (otherLineLane.getId() != lane.getId()){
@@ -344,8 +345,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                                         }
                                     }
                                 }
-                                else if (otherLane instanceof LineSegmentLane &&
-                                        otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                else if (otherLane instanceof LineSegmentLane) {
                                     double dstAlongOtherLane = otherLane.distanceAlongLane(vehicle.getPosition());
                                     vehicleLists.get(otherLane).put(dstAlongOtherLane, vehicle);
                                 }
