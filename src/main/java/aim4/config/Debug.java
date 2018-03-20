@@ -264,6 +264,11 @@ public class Debug {
    */
   public static boolean SHOW_VEHICLE_COLOR_BY_MSG_STATE = true;
 
+  /**
+   * Whether or not the simulator checks for collisions during a simulation.
+   */
+  public static final boolean CHECK_FOR_COLLISIONS = true;
+
 
   /////////////////////////////////
   // Debug Points

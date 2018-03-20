@@ -150,13 +150,19 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
         }
-//        checkForCollisions();
-        List<RIMVehicleSimModel> completedVehicles = new ArrayList<RIMVehicleSimModel>();
+        if (Debug.CHECK_FOR_COLLISIONS) {
+            System.err.printf("------SIM:checkForCollisions---------------\n");
+            checkForCollisions();
+        }
+//        List<RIMVehicleSimModel> completedVehicles = new ArrayList<RIMVehicleSimModel>();
 //        if(mergeMode) {
 //            //checkForCollisions(); TODO: Fix collision prevention so that this can be run.
 //            completedVehicles = calculateCompletedVehicles();
 //        }
 
+        if (Debug.PRINT_SIMULATOR_STAGE) {
+            System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
+        }
         List<Integer> completedVINs = cleanUpCompletedVehicles();
 
 //        if(mergeMode) {
@@ -318,14 +324,34 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                 IntersectionManager im =
                         lane.getLaneRIM().nextIntersectionManager(vehicle.getPosition());
                 // Only include this Vehicle if it is not in the intersection.
-                if((lane.getLaneRIM().distanceToNextIntersection(vehicle.getPosition())>0 &&
-                        lane.getLaneRIM().distanceToNextIntersection(vehicle.getPosition())<Double.MAX_VALUE)
-                        || im == null || !im.intersects(vehicle.getShape().getBounds2D())) {
+                if(im == null ||
+                        !(im.intersectsPoint(vehicle.getPosition()) && im.intersectsPoint(vehicle.getPointAtRear()))) {
                     // Now find how far along the lane it is.
-                    assert lane instanceof LineSegmentLane;
                     double dst = lane.distanceAlongLane(vehicle.getPosition());
                     // Now add it to the map.
                     vehicleLists.get(lane).put(dst, vehicle);
+                    // Now check if this vehicle intersects any other lanes
+                    for (Road road : Debug.currentRimMap.getRoads()) {
+                        for (Lane otherLane : road.getContinuousLanes()) {
+                            if (otherLane.getId() != lane.getId()) {
+                                if (otherLane instanceof ArcSegmentLane) {
+                                    for (LineSegmentLane otherLineLane : ((ArcSegmentLane) otherLane).getArcLaneDecomposition()){
+                                        if (otherLineLane.getId() != lane.getId()){
+                                            if (otherLineLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                                double dstAlongOtherLane = otherLineLane.distanceAlongLane(vehicle.getPosition());
+                                                vehicleLists.get(otherLineLane).put(dstAlongOtherLane, vehicle);
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (otherLane instanceof LineSegmentLane &&
+                                        otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                    double dstAlongOtherLane = otherLane.distanceAlongLane(vehicle.getPosition());
+                                    vehicleLists.get(otherLane).put(dstAlongOtherLane, vehicle);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -374,26 +400,33 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                         nextLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
                     }
                     else nextLane = lane.getNextLane();
-
+                    boolean found = false;
                     //If there are vehicles in this lane
                     if (vehicleLists.get(nextLane) != null && vehicleLists.get(nextLane).size() > 0) {
                         SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextLane);
                         Double firstKeyAfter = afterVehicles.firstKey();
                         RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-                        nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
+                        if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
+                            nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
+                            found = true;
+                        }
                     }
-                    else {
+                    if (!found) {
                         while (nextLane.hasNextLane()) {
                             Lane nextNextLane = nextLane.getNextLane();
-
+                            boolean foundAgain = false;
                             //If there are vehicles in this lane
                             if (vehicleLists.get(nextNextLane) != null && vehicleLists.get(nextNextLane).size() > 0) {
                                 SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextNextLane);
                                 Double firstKeyAfter = afterVehicles.firstKey();
                                 RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-                                nextVehicle.put(lastVehicleBefore,firstVehicleAfter);
-                                break;
-                            } else {
+                                if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
+                                    nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
+                                    foundAgain = true;
+                                    break;
+                                }
+                            }
+                            if (!foundAgain) {
                                 nextLane = nextNextLane;
                             }
 
