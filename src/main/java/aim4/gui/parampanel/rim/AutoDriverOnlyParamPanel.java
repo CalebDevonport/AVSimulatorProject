@@ -66,8 +66,8 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
 
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
-                        0.0005 * 3600.0,
-                        500, 1,
+                        simSetup.getTrafficLevel() * 3600.0,
+                        500, 100,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
         add(trafficRateSlider);

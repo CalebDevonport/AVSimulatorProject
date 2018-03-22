@@ -1,19 +1,24 @@
 package aim4.sim.simulator.rim.helper;
 
+import aim4.config.Debug;
 import aim4.driver.rim.RIMAutoDriver;
+import aim4.driver.rim.pilot.V2IPilot;
+import aim4.im.rim.IntersectionManager;
 import aim4.map.BasicRIMIntersectionMap;
+import aim4.map.Road;
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
+import aim4.map.lane.LineSegmentLane;
 import aim4.map.rim.RIMSpawnPoint;
 import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.rim.RIMAutoVehicleSimModel;
 import aim4.vehicle.rim.RIMBasicAutoVehicle;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpawnHelper {
     private BasicRIMIntersectionMap map;
@@ -36,11 +41,35 @@ public class SpawnHelper {
                 if(canSpawnVehicle(spawnPoint)) {
                     List<RIMVehicleSimModel> spawnedVehicles = new ArrayList<RIMVehicleSimModel>();
                     for(RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
-                        RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle);
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        spawnedVehicles.add(vehicle);
-                        break; // only handle the first spawn vehicle
+                        // First check if there is enough space to spawn a new vehicle and still have time to stop before reaching it
+                        Lane lane = spawnPoint.getLane();
+                        Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists = computeVehicleLists();
+
+                        // If there are some vehicles on this lane
+                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()){
+                            // Determine whether there is enough distance to stop if spawned with the speed limit
+                            double initVelocity = Math.min(spawnSpec.getVehicleSpec().getMaxVelocity(), lane.getSpeedLimit());
+                            // The closest vehicle will be the first one on the list
+                            double distanceTillNextVehicle = vehicleLists.get(lane).firstKey();
+                            double stoppingDistance = VehicleUtil.calcDistanceToStop(initVelocity,
+                                    spawnSpec.getVehicleSpec().getMaxDeceleration());
+                            double followingDistance = stoppingDistance + V2IPilot.MINIMUM_FOLLOWING_DISTANCE;
+                            // Need to subtract the length of the noVehicleZone as the vehicle will be able to slow down
+                            // after passing the noVehicleZone area
+                            if (distanceTillNextVehicle - Double.max(((Rectangle2D)spawnPoint.getNoVehicleZone()).getHeight(),
+                                    ((Rectangle2D)spawnPoint.getNoVehicleZone()).getWidth()) > followingDistance){
+                                RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
+                                VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                                vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            } // otherwise there is not enough space to slow down so don't spawn this vehicle
+                        }
+                        // Otherwise this is the first time we spawn vehicles
+                        else {
+                            RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
+                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                            vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        }
+                        break; // Only the first vehicle needed. TODO: FIX THIS
                     }
                     return spawnedVehicles;
                 }
@@ -63,6 +92,73 @@ public class SpawnHelper {
             }
         }
         return true;
+    }
+
+    /**
+     * Compute the lists of vehicles of all lanes.
+     *
+     * @return a mapping from lanes to lists of vehicles sorted by their
+     *         distance on their lanes
+     */
+    private Map<Lane,SortedMap<Double,RIMVehicleSimModel>> computeVehicleLists() {
+        // Set up the structure that will hold all the Vehicles as they are
+        // currently ordered in the Lanes
+        Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists =
+                new HashMap<Lane,SortedMap<Double,RIMVehicleSimModel>>();
+        for(Road road : Debug.currentRimMap.getRoads()) {
+            for (Lane lane : road.getContinuousLanes()) {
+                if (lane instanceof ArcSegmentLane) {
+                    ((ArcSegmentLane) lane).getArcLaneDecomposition().forEach(lineSegmentLane -> {
+                        vehicleLists.put(lineSegmentLane, new TreeMap<Double,RIMVehicleSimModel>());
+                    });
+                }
+                else vehicleLists.put(lane, new TreeMap<Double,RIMVehicleSimModel>());
+            }
+
+        }
+        // Now add each of the Vehicles, but make sure to exclude those that are
+        // already inside (partially or entirely) the intersection
+        for(RIMVehicleSimModel vehicle : vinToVehicles.values()) {
+            // Find out what lanes it is in.
+            Set<Lane> lanes = vehicle.getDriver().getCurrentlyOccupiedLanes();
+            for(Lane lane : lanes) {
+                // Find out what IntersectionManager is coming up for this vehicle
+                IntersectionManager im =
+                        lane.getLaneRIM().nextIntersectionManager(vehicle.getPosition());
+                // Only include this Vehicle if it is not in the intersection.
+                if(im == null ||
+                        !(im.intersectsPoint(vehicle.getPosition()) && im.intersectsPoint(vehicle.getPointAtRear()))) {
+                    // Now find how far along the lane it is.
+                    double dst = lane.distanceAlongLane(vehicle.getPosition());
+                    // Now add it to the map.
+                    vehicleLists.get(lane).put(dst, vehicle);
+                    // Now check if this vehicle intersects any other lanes
+                    for (Road road : Debug.currentRimMap.getRoads()) {
+                        for (Lane otherLane : road.getContinuousLanes()) {
+                            if (otherLane.getId() != lane.getId() &&
+                                    otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                if (otherLane instanceof ArcSegmentLane) {
+                                    for (LineSegmentLane otherLineLane : ((ArcSegmentLane) otherLane).getArcLaneDecomposition()){
+                                        if (otherLineLane.getId() != lane.getId()){
+                                            if (otherLineLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                                double dstAlongOtherLane = otherLineLane.distanceAlongLane(vehicle.getPosition());
+                                                vehicleLists.get(otherLineLane).put(dstAlongOtherLane, vehicle);
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (otherLane instanceof LineSegmentLane) {
+                                    double dstAlongOtherLane = otherLane.distanceAlongLane(vehicle.getPosition());
+                                    vehicleLists.get(otherLane).put(dstAlongOtherLane, vehicle);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return vehicleLists;
     }
 
     /**

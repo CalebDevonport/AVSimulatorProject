@@ -5,7 +5,7 @@ import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.util.Registry;
 import aim4.util.Util;
-import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -165,7 +165,7 @@ public class IntersectionManager {
      * @return        whether the Vehicle is currently entirely contained within
      *                the Area governed by this IntersectionManager
      */
-    public boolean contains(AIMVehicleSimModel vehicle) {
+    public boolean contains(RIMVehicleSimModel vehicle) {
         // Get all corners of the vehicle and make sure they are inside the
         // intersection.
         for(Point2D corner : vehicle.getCornerPoints()) {

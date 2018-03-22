@@ -24,6 +24,7 @@ import aim4.vehicle.rim.RIMAutoVehicleSimModel;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -156,7 +157,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         }
 //        List<RIMVehicleSimModel> completedVehicles = new ArrayList<RIMVehicleSimModel>();
 //        if(mergeMode) {
-//            //checkForCollisions(); TODO: Fix collision prevention so that this can be run.
 //            completedVehicles = calculateCompletedVehicles();
 //        }
 
@@ -333,21 +333,42 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                     // Now check if this vehicle intersects any other lanes
                     for (Road road : Debug.currentRimMap.getRoads()) {
                         for (Lane otherLane : road.getContinuousLanes()) {
-                            if (otherLane.getId() != lane.getId() &&
-                                    otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                            if (otherLane.getId() != lane.getId() && otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
                                 if (otherLane instanceof ArcSegmentLane) {
                                     for (LineSegmentLane otherLineLane : ((ArcSegmentLane) otherLane).getArcLaneDecomposition()){
-                                        if (otherLineLane.getId() != lane.getId()){
-                                            if (otherLineLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
-                                                double dstAlongOtherLane = otherLineLane.distanceAlongLane(vehicle.getPosition());
-                                                vehicleLists.get(otherLineLane).put(dstAlongOtherLane, vehicle);
+                                        if (otherLineLane.getId() != lane.getId() && otherLineLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())){
+                                            double interval = Double.MAX_VALUE ;
+                                            for(Line2D edge : vehicle.getEdges()) {
+                                                double dstAlongOtherLane = edge.ptSegDist(otherLineLane.getStartPoint());
+                                                if(dstAlongOtherLane < interval){
+                                                    interval = dstAlongOtherLane;
+                                                }
+                                            }
+                                            if (interval < 0) {
+                                                int i = 2;
+                                            }
+                                            if (interval < Double.MAX_VALUE) {
+                                                vehicleLists.get(otherLineLane).put(interval, vehicle);
                                             }
                                         }
                                     }
                                 }
                                 else if (otherLane instanceof LineSegmentLane) {
-                                    double dstAlongOtherLane = otherLane.distanceAlongLane(vehicle.getPosition());
-                                    vehicleLists.get(otherLane).put(dstAlongOtherLane, vehicle);
+                                    if (otherLane.getId() != lane.getId() && otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())){
+                                        double interval = Double.MAX_VALUE ;
+                                        for(Line2D edge : vehicle.getEdges()) {
+                                            double dstAlongOtherLane = edge.ptSegDist(otherLane.getStartPoint());
+                                            if(dstAlongOtherLane < interval){
+                                                interval = dstAlongOtherLane;
+                                            }
+                                        }
+                                        if (interval < 0) {
+                                            int i = 2;
+                                        }
+                                        if (interval < Double.MAX_VALUE) {
+                                            vehicleLists.get(otherLane).put(interval, vehicle);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -357,6 +378,33 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         }
 
         return vehicleLists;
+    }
+
+    /**
+     * Determine whether the given point intersects the Area governed
+     * by this IntersectionManager.
+     *
+     * @return          whether the point intersects the Area governed by
+     *                  this IntersectionManager
+     */
+    public boolean intersectsEntirely(Rectangle2D bounds, Shape vehicle) {
+        Area laneArea = new Area(bounds);
+        return laneArea.contains(vehicle.getBounds2D()) && laneArea.intersects(vehicle.getBounds2D());
+    }
+
+
+    /**
+     * Determine whether the given point intersects the Area governed
+     * by this IntersectionManager.
+     *
+     * @param point     the Point
+     * @return          whether the point intersects the Area governed by
+     *                  this IntersectionManager
+     */
+    public boolean intersectsPoint(Rectangle2D bounds, Point2D point) {
+        return (bounds.getX() < point.getX() && bounds.getY() < point.getY() &&
+                bounds.getX() + bounds.getWidth() > point.getX()  &&
+                bounds.getY() + bounds.getHeight() > point.getY());
     }
 
     /**
@@ -394,21 +442,25 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                 Double lastKeyBefore = beforeVehicles.lastKey();
                 RIMVehicleSimModel lastVehicleBefore = beforeVehicles.get(lastKeyBefore);
                 // With the first vehicle from the next continuous lane we find
-                if (lane.hasNextLane()){
+                if (lane.hasNextLane() && nextVehicle.get(lastKeyBefore) == null){
                     Lane nextLane;
                     if (lane instanceof ArcSegmentLane) {
                         nextLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
                     }
                     else nextLane = lane.getNextLane();
+                    if (nextLane instanceof ArcSegmentLane) {
+                        nextLane = ((ArcSegmentLane) nextLane).getArcLaneDecomposition().get(0);
+                    }
                     boolean found = false;
                     //If there are vehicles in this lane
                     if (vehicleLists.get(nextLane) != null && vehicleLists.get(nextLane).size() > 0) {
                         SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextLane);
-                        Double firstKeyAfter = afterVehicles.firstKey();
-                        RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-                        if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
-                            nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
-                            found = true;
+                        for (RIMVehicleSimModel firstVehicleAfter : afterVehicles.values()) {
+                            if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
+                                nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
+                                found = true;
+                                break;
+                            }
                         }
                     }
                     if (!found) {
@@ -418,11 +470,14 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                             //If there are vehicles in this lane
                             if (vehicleLists.get(nextNextLane) != null && vehicleLists.get(nextNextLane).size() > 0) {
                                 SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextNextLane);
-                                Double firstKeyAfter = afterVehicles.firstKey();
-                                RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-                                if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
-                                    nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
-                                    foundAgain = true;
+                                for (RIMVehicleSimModel firstVehicleAfter : afterVehicles.values()){
+                                    if (firstVehicleAfter.getVIN() != lastVehicleBefore.getVIN()) {
+                                        nextVehicle.put(lastVehicleBefore, firstVehicleAfter);
+                                        foundAgain = true;
+                                        break;
+                                    }
+                                }
+                                if (foundAgain) {
                                     break;
                                 }
                             }
