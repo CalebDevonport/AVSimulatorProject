@@ -61,6 +61,7 @@ public class SpawnHelper {
                                 RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
+                                spawnedVehicles.add(vehicle);
                             } // otherwise there is not enough space to slow down so don't spawn this vehicle
                         }
                         // Otherwise this is the first time we spawn vehicles
@@ -68,6 +69,7 @@ public class SpawnHelper {
                             RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            spawnedVehicles.add(vehicle);
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }

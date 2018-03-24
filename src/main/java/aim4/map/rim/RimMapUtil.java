@@ -347,7 +347,7 @@ public class RimMapUtil {
             //Spawn Vehicles
             List<RIMVehicleSimModel> spawnedVehicles =
                     spawnHelper.spawnVehicles(SimConfig.RIM_TIME_STEP);
-            if (spawnedVehicles != null) {
+            if (spawnedVehicles != null && spawnedVehicles.size() > 0) {
                 JSONObject scheduledSpawn = new JSONObject();
                 VehicleSpec vSpec = spawnedVehicles.get(0).getSpec(); //Only expecting one.
                 scheduledSpawn.put("specName", vSpec.getName());

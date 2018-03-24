@@ -43,7 +43,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     /** Whether the batch mode is on */
     private boolean isBatchMode = false;
     /** The traffic type */
-    private TrafficType trafficType = TrafficType.UNIFORM_RANDOM;
+    private TrafficType trafficType = TrafficType.FILE;
     /** The static buffer size */
     private double staticBufferSize = 0.25;
     /** The time buffer for internal tiles */
