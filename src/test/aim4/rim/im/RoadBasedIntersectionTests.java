@@ -34,7 +34,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        Lane entryApproachLane = map.getRoad(2).getEntryApproachLane();
+        Lane entryApproachLane = map.getRoads().get(2).getEntryApproachLane();
 
         //act
 
@@ -60,7 +60,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        Lane nonEntryApproachLane = map.getRoad(2).getEntryMergingLane();
+        Lane nonEntryApproachLane = map.getRoads().get(2).getEntryMergingLane();
 
         //act
 
@@ -86,7 +86,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoad(2).getEntryApproachLane());
+        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoads().get(2).getEntryApproachLane());
         Lane lane = entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size() - 1);
 
         //act
@@ -113,7 +113,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoad(2).getEntryApproachLane());
+        ArcSegmentLane entryApproachLane = ((ArcSegmentLane) map.getRoads().get(2).getEntryApproachLane());
         Lane lane = entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size() - 2);
 
         //act
@@ -140,7 +140,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        Lane exitApproachLane = map.getRoad(2).getExitApproachLane();
+        Lane exitApproachLane = map.getRoads().get(2).getExitApproachLane();
 
         //act
 
@@ -166,7 +166,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        Lane nonEntryApproachLane = map.getRoad(2).getExitMergingLane();
+        Lane nonEntryApproachLane = map.getRoads().get(2).getExitMergingLane();
 
         //act
 
@@ -192,7 +192,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoad(2).getExitApproachLane());
+        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoads().get(2).getExitApproachLane());
         Lane lane = exitApproachLane.getArcLaneDecomposition().get(0);
 
         //act
@@ -219,7 +219,7 @@ public class RoadBasedIntersectionTests {
                 0,
                 0);
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoad(2).getExitApproachLane());
+        ArcSegmentLane exitApproachLane = ((ArcSegmentLane) map.getRoads().get(2).getExitApproachLane());
         Lane lane = exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size() - 1);
 
         //act

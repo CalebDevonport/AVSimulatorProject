@@ -28,7 +28,6 @@ import aim4.vehicle.VinRegistry;
 import aim4.vehicle.rim.RIMAutoVehicleSimModel;
 import aim4.vehicle.rim.RIMBasicAutoVehicle;
 import org.junit.Ignore;
-import org.junit.Test;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -46,176 +45,176 @@ public class V2ICoordinatorTests {
     private static final double LANE_SPEED_LIMIT =  19.44;
     private static final double ROUNDABOUT_SPEED_LIMIT =  9.7222;
 
-    @Test
-    public void V2I_PREPARING_RESERVATION_withVehicleOnSpawningPoint_makesReservation(){
-        //arrange
-
-        // Create map
-        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
-
-        // Create intersection
-        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-
-        // Create track model
-        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
-
-        // IM Registry
-        Registry<IntersectionManager> registry = new ArrayListRegistry<>();
-
-        // Create IM
-        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, registry);
-
-
-        // Set Arrival and Departure
-        Lane currentLane = getNorthRoad().getContinuousLanes().get(0);
-        Road destinationRoad = getWestRoad();
-
-        // Set vehicle spec
-        VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecByName("VAN");
-
-        // Set traversal velocity
-        //todo: different speed limit
-        double traversalVelocity = ROUNDABOUT_SPEED_LIMIT - 0.5;
-
-        // Setup the vehicle
-        int vin = 1; // the vehicle id
-        Lane vehicleSpawnPointLane = getNorthRoad().getFirstLane();
-        Point2D vehiclePosition = vehicleSpawnPointLane.getPointAtNormalizedDistance(vehicleSpawnPointLane.normalizedDistance(16.00));
-        RIMBasicAutoVehicle vehicle = new RIMBasicAutoVehicle(spec, vehiclePosition,
-                vehicleSpawnPointLane.getInitialHeading(), // Heading
-                0.0,  // Steering angle
-                traversalVelocity, // velocity
-                0.0, // target velocity
-                0.0, // Acceleration
-                0.0);
-
-        // Setup the driver
-        RIMAutoDriver rimAutoDriver = new RIMAutoDriver(vehicle, map);
-
-        rimAutoDriver.setCurrentLane(currentLane);
-        rimAutoDriver.setDestination(destinationRoad);
-
-        // Set the driver onto the vehicle
-        vehicle.setDriver(rimAutoDriver);
-
-        // Register the vehicle
-        RIMAutoVehicleSimModel vehicleSimModel = vehicle;
-        VinRegistry.registerVehicleWithExistingVIN(vehicleSimModel, vin);
-
-        //act
-        rimAutoDriver.act();
-        V2ICoordinator coordinator = (V2ICoordinator) rimAutoDriver.getCurrentCoordinator();
-
-        //assert
-        assert coordinator.getState() == V2ICoordinator.State.V2I_AWAITING_RESPONSE;
-        assert rimAutoDriver.getVehicle().getLastV2IMessage().getMessageType() == V2IMessage.Type.REQUEST;
-        Request request = (Request) rimAutoDriver.getVehicle().getLastV2IMessage();
-        assert request.getProposals().size() == 1;
-
-    }
-
-    @Test
-    public void V2I_AWAITING_RESPONSE_withRequestMade_receivesResponse(){
-        //arrange
-
-        // Create map
-        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
-
-        // Create intersection
-        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-
-        // Create track model
-        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
-
-        // IM Registry
-        Registry<IntersectionManager> registry = new ArrayListRegistry<>();
-
-        // Create config
-        ReservationGridManager.Config config = getConfig();
-
-        // Create request handler
-        FCFSRequestHandler fcfsRequestHandler = new FCFSRequestHandler();
-
-        // Create IM
-        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, registry);
-
-
-        // Set Arrival and Departure
-        Lane currentLane = getNorthRoad().getContinuousLanes().get(0);
-        Road destinationRoad = getWestRoad();
-
-        // Set vehicle spec
-        VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecByName("VAN");
-
-        // Set traversal velocity
-        double traversalVelocity = ROUNDABOUT_SPEED_LIMIT - 0.5;
-
-        // Setup the vehicle
-        int vin = 1; // the vehicle id
-        Lane vehicleSpawnPointLane = getNorthRoad().getFirstLane();
-        Point2D vehiclePosition = vehicleSpawnPointLane.getPointAtNormalizedDistance(vehicleSpawnPointLane.normalizedDistance(16.00));
-        RIMBasicAutoVehicle vehicle = new RIMBasicAutoVehicle(spec, vehiclePosition,
-                vehicleSpawnPointLane.getInitialHeading(), // Heading
-                0.0,  // Steering angle
-                traversalVelocity, // velocity
-                0.0, // target velocity
-                0.0, // Acceleration
-                0.0);
-
-        // Setup the driver
-        RIMAutoDriver rimAutoDriver = new RIMAutoDriver(vehicle, map);
-
-        rimAutoDriver.setCurrentLane(currentLane);
-        rimAutoDriver.setDestination(destinationRoad);
-
-        // Set the driver onto the vehicle
-        vehicle.setDriver(rimAutoDriver);
-
-        // Register the vehicle
-        RIMAutoVehicleSimModel vehicleSimModel = vehicle;
-        VinRegistry.registerVehicleWithExistingVIN(vehicleSimModel, vin);
-
-        // Set V21Manager
-        V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, map.getImRegistry());
-
-        // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
-        im.setPolicy(policy);
-
-        // Set manager
-        map.setManager(0, 0, im);
-
-        // Setup simulator
-        AutoDriverOnlySimulator simulator = new AutoDriverOnlySimulator(map);
-
-        //act
-        rimAutoDriver.act();
-        V2ICoordinator coordinator = (V2ICoordinator) rimAutoDriver.getCurrentCoordinator();
-
-        //assert
-        assert coordinator.getState() == V2ICoordinator.State.V2I_AWAITING_RESPONSE;
-        assert rimAutoDriver.getVehicle().getLastV2IMessage().getMessageType() == V2IMessage.Type.REQUEST;
-        Request request = (Request) rimAutoDriver.getVehicle().getLastV2IMessage();
-        assert request.getProposals().size() == 1;
-
-
-        // Get all active vehicles
-        simulator.vinToVehicles.put(vin, vehicle);
-
-        // Send the message to intersection manager
-        simulator.deliverV2IMessages();
-
-        // IM processes the messages
-        im.act(SimConfig.TIME_STEP);
-
-        // Send the message to vehicle's outbox
-        simulator.deliverI2VMessages();
-
-        assert vehicle.getI2VInbox().size() == 1;
-        List<I2VMessage> msgs = new ArrayList<I2VMessage>(vehicle.getI2VInbox());
-        assert msgs.get(0).getMessageType() == I2VMessage.Type.CONFIRM;
-
-    }
+//    @Test
+//    public void V2I_PREPARING_RESERVATION_withVehicleOnSpawningPoint_makesReservation(){
+//        //arrange
+//
+//        // Create map
+//        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
+//
+//        // Create intersection
+//        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+//
+//        // Create track model
+//        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
+//
+//        // IM Registry
+//        Registry<IntersectionManager> registry = new ArrayListRegistry<>();
+//
+//        // Create IM
+//        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, registry);
+//
+//
+//        // Set Arrival and Departure
+//        Lane currentLane = getNorthRoad().getContinuousLanes().get(0);
+//        Road destinationRoad = getWestRoad();
+//
+//        // Set vehicle spec
+//        VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecByName("VAN");
+//
+//        // Set traversal velocity
+//        //todo: different speed limit
+//        double traversalVelocity = ROUNDABOUT_SPEED_LIMIT - 0.5;
+//
+//        // Setup the vehicle
+//        int vin = 1; // the vehicle id
+//        Lane vehicleSpawnPointLane = getNorthRoad().getFirstLane();
+//        Point2D vehiclePosition = vehicleSpawnPointLane.getPointAtNormalizedDistance(vehicleSpawnPointLane.normalizedDistance(16.00));
+//        RIMBasicAutoVehicle vehicle = new RIMBasicAutoVehicle(spec, vehiclePosition,
+//                vehicleSpawnPointLane.getInitialHeading(), // Heading
+//                0.0,  // Steering angle
+//                traversalVelocity, // velocity
+//                0.0, // target velocity
+//                0.0, // Acceleration
+//                0.0);
+//
+//        // Setup the driver
+//        RIMAutoDriver rimAutoDriver = new RIMAutoDriver(vehicle, map);
+//
+//        rimAutoDriver.setCurrentLane(currentLane);
+//        rimAutoDriver.setDestination(destinationRoad);
+//
+//        // Set the driver onto the vehicle
+//        vehicle.setDriver(rimAutoDriver);
+//
+//        // Register the vehicle
+//        RIMAutoVehicleSimModel vehicleSimModel = vehicle;
+//        VinRegistry.registerVehicleWithExistingVIN(vehicleSimModel, vin);
+//
+//        //act
+//        rimAutoDriver.act();
+//        V2ICoordinator coordinator = (V2ICoordinator) rimAutoDriver.getCurrentCoordinator();
+//
+//        //assert
+//        assert coordinator.getState() == V2ICoordinator.State.V2I_AWAITING_RESPONSE;
+//        assert rimAutoDriver.getVehicle().getLastV2IMessage().getMessageType() == V2IMessage.Type.REQUEST;
+//        Request request = (Request) rimAutoDriver.getVehicle().getLastV2IMessage();
+//        assert request.getProposals().size() == 1;
+//
+//    }
+//
+//    @Test
+//    public void V2I_AWAITING_RESPONSE_withRequestMade_receivesResponse(){
+//        //arrange
+//
+//        // Create map
+//        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
+//
+//        // Create intersection
+//        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
+//
+//        // Create track model
+//        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
+//
+//        // IM Registry
+//        Registry<IntersectionManager> registry = new ArrayListRegistry<>();
+//
+//        // Create config
+//        ReservationGridManager.Config config = getConfig();
+//
+//        // Create request handler
+//        FCFSRequestHandler fcfsRequestHandler = new FCFSRequestHandler();
+//
+//        // Create IM
+//        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, registry);
+//
+//
+//        // Set Arrival and Departure
+//        Lane currentLane = getNorthRoad().getContinuousLanes().get(0);
+//        Road destinationRoad = getWestRoad();
+//
+//        // Set vehicle spec
+//        VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecByName("VAN");
+//
+//        // Set traversal velocity
+//        double traversalVelocity = ROUNDABOUT_SPEED_LIMIT - 0.5;
+//
+//        // Setup the vehicle
+//        int vin = 1; // the vehicle id
+//        Lane vehicleSpawnPointLane = getNorthRoad().getFirstLane();
+//        Point2D vehiclePosition = vehicleSpawnPointLane.getPointAtNormalizedDistance(vehicleSpawnPointLane.normalizedDistance(16.00));
+//        RIMBasicAutoVehicle vehicle = new RIMBasicAutoVehicle(spec, vehiclePosition,
+//                vehicleSpawnPointLane.getInitialHeading(), // Heading
+//                0.0,  // Steering angle
+//                traversalVelocity, // velocity
+//                0.0, // target velocity
+//                0.0, // Acceleration
+//                0.0);
+//
+//        // Setup the driver
+//        RIMAutoDriver rimAutoDriver = new RIMAutoDriver(vehicle, map);
+//
+//        rimAutoDriver.setCurrentLane(currentLane);
+//        rimAutoDriver.setDestination(destinationRoad);
+//
+//        // Set the driver onto the vehicle
+//        vehicle.setDriver(rimAutoDriver);
+//
+//        // Register the vehicle
+//        RIMAutoVehicleSimModel vehicleSimModel = vehicle;
+//        VinRegistry.registerVehicleWithExistingVIN(vehicleSimModel, vin);
+//
+//        // Set V21Manager
+//        V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, map.getImRegistry());
+//
+//        // Set policy
+//        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+//        im.setPolicy(policy);
+//
+//        // Set manager
+//        map.setManager(0, 0, im);
+//
+//        // Setup simulator
+//        AutoDriverOnlySimulator simulator = new AutoDriverOnlySimulator(map);
+//
+//        //act
+//        rimAutoDriver.act();
+//        V2ICoordinator coordinator = (V2ICoordinator) rimAutoDriver.getCurrentCoordinator();
+//
+//        //assert
+//        assert coordinator.getState() == V2ICoordinator.State.V2I_PLANNING;
+//        assert rimAutoDriver.getVehicle().getLastV2IMessage().getMessageType() == V2IMessage.Type.REQUEST;
+//        Request request = (Request) rimAutoDriver.getVehicle().getLastV2IMessage();
+//        assert request.getProposals().size() == 1;
+//
+//
+//        // Get all active vehicles
+//        simulator.vinToVehicles.put(vin, vehicle);
+//
+//        // Send the message to intersection manager
+//        simulator.deliverV2IMessages();
+//
+//        // IM processes the messages
+//        im.act(SimConfig.TIME_STEP);
+//
+//        // Send the message to vehicle's outbox
+//        simulator.deliverI2VMessages();
+//
+//        assert vehicle.getI2VInbox().size() == 1;
+//        List<I2VMessage> msgs = new ArrayList<I2VMessage>(vehicle.getI2VInbox());
+//        assert msgs.get(0).getMessageType() == I2VMessage.Type.CONFIRM;
+//
+//    }
 
 
     @Ignore
