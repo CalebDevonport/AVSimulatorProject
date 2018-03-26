@@ -31,22 +31,23 @@ public class SpawnHelper {
 
     /**
      * Spawns vehicles
+     *
      * @param timeStep The time step
      * @return A List of the Vehicles spawned. Null if no vehicles spawned.
      */
-    public List<RIMVehicleSimModel> spawnVehicles(double timeStep) {
-        for(RIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
+    public List<RIMVehicleSimModel> generateSpawnedVehicles(double timeStep) {
+        List<RIMVehicleSimModel> spawnedVehicles = new ArrayList<RIMVehicleSimModel>();
+        for (RIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<RIMSpawnPoint.RIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
-            if(!spawnSpecs.isEmpty()){
-                if(canSpawnVehicle(spawnPoint)) {
-                    List<RIMVehicleSimModel> spawnedVehicles = new ArrayList<RIMVehicleSimModel>();
-                    for(RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
+            if (!spawnSpecs.isEmpty()) {
+                if (canSpawnVehicle(spawnPoint)) {
+                    for (RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
                         // First check if there is enough space to spawn a new vehicle and still have time to stop before reaching it
                         Lane lane = spawnPoint.getLane();
-                        Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists = computeVehicleLists();
+                        Map<Lane, SortedMap<Double, RIMVehicleSimModel>> vehicleLists = computeVehicleLists();
 
                         // If there are some vehicles on this lane
-                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()){
+                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()) {
                             // Determine whether there is enough distance to stop if spawned with the speed limit
                             double initVelocity = Math.min(spawnSpec.getVehicleSpec().getMaxVelocity(), lane.getSpeedLimit());
                             // The closest vehicle will be the first one on the list
@@ -56,8 +57,8 @@ public class SpawnHelper {
                             double followingDistance = stoppingDistance + V2IPilot.MINIMUM_FOLLOWING_DISTANCE;
                             // Need to subtract the length of the noVehicleZone as the vehicle will be able to slow down
                             // after passing the noVehicleZone area
-                            if (distanceTillNextVehicle - Double.max(((Rectangle2D)spawnPoint.getNoVehicleZone()).getHeight(),
-                                    ((Rectangle2D)spawnPoint.getNoVehicleZone()).getWidth()) > followingDistance){
+                            if (distanceTillNextVehicle - Double.max(((Rectangle2D) spawnPoint.getNoVehicleZone()).getHeight(),
+                                    ((Rectangle2D) spawnPoint.getNoVehicleZone()).getWidth()) > followingDistance) {
                                 RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
@@ -73,11 +74,56 @@ public class SpawnHelper {
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }
-                    return spawnedVehicles;
                 }
             }
         }
-        return null;
+        return spawnedVehicles;
+    }
+
+    /**
+     * Spawns vehicles for step simulator
+     *
+     * @param timeStep The time step
+     */
+    public void spawnVehicles(double timeStep) {
+        for (RIMSpawnPoint spawnPoint : map.getSpawnPoints()) {
+            List<RIMSpawnPoint.RIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+            if (!spawnSpecs.isEmpty()) {
+                if (canSpawnVehicle(spawnPoint)) {
+                    for (RIMSpawnPoint.RIMSpawnSpec spawnSpec : spawnSpecs) {
+                        // First check if there is enough space to spawn a new vehicle and still have time to stop before reaching it
+                        Lane lane = spawnPoint.getLane();
+                        Map<Lane, SortedMap<Double, RIMVehicleSimModel>> vehicleLists = computeVehicleLists();
+
+                        // If there are some vehicles on this lane
+                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()) {
+                            // Determine whether there is enough distance to stop if spawned with the speed limit
+                            double initVelocity = Math.min(spawnSpec.getVehicleSpec().getMaxVelocity(), lane.getSpeedLimit());
+                            // The closest vehicle will be the first one on the list
+                            double distanceTillNextVehicle = vehicleLists.get(lane).firstKey();
+                            double stoppingDistance = VehicleUtil.calcDistanceToStop(initVelocity,
+                                    spawnSpec.getVehicleSpec().getMaxDeceleration());
+                            double followingDistance = stoppingDistance + V2IPilot.MINIMUM_FOLLOWING_DISTANCE;
+                            // Need to subtract the length of the noVehicleZone as the vehicle will be able to slow down
+                            // after passing the noVehicleZone area
+                            if (distanceTillNextVehicle - Double.max(((Rectangle2D) spawnPoint.getNoVehicleZone()).getHeight(),
+                                    ((Rectangle2D) spawnPoint.getNoVehicleZone()).getWidth()) > followingDistance) {
+                                RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
+                                VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                                vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            } // otherwise there is not enough space to slow down so don't spawn this vehicle
+                        }
+                        // Otherwise this is the first time we spawn vehicles
+                        else {
+                            RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
+                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                            vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        }
+                        break; // Only the first vehicle needed. TODO: FIX THIS
+                    }
+                }
+            }
+        }
     }
 
     /**

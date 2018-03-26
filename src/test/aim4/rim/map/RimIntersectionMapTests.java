@@ -95,13 +95,7 @@ public class RimIntersectionMapTests {
         assert northArc8.getNextLane() == northLine9;
 
         assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getPrevLane() == northLine1;
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(1);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2).getNextLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getPrevLane() == ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(2);
-        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(3).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0);
+        assert ((ArcSegmentLane) northArc2).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0);
 
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getPrevLane() == northArc2;
         assert ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(0).getNextLane() == ((ArcSegmentLane) northArc3).getArcLaneDecomposition().get(1);

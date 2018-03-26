@@ -72,14 +72,6 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                         "%.0f");
         add(trafficRateSlider);
 
-        scheduleTimeLimitSlider =
-                new LabeledSlider(0.0, 5000.0,
-                        1000.0,
-                        500.0, 100.0,
-                        "Schedule time limit: %.0fs",
-                        "%.0fs");
-        add(scheduleTimeLimitSlider);
-
         roundaboutDiameterSlider =
                 new LabeledSlider(30.0, 45.0,
                         simSetup.getRoundaboutDiameter(),
@@ -89,7 +81,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
         add(roundaboutDiameterSlider);
 
         laneSpeedLimitSlider =
-                new LabeledSlider(0.0, 13.88,
+                new LabeledSlider(0.0, 21.0,
                         simSetup.getLaneSpeedLimit(),
                         1, 1,
                         "Lane Speed Limit: %.0f meters/second",
@@ -97,20 +89,20 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
         add(laneSpeedLimitSlider);
 
         roundaboutSpeedLimitSlider =
-                new LabeledSlider(0.0, 9.72,
+                new LabeledSlider(0.0, 10.0,
                         simSetup.getRoundaboutSpeedLimit(),
                         1.0, 1.0,
                         "Roundabout Speed Limit: %.0f meters/second",
                         "%.0f");
         add(roundaboutSpeedLimitSlider);
 
-        stopDistToIntersectionSlider =
-                new LabeledSlider(0.0, 50.0,
-                        simSetup.getStopDistBeforeIntersection(),
-                        10.0, 1.0,
-                        "Stopping Distance Before Intersection: %.0f meters",
-                        "%.0f");
-        add(stopDistToIntersectionSlider);
+//        stopDistToIntersectionSlider =
+//                new LabeledSlider(0.0, 50.0,
+//                        simSetup.getStopDistBeforeIntersection(),
+//                        10.0, 1.0,
+//                        "Stopping Distance Before Intersection: %.0f meters",
+//                        "%.0f");
+//        add(stopDistToIntersectionSlider);
 
         numOfColumnSlider =
                 new LabeledSlider(1.0, 1,
@@ -135,6 +127,14 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                         "Number of Lanes per Road: %.0f",
                         "%.0f");
         add(lanesPerRoadSlider);
+
+        scheduleTimeLimitSlider =
+                new LabeledSlider(0.0, 5000.0,
+                        1000.0,
+                        500.0, 100.0,
+                        "Schedule time limit: %.0fs",
+                        "%.0fs");
+        add(scheduleTimeLimitSlider);
 
         numberOfSchedulesSlider =
                 new LabeledSlider(0, 100,

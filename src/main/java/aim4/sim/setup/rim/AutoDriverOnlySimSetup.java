@@ -1,5 +1,6 @@
 package aim4.sim.setup.rim;
 
+import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.rim.pilot.V2IPilot;
@@ -187,6 +188,13 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
                 lanesPerRoad,
                 medianSize,
                 distanceBetween);
+        // Set the minimum following distance based on the maximum speed limit
+        try {
+            V2IPilot.MINIMUM_FOLLOWING_DISTANCE =
+                    Constants.getMinimumFollowingDistanceBasedOnVelocity(Math.max(laneSpeedLimit, roundaboutSpeedLimit));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         /* standard */
         ReservationGridManager.Config gridConfig =
                 new ReservationGridManager.Config(SimConfig.TIME_STEP,
@@ -246,9 +254,6 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
             RimMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
         }
 
-
-        V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
-                stopDistBeforeIntersection;
         return new AutoDriverOnlySimulator(layout);
     }
 

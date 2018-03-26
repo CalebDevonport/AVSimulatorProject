@@ -87,8 +87,8 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
             simSetup2.setRoundaboutDiameter(autoDriverOnlySetupPanel.getRoundaboutDiameter());
             simSetup2.setLaneSpeedLimit(autoDriverOnlySetupPanel.getLaneSpeedLimit());
             simSetup2.setRoundaboutSpeedLimit(autoDriverOnlySetupPanel.getRoundaboutSpeedLimit());
-            simSetup2.setStopDistBeforeIntersection(
-                    autoDriverOnlySetupPanel.getStopDistToIntersection());
+//            simSetup2.setStopDistBeforeIntersection(
+//                    autoDriverOnlySetupPanel.getStopDistToIntersection());
             simSetup2.setNumOfColumns(autoDriverOnlySetupPanel.getNumOfColumns());
             simSetup2.setNumOfRows(autoDriverOnlySetupPanel.getNumOfRows());
             simSetup2.setLanesPerRoad(autoDriverOnlySetupPanel.getLanesPerRoad());

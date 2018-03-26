@@ -176,57 +176,6 @@ public class LaneRIMTests {
     }
 
     @Test
-    public void distanceToFirstIntersection_withLaneApproachingMore_returnsDistance() {
-        //arrange
-        // Create map
-        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
-
-        // Create intersection
-        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-
-        // Create track model
-        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
-
-        //act
-
-        // Create IM
-        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
-        ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
-
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition() - entryApproachLane.getArcLaneDecomposition().get(0).getLength();
-        double actual = entryApproachLane.getArcLaneDecomposition().get(1).getLaneRIM().distanceToFirstIntersection();
-
-        //assert
-        assertEquals(expected,actual, DELTA);
-    }
-
-    @Test
-    public void distanceToFirstIntersection_withLaneEntering_returnsDistance() {
-        //arrange
-        // Create map
-        RimIntersectionMap map = getRimIntersectionMap(ROUNDABOUT_DIAMETER.get(0));
-
-        // Create intersection
-        RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
-
-        // Create track model
-        TrackModel trackModel = new RoadBasedTrackModel(roadBasedIntersection);
-
-        //act
-
-        // Create IM
-        IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
-        ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
-
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition() -
-                3 * entryApproachLane.getArcLaneDecomposition().get(1).getLength();
-        double actual = entryApproachLane.getArcLaneDecomposition().get(3).getLaneRIM().distanceToFirstIntersection();
-
-        //assert
-        assertEquals(expected,actual, DELTA);
-    }
-
-    @Test
     public void distanceToFirstIntersection_withLaneInsideIntersectionInBeginning_returns0Distance() {
         //arrange
         // Create map

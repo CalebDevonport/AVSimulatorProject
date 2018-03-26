@@ -127,6 +127,9 @@ public class LaneRIM {
             distance += lane.getLength();
             if (lane.hasNextLane()) {
                 Lane nextLane = lane.getNextLane();
+                if (nextLane instanceof  ArcSegmentLane){
+                    nextLane = ((ArcSegmentLane) nextLane).getArcLaneDecomposition().get(0);
+                }
                 distance += nextLane.getLength();
                 entry = im.getIntersection().getEntryPoint(nextLane);
                 exit = im.getIntersection().getExitPoint(nextLane);
@@ -248,6 +251,9 @@ public class LaneRIM {
             distance += lane.getLength();
             if (lane.hasPrevLane()) {
                 Lane prevLane = lane.getPrevLane();
+                if (prevLane instanceof  ArcSegmentLane){
+                    prevLane = ((ArcSegmentLane) prevLane).getArcLaneDecomposition().get(((ArcSegmentLane) prevLane).getArcLaneDecomposition().size() - 1);
+                }
                 distance += prevLane.getLength();
                 entry = im.getIntersection().getEntryPoint(prevLane);
                 exit = im.getIntersection().getExitPoint(prevLane);
@@ -333,65 +339,6 @@ public class LaneRIM {
             return lineLane.getLaneRIM().distanceToFirstIntersection();
         }
 
-    }
-
-    /**
-     * Find the distance to the next approaching lane the vehicle will encounter.
-     * First projects the point onto the Lane.
-     *
-     * @param p the current location of the vehicle
-     * @return  the distance along the Lane from the point on the Lane nearest
-     *          to the given point to the next approaching lane a vehicle
-     *          at the given point will encounter; if there is no next
-     *          approaching lane, return Double.MAX_VALUE
-     */
-    public double distanceToNextApproachingLane(Point2D p) {
-        // Will always be the first intersection manager if we have just one intersection
-        // First determine how far along the Lane we are
-        Lane lineLane = lane;
-        if (lane instanceof ArcSegmentLane){
-            lineLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
-        }
-        assert lineLane instanceof LineSegmentLane;
-        double index = lineLane.normalizedDistanceAlongLane(p);
-        if (index >= 0) {
-            return lineLane.getLaneRIM().distanceToFirstApproachingLane() - index * lineLane.getLength();
-        }
-        // Else we may have not reached the intersection
-        else {
-            return lineLane.getLaneRIM().distanceToFirstApproachingLane();
-        }
-
-    }
-
-    /**
-     * Find the next Lane, including this one, that will enter an intersection,
-     * starting at the point in this Lane nearest the provided point.
-     *
-     * @param p the current location of the vehicle
-     * @return  the next Lane, following the chain of Lanes in which this Lane
-     *          is, that will enter an intersection, starting at the point in
-     *          this Lane nearest the provided point
-     */
-    public Lane laneToNextIntersection(Point2D p) {
-        // First determine how far along the Lane we are
-        double index = lane.normalizedDistanceAlongLane(p);
-        // Now find all IntersectionManagers that are after this point (remember
-        // they are indexed by exit point)
-        SortedMap<Double, IntersectionManager> remaining =
-                intersectionManagers.tailMap(index);
-        // If there aren't any more in this lane
-        if(remaining.isEmpty()) {
-            // Check the next Lane
-            if(lane.hasNextLane()) {
-                // Pass the buck to the next Lane after this one
-                return lane.getNextLane().getLaneRIM().laneToFirstIntersection();
-            }
-            // Otherwise, there are none.
-            return null;
-        }
-        // Otherwise, it is this one.
-        return lane;
     }
 
 

@@ -256,7 +256,7 @@ public class Debug {
   /**
    * Whether or not to print the random seed.
    */
-  public static final boolean IS_PRINT_RANDOM_SEED = true;
+  public static final boolean IS_PRINT_RANDOM_SEED = false;
 
   // TODO: remove the following later.
   /**
@@ -267,7 +267,7 @@ public class Debug {
   /**
    * Whether or not the simulator checks for collisions during a simulation.
    */
-  public static final boolean CHECK_FOR_COLLISIONS = false;
+  public static final boolean CHECK_FOR_COLLISIONS = true;
 
 
   /////////////////////////////////
