@@ -141,9 +141,8 @@ public class LaneRIMTests {
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane beginningLane = intersectionManager.getIntersection().getEntryRoads().get(0).getContinuousLanes().get(0);
-        ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
 
-        double expected =  beginningLane.getLength() + entryApproachLane.getLengthArcLaneDecomposition();
+        double expected =  beginningLane.getLength();
         double actual = beginningLane.getLaneRIM().distanceToFirstIntersection();
 
         //assert
@@ -168,7 +167,7 @@ public class LaneRIMTests {
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
 
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition();
+        double expected =  0.0;
         double actual = entryApproachLane.getArcLaneDecomposition().get(0).getLaneRIM().distanceToFirstIntersection();
 
         //assert
@@ -191,10 +190,10 @@ public class LaneRIMTests {
 
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
-        ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
+        LineSegmentLane lineSegmentLane = (LineSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane().getPrevLane();
 
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition() - entryApproachLane.getArcLaneDecomposition().get(0).getLength();
-        double actual = entryApproachLane.getArcLaneDecomposition().get(1).getLaneRIM().distanceToFirstIntersection();
+        double expected = lineSegmentLane.getLength();
+        double actual = lineSegmentLane.getLaneRIM().distanceToFirstIntersection();
 
         //assert
         assertEquals(expected,actual, DELTA);
@@ -218,8 +217,7 @@ public class LaneRIMTests {
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
 
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition() -
-                3 * entryApproachLane.getArcLaneDecomposition().get(1).getLength();
+        double expected =  0.0;
         double actual = entryApproachLane.getArcLaneDecomposition().get(3).getLaneRIM().distanceToFirstIntersection();
 
         //assert
@@ -292,10 +290,10 @@ public class LaneRIMTests {
 
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
-        ArcSegmentLane exitApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane();
+        LineSegmentLane exitLane = (LineSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane().getNextLane();
 
         double expected =  Double.MAX_VALUE;
-        double actual = exitApproachLane.getArcLaneDecomposition().get(0).getLaneRIM().distanceToFirstIntersection();
+        double actual = exitLane.getLaneRIM().distanceToFirstIntersection();
 
         //assert
         assertEquals(expected,actual, DELTA);
@@ -369,10 +367,9 @@ public class LaneRIMTests {
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane beginningLane = intersectionManager.getIntersection().getEntryRoads().get(0).getContinuousLanes().get(0);
-        ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
         Point2D point = beginningLane.getStartPoint();
 
-        double expected =  beginningLane.getLength() + entryApproachLane.getLengthArcLaneDecomposition();
+        double expected =  beginningLane.getLength();
         double actual = beginningLane.getLaneRIM().distanceToNextIntersection(point);
 
         //assert
@@ -399,7 +396,7 @@ public class LaneRIMTests {
         ArcSegmentLane entryApproachLane = (ArcSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
         Point2D point = beginningLane.getEndPoint();
 
-        double expected =  entryApproachLane.getLengthArcLaneDecomposition();
+        double expected =  0.0;
         double actual = beginningLane.getLaneRIM().distanceToNextIntersection(point);
 
         //assert
@@ -424,8 +421,7 @@ public class LaneRIMTests {
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane().getNextLane();
 
-        double expected = endingLane.getLength() +
-                ((ArcSegmentLane)intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane()).getLengthArcLaneDecomposition();
+        double expected = endingLane.getLength();
         double actual = endingLane.getLaneRIM().remainingDistanceFromLastIntersection();
 
         //assert
@@ -451,7 +447,7 @@ public class LaneRIMTests {
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane();
         LineSegmentLane endingLaneLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(((ArcSegmentLane) endingLane).getArcLaneDecomposition().size() -1);
 
-        double expected = ((ArcSegmentLane) endingLane).getLengthArcLaneDecomposition();
+        double expected = 0.0;
         double actual = endingLaneLane.getLaneRIM().remainingDistanceFromLastIntersection();
 
         //assert
@@ -475,9 +471,9 @@ public class LaneRIMTests {
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane();
-        LineSegmentLane endingLaneLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(0);
+        LineSegmentLane endingLaneLane = (LineSegmentLane) ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(0).getNextLane();
 
-        double expected = endingLaneLane.getLength();
+        double expected = 0.0;
         double actual = endingLaneLane.getLaneRIM().remainingDistanceFromLastIntersection();
 
         //assert
@@ -605,7 +601,7 @@ public class LaneRIMTests {
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane();
-        LineSegmentLane endingLaneLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(((ArcSegmentLane) endingLane).getArcLaneDecomposition().size() - 1);
+        LineSegmentLane endingLaneLane = (LineSegmentLane) intersectionManager.getIntersection().getEntryRoads().get(0).getEntryApproachLane().getPrevLane();
 
         double expected = Double.MAX_VALUE;
         double actual = endingLaneLane.getLaneRIM().remainingDistanceFromLastIntersection();
@@ -684,8 +680,7 @@ public class LaneRIMTests {
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane().getNextLane();
         Point2D point = endingLane.getEndPoint();
 
-        double expected = endingLane.getLength() +
-                ((ArcSegmentLane)intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane()).getLengthArcLaneDecomposition();
+        double expected = endingLane.getLength() ;
         double actual = endingLane.getLaneRIM().distanceFromPrevIntersection(point);
 
         //assert
@@ -711,8 +706,7 @@ public class LaneRIMTests {
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane().getNextLane();
         Point2D point = endingLane.getStartPoint();
 
-        double expected =
-                ((ArcSegmentLane)intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane()).getLengthArcLaneDecomposition();
+        double expected = 0.0;
         double actual = endingLane.getLaneRIM().distanceFromPrevIntersection(point);
 
         //assert
@@ -738,8 +732,7 @@ public class LaneRIMTests {
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane();
         Point2D point = endingLane.getEndPoint();
 
-        double expected =
-                ((ArcSegmentLane)intersectionManager.getIntersection().getEntryRoads().get(0).getExitApproachLane()).getLengthArcLaneDecomposition();
+        double expected = 0.0;
         double actual = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(((ArcSegmentLane) endingLane).getArcLaneDecomposition().size() - 1).getLaneRIM().distanceFromPrevIntersection(point);
 
         //assert
@@ -766,7 +759,7 @@ public class LaneRIMTests {
         LineSegmentLane endingLineLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(((ArcSegmentLane) endingLane).getArcLaneDecomposition().size() - 1);
         Point2D point = endingLineLane.getStartPoint();
 
-        double expected = endingLineLane.getLength() * 3;
+        double expected = 0.0;
         double actual = endingLineLane.getLaneRIM().distanceFromPrevIntersection(point);
 
         //assert
@@ -898,7 +891,7 @@ public class LaneRIMTests {
         // Create IM
         IntersectionManager intersectionManager = new IntersectionManager(roadBasedIntersection, trackModel, CURRENT_TIME, map.getImRegistry());
         Lane endingLane = intersectionManager.getIntersection().getEntryRoads().get(0).getEntryMergingLane().getPrevLane();
-        LineSegmentLane endingLineLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(((ArcSegmentLane) endingLane).getArcLaneDecomposition().size() - 1);
+        LineSegmentLane endingLineLane = ((ArcSegmentLane) endingLane).getArcLaneDecomposition().get(0);
         Point2D point = endingLineLane.getEndPoint();
 
         double expected = Double.MAX_VALUE;

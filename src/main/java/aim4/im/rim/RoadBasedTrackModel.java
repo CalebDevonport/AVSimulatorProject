@@ -161,14 +161,18 @@ public class RoadBasedTrackModel implements TrackModel{
                 }
             });
 
+            ArcSegmentLane arrivalLane = (ArcSegmentLane) arrival;
             ArcSegmentLane mergingEntryLane = (ArcSegmentLane) arrival.getNextLane();
             ArcSegmentLane insideLane = (ArcSegmentLane) mergingEntryLane.getNextLane();
             ArcSegmentLane mergingExitLane = (ArcSegmentLane) departure.getPrevLane();
+            ArcSegmentLane departureLane = (ArcSegmentLane) departure;
 
             double totalDistance =
+                            arrivalLane.getLengthArcLaneDecomposition() +
                             mergingEntryLane.getLengthArcLaneDecomposition() +
                             insideLane.getLengthArcLaneDecomposition() +
-                            mergingExitLane.getLengthArcLaneDecomposition();
+                            mergingExitLane.getLengthArcLaneDecomposition() +
+                                    departureLane.getLengthArcLaneDecomposition();
 
             // Handle north case
             if (arrivalRoad[0].getName() == "1st Avenue N") {

@@ -50,7 +50,7 @@ public class TiledRimAreaTestApplet extends Applet implements Runnable{
                 0,
                 0);
 
-        double scaleFactor = 4;
+        double scaleFactor = 11;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;

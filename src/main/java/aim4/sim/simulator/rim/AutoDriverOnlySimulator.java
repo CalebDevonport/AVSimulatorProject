@@ -12,11 +12,13 @@ import aim4.map.Road;
 import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
+import aim4.map.rim.RIMSpawnPoint;
 import aim4.msg.rim.i2v.I2VMessage;
 import aim4.msg.rim.v2i.V2IMessage;
 import aim4.sim.results.RIMResult;
 import aim4.sim.results.RIMVehicleResult;
 import aim4.sim.simulator.rim.helper.SpawnHelper;
+import aim4.util.Util;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.rim.ProxyVehicleSimModel;
@@ -488,131 +490,12 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                         }
                     }
                 }
-//                while (lane.hasNextLane()) {
-//                    Lane nextLane;
-//                    if (lane instanceof ArcSegmentLane) {
-//                        nextLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
-//                    }
-//                    else nextLane = lane.getNextLane();
-//
-//                    //If there are vehicles in this lane
-//                    if (vehicleLists.get(nextLane) != null && vehicleLists.get(nextLane).size() > 0) {
-//                        SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextLane);
-//                        Double firstKeyAfter = afterVehicles.firstKey();
-//                        RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-//                        nextVehicle.put(lastVehicleBefore,firstVehicleAfter);
-//                        break;
-//                    }
-//                    lane = nextLane;
-//
-//                }
             }
 
         }
 
         return nextVehicle;
     }
-
-//    /**
-//     * Compute the next vehicles of all vehicles.
-//     *
-//     * @param vehicleLists  a mapping from lanes to lists of vehicles sorted by
-//     *                      their distance on their lanes
-//     * @return a mapping from vehicles to next vehicles
-//     */
-//    private Map<Pair<RIMVehicleSimModel, Lane>, Pair<RIMVehicleSimModel, Lane>> computeNextVehicle(
-//            Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists) {
-//        // At this point we should only have mappings for start Lanes, and they
-//        // should include all the Lanes they run into.  Now we need to turn this
-//        // into a hash map that maps Vehicles to the next vehicle in the Lane
-//        // or any Lane the Lane runs into
-//        Map<Pair<RIMVehicleSimModel, Lane>, Pair<RIMVehicleSimModel, Lane>> nextVehicle =
-//                new HashMap<>();
-//        // For each of the ordered lists of vehicles
-//        for(SortedMap<Double,RIMVehicleSimModel> vehicleList : vehicleLists.values()) {
-//            Lane currentLane = null;
-//            for (Lane lane : vehicleLists.keySet()){
-//                if (vehicleLists.get(lane) == vehicleList){
-//                    currentLane = lane;
-//                }
-//            }
-//            assert currentLane != null;
-//            RIMVehicleSimModel lastVehicle = null;
-//            // Go through the Vehicles in order of their position in the Lane
-//            for(RIMVehicleSimModel currVehicle : vehicleList.values()) {
-//                if(lastVehicle != null) {
-//                    // Create the mapping from the previous Vehicle to the current one
-//                    nextVehicle.put(new Pair<RIMVehicleSimModel, Lane>(lastVehicle, currentLane),
-//                            new Pair<RIMVehicleSimModel, Lane>(currVehicle, currentLane));
-//                }
-//                lastVehicle = currVehicle;
-//            }
-//        }
-//        // Now link the vehicles
-//        for (Lane lane: vehicleLists.keySet()) {
-//            if (vehicleLists.get(lane).size() > 0) {
-//                // Means we need to link the last vehicle from this lane
-//                SortedMap<Double, RIMVehicleSimModel> beforeVehicles = vehicleLists.get(lane);
-//                Double lastKeyBefore = beforeVehicles.lastKey();
-//                RIMVehicleSimModel lastVehicleBefore = beforeVehicles.get(lastKeyBefore);
-//                // With the first vehicle from the next continuous lane we find
-//                if (lane.hasNextLane()){
-//                    Lane nextLane;
-//                    if (lane instanceof ArcSegmentLane) {
-//                        nextLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
-//                    }
-//                    else nextLane = lane.getNextLane();
-//
-//                    //If there are vehicles in this lane
-//                    if (vehicleLists.get(nextLane) != null && vehicleLists.get(nextLane).size() > 0) {
-//                        SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextLane);
-//                        Double firstKeyAfter = afterVehicles.firstKey();
-//                        RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-//                        nextVehicle.put(new Pair<>(lastVehicleBefore, lane),
-//                                new Pair<>(firstVehicleAfter,lane));
-//                    }
-//                    else {
-//                        while (nextLane.hasNextLane()) {
-//                            Lane nextNextLane = nextLane.getNextLane();
-//
-//                            //If there are vehicles in this lane
-//                            if (vehicleLists.get(nextNextLane) != null && vehicleLists.get(nextNextLane).size() > 0) {
-//                                SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextNextLane);
-//                                Double firstKeyAfter = afterVehicles.firstKey();
-//                                RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-//                                nextVehicle.put(new Pair<>(lastVehicleBefore, lane),
-//                                        new Pair<>(firstVehicleAfter,nextNextLane));
-//                                break;
-//                            }
-//                            nextLane = nextNextLane;
-//
-//                        }
-//                    }
-//                }
-////                while (lane.hasNextLane()) {
-////                    Lane nextLane;
-////                    if (lane instanceof ArcSegmentLane) {
-////                        nextLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
-////                    }
-////                    else nextLane = lane.getNextLane();
-////
-////                    //If there are vehicles in this lane
-////                    if (vehicleLists.get(nextLane) != null && vehicleLists.get(nextLane).size() > 0) {
-////                        SortedMap<Double, RIMVehicleSimModel> afterVehicles = vehicleLists.get(nextLane);
-////                        Double firstKeyAfter = afterVehicles.firstKey();
-////                        RIMVehicleSimModel firstVehicleAfter = afterVehicles.get(firstKeyAfter);
-////                        nextVehicle.put(lastVehicleBefore,firstVehicleAfter);
-////                        break;
-////                    }
-////                    lane = nextLane;
-////
-////                }
-//            }
-//
-//        }
-//
-//        return nextVehicle;
-//    }
 
     /**
      * Provide each vehicle with sensor information to allow it to make
@@ -628,8 +511,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                 computeVehicleLists();
         Map<RIMVehicleSimModel, RIMVehicleSimModel> nextVehicle =
                 computeNextVehicle(vehicleLists);
-//        Map<Pair <RIMVehicleSimModel, Lane>, Pair<RIMVehicleSimModel, Lane>> nextVehicle =
-//                computeNextVehicle(vehicleLists);
 
         provideIntervalInfo(nextVehicle);
         provideVehicleTrackingInfo(vehicleLists);
@@ -683,53 +564,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         }
     }
 
-//    private void provideIntervalInfo(
-//            Map<Pair <RIMVehicleSimModel, Lane>, Pair<RIMVehicleSimModel, Lane>> nextVehicle) {
-//
-//        // Now that we have this list set up, let's provide input to all the
-//        // Vehicles.
-//        for(RIMVehicleSimModel vehicle: vinToVehicles.values()) {
-//            // If the vehicle is autonomous
-//            if (vehicle instanceof RIMAutoVehicleSimModel) {
-//                RIMAutoVehicleSimModel autoVehicle = (RIMAutoVehicleSimModel)vehicle;
-//
-//                switch(autoVehicle.getLRFMode()) {
-//                    case DISABLED:
-//                        // Find the interval to the next vehicle
-//                        final double[] interval = new double[1];
-//                        final boolean[] hasNextVehicle = {false};
-//                        nextVehicle.keySet().forEach(key -> {
-//
-//                            if (key.getKey() == autoVehicle){
-//                                interval[0] = calcInterval(key, nextVehicle.get(key));
-//                                hasNextVehicle[0] = true;
-//                            }
-//                        });
-//                        if (hasNextVehicle[0] == false){
-//                            interval[0] = Double.MAX_VALUE;
-//                        }
-//
-//                        // Now actually record it in the vehicle
-//                        autoVehicle.getIntervalometer().record(interval[0]);
-//                        autoVehicle.setLRFSensing(false); // Vehicle is not using
-//                        // the LRF sensor
-//                        break;
-//                    case LIMITED:
-//                        // FIXME
-//                        autoVehicle.setLRFSensing(true); // Vehicle is using the LRF sensor
-//                        break;
-//                    case ENABLED:
-//                        // FIXME
-//                        autoVehicle.setLRFSensing(true); // Vehicle is using the LRF sensor
-//                        break;
-//                    default:
-//                        throw new RuntimeException("Unknown LRF Mode: " +
-//                                autoVehicle.getLRFMode().toString());
-//                }
-//            }
-//        }
-//    }
-
     /**
      * Provide tracking information to vehicles.
      *
@@ -760,26 +594,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                     // only consider the vehicles on the target lane
                     SortedMap<Double,RIMVehicleSimModel> vehiclesOnTargetLane =
                             vehicleLists.get(targetLane);
-//                    // Also consider the first vehicle on the next lane
-//                    if (targetLane.hasNextLane()) {
-//                        Lane nextTargetLane;
-//                        if (targetLane.getNextLane() instanceof ArcSegmentLane) {
-//                            nextTargetLane = ((ArcSegmentLane) targetLane.getNextLane()).getArcLaneDecomposition().get(0);
-//                        } else nextTargetLane = targetLane.getNextLane();
-//
-//                        while (nextTargetLane.hasNextLane()) {
-//                            if (vehicleLists.get(nextTargetLane) != null && vehicleLists.get(nextTargetLane).size() > 0) {
-//                                SortedMap<Double, RIMVehicleSimModel> vehiclesOnNextTargetLane =
-//                                        vehicleLists.get(nextTargetLane);
-//                                double distanceToFirstVehicleNextTagetLane = targetLane.getLength() + vehiclesOnNextTargetLane.firstKey();
-//                                RIMVehicleSimModel nextVehicle = vehiclesOnNextTargetLane.get(vehiclesOnNextTargetLane.firstKey());
-//                                vehiclesOnTargetLane.put(distanceToFirstVehicleNextTagetLane, nextVehicle);
-//                                break;
-//                            } else {
-//                                nextTargetLane = nextTargetLane.getNextLane();
-//                            }
-//                        }
-//                    }
 
                     // compute the distances and the corresponding vehicles
                     try {
@@ -860,54 +674,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
             return interval;
         }
     }
-
-//    /**
-//     * Calculate the distance between vehicle and the next vehicle on a lane.
-//     *
-//     * @param vehicle      the vehicle
-//     * @param nextVehicle  the next vehicle
-//     * @return the distance between vehicle and the next vehicle on a lane
-//     */
-//    private double calcInterval(Pair<RIMVehicleSimModel, Lane> vehicle,
-//                                Pair<RIMVehicleSimModel, Lane> nextVehicle) {
-//        // From Chiu: Kurt, if you think this function is not okay, probably
-//        // we should talk to see what to do.
-//        Point2D pos = vehicle.getKey().getPosition();
-//        if(nextVehicle.getKey().getShape().contains(pos)) {
-//            return 0.0;
-//        } else {
-//            // TODO: make it more efficient
-//            double interval = Double.MAX_VALUE ;
-//            // if they are on the same lane it's easy:
-//            if (vehicle.getValue().getId() == nextVehicle.getValue().getId()) {
-//                for (Line2D edge : nextVehicle.getKey().getEdges()) {
-//                    double dst = edge.ptSegDist(pos);
-//                    if (dst < interval) {
-//                        interval = dst;
-//                    }
-//                }
-//            }
-//            else {
-//                // The next vehicle is on a different continous lane
-//                assert vehicle.getValue() instanceof LineSegmentLane;
-//                double distanceAlongLane = vehicle.getValue().getLength();
-//                Lane nextLane = vehicle.getValue().getNextLane();
-//                while (nextLane.getId() != nextVehicle.getValue().getId()) {
-//                    distanceAlongLane += nextLane.getLength();
-//                    nextLane = nextLane.getNextLane();
-//                }
-//                // Now we got to our lane, just add the distance from beginning of this lane to the vehicle
-//                for (Line2D edge : nextVehicle.getKey().getEdges()) {
-//                    double dst = edge.ptSegDist(nextLane.getStartPoint());
-//                    dst += distanceAlongLane;
-//                    if (dst < interval) {
-//                        interval = dst;
-//                    }
-//                }
-//            }
-//            return interval;
-//        }
-//    }
     // Kurt's code:
     // interval = vehicle.getPosition().
     //   distance(nextVehicle.get(vehicle).getPointAtRear());

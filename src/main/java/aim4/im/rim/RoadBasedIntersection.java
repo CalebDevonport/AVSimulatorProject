@@ -80,6 +80,7 @@ public class RoadBasedIntersection implements Intersection{
      * A list of the waypoints where lanes either approach the intersection,
      * ordered by angle from the centroid.
      */
+    //TODO: Remove this concept. Think if needed.
     private List<Point2D> approachPoints = new ArrayList<Point2D>();
 
     // cache
@@ -195,7 +196,8 @@ public class RoadBasedIntersection implements Intersection{
     private void findStrictIntersectionArea(List<Road> roads) {
         Area areaOfConnection = new Area();
         for (Road road: roads){
-            for (int index = 3; index <= 5; index ++){
+            //TODO: Make this dynamic based on map
+            for (int index = 1; index <= 7; index ++){
                 areaOfConnection.add(new Area(road.getContinuousLanes().get(index).getShape()));
             }
         }
@@ -226,11 +228,11 @@ public class RoadBasedIntersection implements Intersection{
 
             // Entry point
             this.entryPoints.put(entryApproachLane,
-                    new WayPoint(entryApproachLane.getEndPoint()));
+                    new WayPoint(entryApproachLane.getStartPoint()));
 
-            // Entry heading corresponds to heading of last Line Lane of the respective arc Lane
+            // Entry heading corresponds to heading of last first Lane of the respective arc Lane
             this.entryHeadings.put(entryApproachLane,
-                    entryApproachLane.getArcLaneDecomposition().get(entryApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+                    entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
         }
 
         //Establish exit and approach exit points. This will correspond to last arc lane of every road
@@ -247,11 +249,11 @@ public class RoadBasedIntersection implements Intersection{
 
             // Exit point
             this.exitPoints.put(exitApproachLane,
-                    new WayPoint(exitApproachLane.getStartPoint()));
+                    new WayPoint(exitApproachLane.getEndPoint()));
 
-            // Exit heading corresponds to heading of first Line Lane of the respective arc Lane
+            // Exit heading corresponds to heading of last Line Lane of the respective arc Lane
             this.exitHeadings.put(exitApproachLane,
-                    exitApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
+                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
         }
     }
 
@@ -497,7 +499,7 @@ public class RoadBasedIntersection implements Intersection{
     @Override
     public WayPoint getEntryPoint(Lane l) {
         AtomicReference<WayPoint> entryPoint = new AtomicReference<>(entryPoints.get(l));
-        // If it's a line lane then it may be the last line lane of the entry approach lane
+        // If it's a line lane then it may be the first line lane of the entry approach lane
         if (l instanceof LineSegmentLane) {
             lanes.forEach(arcLane -> {
                 if (arcLane instanceof ArcSegmentLane) {
@@ -505,8 +507,8 @@ public class RoadBasedIntersection implements Intersection{
                         ((ArcSegmentLane) arcLane).getArcLaneDecomposition().forEach(lineSegmentLane -> {
                             if (((float) lineSegmentLane.getStartPoint().getX()) == ((float) l.getStartPoint().getX()) &&
                                     ((float) lineSegmentLane.getStartPoint().getY()) == ((float) l.getStartPoint().getY())
-                                    && ((float) l.getEndPoint().getX()) == ((float) entryPoints.get(arcLane).getX())
-                                    && ((float) l.getEndPoint().getY()) == ((float) entryPoints.get(arcLane).getY())) {
+                                    && ((float) l.getStartPoint().getX()) == ((float) entryPoints.get(arcLane).getX())
+                                    && ((float) l.getStartPoint().getY()) == ((float) entryPoints.get(arcLane).getY())) {
                                 entryPoint.set(entryPoints.get(arcLane));
                             }
                         });
@@ -605,10 +607,10 @@ public class RoadBasedIntersection implements Intersection{
                 if (arcLane instanceof ArcSegmentLane) {
                     if (exitPoints.get(arcLane) != null) {
                         ((ArcSegmentLane) arcLane).getArcLaneDecomposition().forEach(lineSegmentLane -> {
-                            if (((float) lineSegmentLane.getStartPoint().getX()) == ((float) l.getStartPoint().getX()) &&
-                                    ((float) lineSegmentLane.getStartPoint().getY()) == ((float) l.getStartPoint().getY())
-                                    && ((float) l.getStartPoint().getX()) == ((float) exitPoints.get(arcLane).getX())
-                                    && ((float) l.getStartPoint().getY()) == ((float) exitPoints.get(arcLane).getY())) {
+                            if (((float) lineSegmentLane.getEndPoint().getX()) == ((float) l.getEndPoint().getX()) &&
+                                    ((float) lineSegmentLane.getEndPoint().getY()) == ((float) l.getEndPoint().getY())
+                                    && ((float) l.getEndPoint().getX()) == ((float) exitPoints.get(arcLane).getX())
+                                    && ((float) l.getEndPoint().getY()) == ((float) exitPoints.get(arcLane).getY())) {
                                 exitPoint.set(exitPoints.get(arcLane));
                             }
                         });

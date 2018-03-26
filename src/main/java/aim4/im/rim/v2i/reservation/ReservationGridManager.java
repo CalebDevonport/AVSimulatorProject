@@ -636,8 +636,8 @@ public class ReservationGridManager implements
                 spec.getMaxTurnPerSecond());
         RIMBasicAutoVehicle testVehicle = new RIMBasicAutoVehicle(
                 newSpec,
-                arrivalLane.getEndPoint(), // Vehicle Initial Position
-                ((ArcSegmentLane) arrivalLane.getNextLane()).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
+                arrivalLane.getStartPoint(), // Vehicle Initial Position
+                ((ArcSegmentLane) arrivalLane).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
                 0.0, // Steering angle
                 arrivalVelocity, // velocity
                 0.0, // target velocity

@@ -396,8 +396,8 @@ public class VehicleUtil {
         // internal simulation
         RIMBasicAutoVehicle testVehicle = new RIMBasicAutoVehicle(
                 spec,
-                arrivalLane.getEndPoint(), // Position
-                ((ArcSegmentLane) arrivalLane.getNextLane()).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
+                arrivalLane.getStartPoint(), // Position
+                ((ArcSegmentLane) arrivalLane).getArcLaneDecomposition().get(0).getInitialHeading(), // Heading
                 0.0,  // Steering angle
                 traversalVelocity, // velocity
                 0.0, // target velocity

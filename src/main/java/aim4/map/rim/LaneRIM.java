@@ -127,12 +127,11 @@ public class LaneRIM {
             distance += lane.getLength();
             if (lane.hasNextLane()) {
                 Lane nextLane = lane.getNextLane();
-                distance += nextLane.getLength();
                 entry = im.getIntersection().getEntryPoint(nextLane);
                 exit = im.getIntersection().getExitPoint(nextLane);
                 while (nextLane.hasNextLane() && entry == null && exit == null) {
-                    nextLane = nextLane.getNextLane();
                     distance += nextLane.getLength();
+                    nextLane = nextLane.getNextLane();
                     entry = im.getIntersection().getEntryPoint(nextLane);
                     exit = im.getIntersection().getExitPoint(nextLane);
                 }
@@ -151,51 +150,6 @@ public class LaneRIM {
         // Otherwise just return the distance from the start of this Lane to
         // the place it enters the first intersection
         return lane.getStartPoint().distance(entry);
-    }
-
-    /**
-     * Get the distance from the start of this Lane to the first
-     * approaching lane that this Lane, or any Lane it leads into intersects.
-     * Recursively searches through all subsequent Lanes. Returns
-     * <code>Double.MAX_VALUE</code> if no such lane exists.
-     *
-     * @return the distance from the start of this Lane to the first
-     *         approaching lane this Lane, or any lane it leads into
-     *         intersects, or <code>Double.MAX_VALUE</code> if no such
-     *         lane exists
-     */
-    public double distanceToFirstApproachingLane() {
-        assert lane instanceof LineSegmentLane;
-        assert !intersectionManagers.isEmpty();
-        IntersectionManager im = intersectionManagers.get(intersectionManagers.firstKey());
-
-        //Find the approaching point for the road the current lane is part of
-        Point2D approachEntry = im.getIntersection().getApproachEntryPoint(lane);
-
-        double distance = 0.0;
-        // If we haven't reached the entry
-        if(approachEntry == null) {
-            distance += lane.getLength();
-            if (lane.hasNextLane()) {
-                Lane nextLane = lane.getNextLane();
-                approachEntry = im.getIntersection().getApproachEntryPoint(nextLane);
-                while (nextLane.hasNextLane() && approachEntry == null) {
-                    distance += nextLane.getLength();
-                    nextLane = nextLane.getNextLane();
-                    distance += nextLane.getLength();
-                    approachEntry = im.getIntersection().getApproachEntryPoint(nextLane);
-                }
-            }
-
-            // Means we there is no entry approach point
-            if (approachEntry == null) {
-                return Double.MAX_VALUE;
-            }
-            else return distance;
-        }
-        // Otherwise just return the distance from the start of this Lane to
-        // the place it enters the approach lane
-        return lane.getStartPoint().distance(approachEntry);
     }
 
     /**
@@ -248,12 +202,11 @@ public class LaneRIM {
             distance += lane.getLength();
             if (lane.hasPrevLane()) {
                 Lane prevLane = lane.getPrevLane();
-                distance += prevLane.getLength();
                 entry = im.getIntersection().getEntryPoint(prevLane);
                 exit = im.getIntersection().getExitPoint(prevLane);
                 while (prevLane.hasPrevLane() && entry == null && exit == null) {
-                    prevLane = prevLane.getPrevLane();
                     distance += prevLane.getLength();
+                    prevLane = prevLane.getPrevLane();
                     entry = im.getIntersection().getEntryPoint(prevLane);
                     exit = im.getIntersection().getExitPoint(prevLane);
                 }
@@ -271,7 +224,6 @@ public class LaneRIM {
            else return 0;
         }
         else {
-            distance = lane.getLength();
             return distance;
         }
 
@@ -331,35 +283,6 @@ public class LaneRIM {
         // Else we may have not reached the intersection
         else {
             return lineLane.getLaneRIM().distanceToFirstIntersection();
-        }
-
-    }
-
-    /**
-     * Find the distance to the next approaching lane the vehicle will encounter.
-     * First projects the point onto the Lane.
-     *
-     * @param p the current location of the vehicle
-     * @return  the distance along the Lane from the point on the Lane nearest
-     *          to the given point to the next approaching lane a vehicle
-     *          at the given point will encounter; if there is no next
-     *          approaching lane, return Double.MAX_VALUE
-     */
-    public double distanceToNextApproachingLane(Point2D p) {
-        // Will always be the first intersection manager if we have just one intersection
-        // First determine how far along the Lane we are
-        Lane lineLane = lane;
-        if (lane instanceof ArcSegmentLane){
-            lineLane = ((ArcSegmentLane) lane).getArcLaneDecomposition().get(0);
-        }
-        assert lineLane instanceof LineSegmentLane;
-        double index = lineLane.normalizedDistanceAlongLane(p);
-        if (index >= 0) {
-            return lineLane.getLaneRIM().distanceToFirstApproachingLane() - index * lineLane.getLength();
-        }
-        // Else we may have not reached the intersection
-        else {
-            return lineLane.getLaneRIM().distanceToFirstApproachingLane();
         }
 
     }

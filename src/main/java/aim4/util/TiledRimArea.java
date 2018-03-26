@@ -1,5 +1,9 @@
 package aim4.util;
 
+import aim4.config.Debug;
+import aim4.map.Road;
+import aim4.map.lane.ArcSegmentLane;
+
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
@@ -132,6 +136,91 @@ public class TiledRimArea {
             idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id));
 
         }
+
+        //Construct approach & merging entry tiles
+        for (Road road : Debug.currentRimMap.getRoads()){
+            createEntryTiles( 25.0, road);
+            createExitTiles( 25.0, road);
+
+        }
+
+    }
+
+    private void createEntryTiles(double angle, Road road) {
+        // The approach entry lane to be divided
+        ArcSegmentLane approachEntryLane = (ArcSegmentLane) road.getEntryApproachLane();
+
+        // The origin of the minimal and maximal circle
+        Point2D origin = new Point2D.Double(approachEntryLane.getArc().getCenterX(), approachEntryLane.getArc().getCenterY());
+        // The radius of the minimal circle
+        double minimalRadius = approachEntryLane.rightBorder().getWidth() / 2;
+        // The radius of the maximal circle
+        double maximalRadius = approachEntryLane.leftBorder().getWidth() / 2;
+
+        int offset = numberOfTiles;
+
+        //Create the entry tiles
+        for (int id = offset; id < offset + 2; id ++){
+            // Create first tile
+            Arc2D minimalArc = new Arc2D.Double();
+            Arc2D maximalArc = new Arc2D.Double();
+
+            double startAngle = approachEntryLane.getArc().getAngleStart() - (id- offset) * angle;
+
+            // Find minimal and maximal arc
+            minimalArc.setArcByCenter(origin.getX(), origin.getY(), minimalRadius, startAngle, -angle, 0);
+            maximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius, startAngle - angle, +angle, 0);
+
+            // Create tile shape
+            GeneralPath tileShape = new GeneralPath();
+            tileShape.moveTo(maximalArc.getEndPoint().getX(), maximalArc.getEndPoint().getY());
+            tileShape.lineTo(minimalArc.getStartPoint().getX(), minimalArc.getStartPoint().getY());
+            tileShape.append(minimalArc, false);
+            tileShape.lineTo(maximalArc.getStartPoint().getX(), maximalArc.getStartPoint().getY());
+            tileShape.append(maximalArc, true);
+
+            idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id));
+            numberOfTiles++;
+        }
+    }
+
+    private void createExitTiles(double angle, Road road) {
+        // The approach exit lane to be divided
+        ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane();
+
+        // The origin of the minimal and maximal circle
+        Point2D origin = new Point2D.Double(approachExitLane.getArc().getCenterX(), approachExitLane.getArc().getCenterY());
+        // The radius of the minimal circle
+        double minimalRadius = approachExitLane.rightBorder().getWidth() / 2;
+        // The radius of the maximal circle
+        double maximalRadius = approachExitLane.leftBorder().getWidth() / 2;
+
+        int offset = numberOfTiles;
+
+        //Create the exit tiles
+        for (int id = offset; id < offset + 2; id ++){
+            // Create first tile
+            Arc2D minimalArc = new Arc2D.Double();
+            Arc2D maximalArc = new Arc2D.Double();
+
+            double startAngle = approachExitLane.getArc().getAngleStart() + approachExitLane.getArc().getAngleExtent()
+                    + (id- offset) * angle;
+
+            // Find minimal and maximal arc
+            minimalArc.setArcByCenter(origin.getX(), origin.getY(), minimalRadius, startAngle, angle, 0);
+            maximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius, startAngle + angle, -angle, 0);
+
+            // Create tile shape
+            GeneralPath tileShape = new GeneralPath();
+            tileShape.moveTo(maximalArc.getEndPoint().getX(), maximalArc.getEndPoint().getY());
+            tileShape.lineTo(minimalArc.getStartPoint().getX(), minimalArc.getStartPoint().getY());
+            tileShape.append(minimalArc, false);
+            tileShape.lineTo(maximalArc.getStartPoint().getX(), maximalArc.getStartPoint().getY());
+            tileShape.append(maximalArc, true);
+
+            idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id));
+            numberOfTiles++;
+        }
     }
 
     //////////////////////////////////////////
@@ -208,7 +297,7 @@ public class TiledRimArea {
         List<Tile> occupiedTiles = new ArrayList<Tile>();
         // We only need to check the tiles that are within the bounding box
         Rectangle2D boundingBox = shape.getBounds2D();
-        idToTiles.forEach( tile -> {
+        idToTiles.forEach(tile -> {
             if (tile.getArea().intersects(boundingBox)) {
                 occupiedTiles.add(tile);
             }

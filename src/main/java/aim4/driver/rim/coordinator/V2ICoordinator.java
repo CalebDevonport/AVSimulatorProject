@@ -773,8 +773,6 @@ public class V2ICoordinator implements Coordinator{
                 // preparation in coordinator.
                 throw new RuntimeException("V2ICoordinator: Arrival time of request " +
                         "has already passed.");
-//                goBackToPlanningStateUponRejection(msg);
-//                break;
             default:
                 System.err.printf("%s\n", msg.getReason());
                 throw new RuntimeException("V2ICoordinator: Unknown reason for " +
@@ -886,181 +884,6 @@ public class V2ICoordinator implements Coordinator{
      */
     private class V2IPreparingReservationStateHandler implements StateHandler {
 
-//        /**
-//         * Estimates the arrival parameters at the intersection given a maximum
-//         * velocity.
-//         *
-//         * @param maxArrivalVelocity   the maximum desired arrival velocity
-//         *
-//         * @return the estimated arrival parameters at the intersection
-//         */
-//        private ArrivalEstimationResult estimateArrival(double maxArrivalVelocity) {
-//            // The basic parameters
-//            double time1 = vehicle.gaugeTime();
-//            double v1 = ((RIMBasicAutoVehicle) vehicle).getVelocity();
-//            double dTotal = driver.distanceToNextIntersection();
-//            // vTop is equal to max(road's speed limit, vehicle' max speed)
-//            double vRTop = DriverUtil.calculateMaxFeasibleVelocityForRoundaboutLane(vehicle);
-//            double vTop = DriverUtil.calculateMaxFeasibleVelocity(vehicle);
-//            double vEndMax = Math.min(vRTop, maxArrivalVelocity);
-//            double accel = vehicle.getSpec().getMaxAcceleration();
-//            double decel = vehicle.getSpec().getMaxDeceleration();
-//
-//            // If the im reply time heuristic is used.
-//            if (Debug.IS_EXPECTED_IM_REPLY_TIME_CONSIDERED) {
-//                // If an acceleration schedule exists,
-//                AccelSchedule estimateToStop = vehicle.getAccelSchedule();
-//                if (estimateToStop != null) {
-//                    // update the initial time, velocity, and distance to
-//                    // take the expected reply time into account
-//
-//                    double vd[] =
-//                            estimateToStop.calcFinalDistanceAndVelocity(time1, v1, time1
-//                                    + MAX_EXPECTED_IM_REPLY_TIME);
-//                    double d2 = vd[0];
-//                    double v2 = vd[1];
-//                    if (d2 <= dTotal) {
-//                        // after MAX_EXPECTED_IM_REPLY_TIME second, the vehicle still hasn't
-//                        // arrive at the intersection, therefore the estimation
-//                        // would start at the reply time.
-//                        time1 += MAX_EXPECTED_IM_REPLY_TIME;
-//                        v1 = v2;
-//                        dTotal -= d2;
-//                    } else {
-//                        // the vehicle arrives at the intersection probably
-//                        // before IM replies,
-//                        throw new RuntimeException("Error in V2ICoordinator::" +
-//                                "V2IPreparingReservationStateHandler::" +
-//                                "estimateArrival: vehicle should not " +
-//                                "have been able to reach the " +
-//                                "intersection before the IM reply ");
-//                        // in the future, maybe consider the following
-////            vd = estimateToStop.calcFinalTimeAndVelocity(time1, v1, dTotal);
-////            assert vd != null;  // because d2 > dTotal
-////            time1 += vd[0];
-////            v1 = vd[1];
-////            dTotal = 0.0;
-//                    }
-//                    // To avoid the numerical errors that a zero velocity
-//                    // becomes negative, fix it to be zero when it is the case.
-//                    if (Util.isDoubleZero(v1)) {
-//                        v1 = 0.0;   // TODO: think how to get rid of this adjustment
-//                    }
-//                } else { // if there is no acceleration schedule
-//                    if (Util.isDoubleNotZero(v1)) {
-//                        // vehicle is still moving, so use the simple heuristic
-//                        // to make sure that there is enough time for vehicle to
-//                        // arrive at the intersection when checking a confirmation.
-//                        accel -= ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                        decel += ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                        if (accel < 0.0) { accel = 0.0; }
-//                        if (decel > 0.0) { decel = 0.0; }
-//                    } else { // else the vehicle has stopped.
-//                        // no need to project the time and distance since the vehicle
-//                        // is not moving, just update the initial time.
-//                        time1 += MAX_EXPECTED_IM_REPLY_TIME;
-//                    }
-//                }
-//            } else {  // If we do not use the im reply time heuristic
-//                // use a simple heuristic to make sure that
-//                // there is enough time for vehicle to arrive at the intersection
-//                // when checking a confirmation.
-//                accel -= ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                decel += ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                if (accel < 0.0) { accel = 0.0; }
-//                if (decel > 0.0) { decel = 0.0; }
-//            }
-//
-//            if (Debug.isPrintArrivalEstimationParameters(vehicle.getVIN())) {
-//                System.err.printf("Parameters for arrival estimation:\n");
-//                System.err.printf("time1   = %.5f\n", time1);
-//                System.err.printf("v1      = %.5f\n", v1);
-//                System.err.printf("dTotal  = %.5f\n", dTotal);
-//                System.err.printf("vTop    = %.5f\n", vTop);
-//                System.err.printf("vEndMax = %.5f\n", vEndMax);
-//                System.err.printf("accel   = %.5f\n", accel);
-//                System.err.printf("decel   = %.5f\n", decel);
-//            }
-//
-//            ArrivalEstimationResult result = null;
-////            try {
-//
-//            // First find an acceleration profile to approach the intersection at roundabout speed
-//            // Check if vehicle has not reached the approach lane yet
-//            double approachLength = ((ArcSegmentLane)Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(1)).getArcLaneDecomposition().get(0).getLength();
-//            double lineLength = Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(0).getLength();
-//            if (dTotal >= approachLength) {
-//                //Make sure the vehicle arrives at the approach lane at the velocity of the approach lane
-//                ArrivalEstimationResult beforeApproachLane = null;
-//                try {
-//                    double distanceAlongLane = vehicle.getDriver().getCurrentLane().distanceAlongLane(((RIMBasicAutoVehicle) vehicle).getPosition());
-//                    beforeApproachLane = VelocityFirstArrivalEstimation.estimate(time1, v1, lineLength - distanceAlongLane, vTop, vRTop, accel, decel);
-//                }
-//                catch(ArrivalEstimationException e) {
-//                    return null;
-//                }
-//                if (beforeApproachLane != null) {
-////                        ArrivalEstimationResult afterApproachLane = null;
-////                        // We still have to traverse the approach lane to get to the intersection
-////                            try {
-////                                afterApproachLane = VelocityFirstArrivalEstimation.estimate(
-////                                        beforeApproachLane.getArrivalTime(),
-////                                        beforeApproachLane.getArrivalVelocity(),
-////                                        approachLength,
-////                                        vRTop,
-////                                        vEndMax,
-////                                        accel,
-////                                        decel);
-////                            }
-////                            catch(ArrivalEstimationException e) {
-////                                result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
-////                            }
-////                        if (afterApproachLane != null){
-//                    // Combine the two acceleration profiles
-//                    AccelSchedule mergedAccelSchedule = new AccelSchedule();
-//
-//
-//                    // Add the accel profile before the approach lane
-//                    beforeApproachLane.getAccelSchedule().getList().forEach(accelSchedule -> {
-//                        mergedAccelSchedule.add(accelSchedule.getTime(), accelSchedule.getAcceleration());
-//                    });
-////                            // Add the accel profile for the approach lane. Ensure first accel is not added as it's part of the one above
-////                            List<AccelSchedule.TimeAccel> afterApproachLaneAccelSchedule = afterApproachLane.getAccelSchedule().getList();
-////                            if (afterApproachLaneAccelSchedule.size() > 1) {
-////                                for (int index = 1; index < afterApproachLaneAccelSchedule.size(); index++) {
-////                                    mergedAccelSchedule.add(afterApproachLaneAccelSchedule.get(index).getTime(),
-////                                            afterApproachLaneAccelSchedule.get(index).getAcceleration());
-////                                }
-////                            }
-//                    // Now estimate
-//                    double arrivalTime = beforeApproachLane.getArrivalTime() + approachLength / beforeApproachLane.getArrivalVelocity();
-////                            result = new ArrivalEstimationResult(afterApproachLane.getArrivalTime(), afterApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-//                    result = new ArrivalEstimationResult(arrivalTime, beforeApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-////                        }
-//                }
-//            }
-//            // Means we area already in the approach lane
-//            else {
-//                assert approachLength >= dTotal;
-//                // No need to accelerate, maintain constant speed;
-//                AccelSchedule mergedAccelSchedule = vehicle.getAccelSchedule();
-////                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vRTop, vEndMax, accel, decel);
-//                double arrivalTime = dTotal / v1;
-//                result = new ArrivalEstimationResult(arrivalTime, v1, mergedAccelSchedule);
-//            }
-////            } catch(ArrivalEstimationException e) {
-////                if (isDebugging) {
-////                    System.err.printf("vin %d: arrival estimation failed: %s",
-////                            vehicle.getVIN(), e.getMessage());
-////                }
-////                return null;
-////            }
-//            if (isDebugging) {
-//                System.err.printf("accelSchedule = %s\n", result.getAccelSchedule());
-//            }
-//            return result;
-//        }
-
         /**
          * Estimates the arrival parameters at the intersection given a maximum
          * velocity.
@@ -1160,63 +983,8 @@ public class V2ICoordinator implements Coordinator{
             ArrivalEstimationResult result = null;
             try {
 
-                // First find an acceleration profile to approach the intersection at roundabout speed
-                // Check if vehicle has not reached the approach lane yet
-                double approachLength = ((ArcSegmentLane)Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(1)).getArcLaneDecomposition().get(0).getLength();
-                double lineLength = Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(0).getLength();
-                if (dTotal >= approachLength) {
-                    //Make sure the vehicle arrives at the approach lane at the velocity of the approach lane
-                    ArrivalEstimationResult beforeApproachLane = null;
-                    try {
-                        double distanceAlongLane = vehicle.getDriver().getCurrentLane().distanceAlongLane(((RIMBasicAutoVehicle) vehicle).getPosition());
-                        beforeApproachLane = VelocityFirstArrivalEstimation.estimate(time1, v1, lineLength - distanceAlongLane, vTop, vRTop, accel, decel);
-                    }
-                    catch(ArrivalEstimationException e) {
-                        return null;
-                    }
-                    if (beforeApproachLane != null) {
-                        ArrivalEstimationResult afterApproachLane = null;
-                        // We still have to traverse the approach lane to get to the intersection
-                            try {
-                                afterApproachLane = VelocityFirstArrivalEstimation.estimate(
-                                        beforeApproachLane.getArrivalTime(),
-                                        beforeApproachLane.getArrivalVelocity(),
-                                        approachLength,
-                                        vRTop,
-                                        vEndMax,
-                                        accel,
-                                        decel);
-                            }
-                            catch(ArrivalEstimationException e) {
-                                result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal - lineLength, vTop, vEndMax, accel, decel);
-                            }
-                        if (afterApproachLane != null){
-                            // Combine the two acceleration profiles
-                            AccelSchedule mergedAccelSchedule = new AccelSchedule();
+                result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
 
-
-                            // Add the accel profile before the approach lane
-                            beforeApproachLane.getAccelSchedule().getList().forEach(accelSchedule -> {
-                                mergedAccelSchedule.add(accelSchedule.getTime(), accelSchedule.getAcceleration());
-                            });
-                            // Add the accel profile for the approach lane. Ensure first accel is not added as it's part of the one above
-                            List<AccelSchedule.TimeAccel> afterApproachLaneAccelSchedule = afterApproachLane.getAccelSchedule().getList();
-                            if (afterApproachLaneAccelSchedule.size() > 1) {
-                                for (int index = 1; index < afterApproachLaneAccelSchedule.size(); index++) {
-                                    mergedAccelSchedule.add(afterApproachLaneAccelSchedule.get(index).getTime(),
-                                            afterApproachLaneAccelSchedule.get(index).getAcceleration());
-                                }
-                            }
-                        // Now estimate
-                            result = new ArrivalEstimationResult(afterApproachLane.getArrivalTime(), afterApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-                        }
-                    }
-                }
-                // Means we area already in the approach lane
-                else {
-                    assert approachLength >= dTotal;
-                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vRTop, vEndMax, accel, decel);
-                }
             } catch(ArrivalEstimationException e) {
                 if (isDebugging) {
                     System.err.printf("vin %d: arrival estimation failed: %s",
@@ -1229,195 +997,6 @@ public class V2ICoordinator implements Coordinator{
             }
             return result;
         }
-
-//        /**
-//         * Estimates the arrival parameters at the intersection given a maximum
-//         * velocity.
-//         *
-//         * @param maxArrivalVelocity   the maximum desired arrival velocity
-//         *
-//         * @return the estimated arrival parameters at the intersection
-//         */
-//        private ArrivalEstimationResult estimateArrival(double maxArrivalVelocity) {
-//            // The basic parameters
-//            double time1 = vehicle.gaugeTime();
-//            double v1 = vehicle.gaugeVelocity();
-//            double dTotal = driver.distanceToNextIntersection();
-//            // vTop is equal to max(road's speed limit, vehicle' max speed)
-//            double vRTop = DriverUtil.calculateMaxFeasibleVelocityForRoundaboutLane(vehicle);
-//            double vTop = DriverUtil.calculateMaxFeasibleVelocity(vehicle);
-//            double vEndMax = Math.min(vRTop, maxArrivalVelocity);
-//            double accel = vehicle.getSpec().getMaxAcceleration();
-//            double decel = vehicle.getSpec().getMaxDeceleration();
-//
-//            // If the im reply time heuristic is used.
-//            if (Debug.IS_EXPECTED_IM_REPLY_TIME_CONSIDERED) {
-//                // If an acceleration schedule exists,
-//                AccelSchedule estimateToStop = vehicle.getAccelSchedule();
-//                if (estimateToStop != null) {
-//                    // update the initial time, velocity, and distance to
-//                    // take the expected reply time into account
-//
-//                    double vd[] =
-//                            estimateToStop.calcFinalDistanceAndVelocity(time1, v1, time1
-//                                    + MAX_EXPECTED_IM_REPLY_TIME);
-//                    double d2 = vd[0];
-//                    double v2 = vd[1];
-//                    if (d2 <= dTotal) {
-//                        // after MAX_EXPECTED_IM_REPLY_TIME second, the vehicle still hasn't
-//                        // arrive at the intersection, therefore the estimation
-//                        // would start at the reply time.
-//                        time1 += MAX_EXPECTED_IM_REPLY_TIME;
-//                        v1 = v2;
-//                        dTotal -= d2;
-//                    } else {
-//                        // the vehicle arrives at the intersection probably
-//                        // before IM replies,
-////                        throw new RuntimeException("Error in V2ICoordinator::" +
-////                                "V2IPreparingReservationStateHandler::" +
-////                                "estimateArrival: vehicle should not " +
-////                                "have been able to reach the " +
-////                                "intersection before the IM reply ");
-//                        // in the future, maybe consider the following
-//                        vd = estimateToStop.calcFinalTimeAndVelocity(time1, v1, dTotal);
-//                        assert vd != null;  // because d2 > dTotal
-//                        time1 = vd[0];
-//                        v1 = vd[1];
-//                        dTotal = 0.0;
-//                    }
-//                    // To avoid the numerical errors that a zero velocity
-//                    // becomes negative, fix it to be zero when it is the case.
-//                    if (Util.isDoubleZero(v1)) {
-//                        v1 = 0.0;   // TODO: think how to get rid of this adjustment
-//                    }
-//                } else { // if there is no acceleration schedule
-//                    if (Util.isDoubleNotZero(v1)) {
-//                        // vehicle is still moving, so use the simple heuristic
-//                        // to make sure that there is enough time for vehicle to
-//                        // arrive at the intersection when checking a confirmation.
-//                        accel -= ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                        decel += ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                        if (accel < 0.0) { accel = 0.0; }
-//                        if (decel > 0.0) { decel = 0.0; }
-//                    } else { // else the vehicle has stopped.
-//                        // no need to project the time and distance since the vehicle
-//                        // is not moving, just update the initial time.
-//                        time1 += MAX_EXPECTED_IM_REPLY_TIME;
-//                    }
-//                }
-//            } else {  // If we do not use the im reply time heuristic
-//                // use a simple heuristic to make sure that
-//                // there is enough time for vehicle to arrive at the intersection
-//                // when checking a confirmation.
-//                accel -= ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                decel += ARRIVAL_ESTIMATE_ACCEL_SLACK;
-//                if (accel < 0.0) { accel = 0.0; }
-//                if (decel > 0.0) { decel = 0.0; }
-//            }
-//
-//            if (Debug.isPrintArrivalEstimationParameters(vehicle.getVIN())) {
-//                System.err.printf("Parameters for arrival estimation:\n");
-//                System.err.printf("time1   = %.5f\n", time1);
-//                System.err.printf("v1      = %.5f\n", v1);
-//                System.err.printf("dTotal  = %.5f\n", dTotal);
-//                System.err.printf("vTop    = %.5f\n", vTop);
-//                System.err.printf("vEndMax = %.5f\n", vEndMax);
-//                System.err.printf("accel   = %.5f\n", accel);
-//                System.err.printf("decel   = %.5f\n", decel);
-//            }
-//
-//            ArrivalEstimationResult result = null;
-//            try {
-//
-//                // First find an acceleration profile to approach the intersection at roundabout speed
-//                // Check if vehicle has not reached the approach lane yet
-//                double approachLength = ((ArcSegmentLane)Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(1)).getArcLaneDecomposition().get(0).getLength();
-//                double lineLength = Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(0).getLength();
-//                if (dTotal >= approachLength) {
-//
-//                    //Make sure the vehicle arrives at the approach lane at the velocity of the approach lane
-//                    ArrivalEstimationResult beforeApproachLane = null;
-//                    try {
-//                        double distanceAlongLane = vehicle.getDriver().getCurrentLane().distanceAlongLane(((RIMBasicAutoVehicle) vehicle).getPosition());
-//                        beforeApproachLane = VelocityFirstArrivalEstimation.estimate(time1, v1, lineLength - distanceAlongLane, vTop, vTop, accel, decel);
-//                    }
-//                    catch(ArrivalEstimationException e) {
-//                        return null;
-//                    }
-//                    if (beforeApproachLane != null) {
-//                        ArrivalEstimationResult afterApproachLane = null;
-//                        // We still have to traverse the approach lane to get to the intersection
-//                        double distanceAlongLane = vehicle.getDriver().getCurrentLane().distanceAlongLane(((RIMBasicAutoVehicle) vehicle).getPosition());
-//                        try {
-//                            afterApproachLane = VelocityFirstArrivalEstimation.estimate(
-//                                    beforeApproachLane.getArrivalTime(),
-//                                    beforeApproachLane.getArrivalVelocity(),
-//                                    dTotal-(lineLength-distanceAlongLane),
-//                                    vTop,
-//                                    vEndMax,
-//                                    accel,
-//                                    decel);
-//                        }
-//                        catch(ArrivalEstimationException e) {
-//                            result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal-(lineLength-distanceAlongLane), vTop, vEndMax, accel, decel);
-//                        }
-//                        if (afterApproachLane != null){
-//                            // Combine the two acceleration profiles
-//                            AccelSchedule mergedAccelSchedule = new AccelSchedule();
-//
-//
-//                            // Add the accel profile before the approach lane
-//                            beforeApproachLane.getAccelSchedule().getList().forEach(accelSchedule -> {
-//                                mergedAccelSchedule.add(accelSchedule.getTime(), accelSchedule.getAcceleration());
-//                            });
-//                            // Add the accel profile for the approach lane. Ensure first accel is not added as it's part of the one above
-//                            List<AccelSchedule.TimeAccel> afterApproachLaneAccelSchedule = afterApproachLane.getAccelSchedule().getList();
-//                            if (afterApproachLaneAccelSchedule.size() > 1) {
-//                                for (int index = 0; index < afterApproachLaneAccelSchedule.size(); index++) {
-//                                    mergedAccelSchedule.add(afterApproachLaneAccelSchedule.get(index).getTime(),
-//                                            afterApproachLaneAccelSchedule.get(index).getAcceleration());
-//                                }
-//                            }
-//                            // Now estimate
-//                            result = new ArrivalEstimationResult(afterApproachLane.getArrivalTime(), afterApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-//                        }
-//                    }
-//                }
-//                // Means we area already in the approach lane
-//                else {
-//                    assert approachLength >= dTotal;
-//                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
-////                    if (v1 > 0){
-////                        double arrivalTime = time1 + dTotal/v1;
-////                        result = new ArrivalEstimationResult(arrivalTime, result.getArrivalVelocity(), result.getAccelSchedule());
-////                    }
-//                }
-//            } catch(ArrivalEstimationException e) {
-//                if (isDebugging) {
-//                    System.err.printf("vin %d: arrival estimation failed: %s",
-//                            vehicle.getVIN(), e.getMessage());
-//                }
-//                return null;
-//            }
-//            if (isDebugging) {
-//                System.err.printf("accelSchedule = %s\n", result.getAccelSchedule());
-//            }
-//            if (Util.isDoubleEqual(result.getArrivalTime(), 1.382840872971012E307)){
-//                dTotal = 0.0;
-//                try {
-//                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
-//                } catch (ArrivalEstimationException e) {
-//                    e.printStackTrace();
-//                    return null;
-//                }
-//                // TODO: FIX BUG setting current lane when not having reservation
-//            }
-//            return result;
-//        }
-
-
-
-
 
         /**
          * Establish the parameters by which the vehicle can traverse the upcoming
@@ -1448,19 +1027,9 @@ public class V2ICoordinator implements Coordinator{
 
             // Estimate when to arrive
             ArrivalEstimationResult result = estimateArrival(maximumVelocity);
-            if (result == null) {
-                return null;
-            }
             arrivalVelocity = result.getArrivalVelocity();
             // Make sure our arrival time is at least a certain amount
             arrivalTime = (Math.max(result.getArrivalTime(), minArrivalTime));
-
-//            if (vehicle.getVIN() == 1019){
-//                int i = 2;
-//            }
-//            if (arrivalTime < Debug.currentRimMap.getIntersectionManagers().get(0).getCurrentTime() + SimConfig.RIM_TIME_STEP){
-//                arrivalTime = Debug.currentRimMap.getIntersectionManagers().get(0).getCurrentTime() + SimConfig.RIM_TIME_STEP + 0.0001;
-//            }
 
             // eliminate proposals that are not valid and then return the result.
             Request.Proposal proposal = null;
@@ -1473,9 +1042,6 @@ public class V2ICoordinator implements Coordinator{
                                 maximumVelocity);
             }  // else ignore the proposal because the vehicle is too far away from
             // the intersection.
-//            else {
-//                int i = 2;
-//            }
             return proposal;
         }
 
@@ -1541,26 +1107,6 @@ public class V2ICoordinator implements Coordinator{
                 }
             }
 
-//            if (accelScheduleToStop != null) {
-//                if (accelScheduleToStop.getList().get(0).getTime() < 0){
-//                    pilot.followCurrentLane(rparameter);
-//                }
-//                else vehicle.setAccelSchedule(accelScheduleToStop);
-//            } else {  // no matter why the vehicle can't stop at the intersection
-//                // just stop immediately.
-//                pilot.followCurrentLane(rparameter);
-//                vehicle.slowToStop();
-//                if (isDebugging) {
-//                    double dTotal =
-//                            driver.distanceToNextIntersection()
-//                                    - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION;
-//                    if (dTotal < 0.0) {
-//                        System.err.printf("vin %d passed point of no return\n",
-//                                vehicle.getVIN());
-//                    }
-//                }
-//            }
-
             Request.Proposal proposal = null;
             if (isLaneClearToIntersection()) {
                 proposal = prepareProposals();
@@ -1572,20 +1118,6 @@ public class V2ICoordinator implements Coordinator{
                 }
             }
 
-//            if (isLaneClearToIntersection()) {
-//                if (accelScheduleToStop == null || accelScheduleToStop.getList().get(0).getTime() < 0){
-//                    proposal = null;
-//                }
-//                else {
-//                    proposal = prepareProposals();
-//                }
-//                if (isDebugging && proposal == null) {
-//                    System.err.printf("At time %.2f, vin %d failed to prepare " +
-//                                    "a proposal: no feasible proposal.\n",
-//                            vehicle.gaugeTime(),
-//                            vehicle.getVIN());
-//                }
-//            }
             else { // else some other vehicle is blocking the road
                 if (isDebugging) {
                     System.err.printf("At time %.2f, vin %d failed to prepare " +
@@ -2000,7 +1532,6 @@ public class V2ICoordinator implements Coordinator{
         if (dTotal > 0.0) {
             double time1 = vehicle.gaugeTime();
             double v1 = vehicle.gaugeVelocity();
-            double vRTop = DriverUtil.calculateMaxFeasibleVelocityForRoundaboutLane(vehicle);
             double vTop = DriverUtil.calculateMaxFeasibleVelocity(vehicle);
             double vEndMax = 0.0;   // make sure that it stops at the intersection
             double accel = vehicle.getSpec().getMaxAcceleration();
@@ -2008,60 +1539,8 @@ public class V2ICoordinator implements Coordinator{
 
             ArrivalEstimationResult result = null;
             try {
-                // First find an acceleration profile to approach the intersection at roundabout speed
-                // Check if vehicle has not reached the approach lane yet
-                double approachLength = ((ArcSegmentLane)Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(1)).getArcLaneDecomposition().get(0).getLength();
-                if (dTotal >= approachLength) {
-                    //Make sure the vehicle arrives at the approach lane at the velocity of the approach lane
-                    ArrivalEstimationResult beforeApproachLane = null;
-                    try {
-                        beforeApproachLane = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal - approachLength, vTop, vRTop, accel, decel);
-                    }
-                    catch(ArrivalEstimationException e) {
-                        return null;
-                    }
-                    if (beforeApproachLane != null) {
-                        ArrivalEstimationResult afterApproachLane = null;
-                        // We still have to traverse the approach lane to get to the intersection
-                        try {
-                            afterApproachLane = VelocityFirstArrivalEstimation.estimate(
-                                    beforeApproachLane.getArrivalTime(),
-                                    beforeApproachLane.getArrivalVelocity(),
-                                    approachLength,
-                                    vRTop,
-                                    vEndMax,
-                                    accel,
-                                    decel);
-                        }
-                        catch(ArrivalEstimationException e) {
-                            result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
-                        }
-                        if (afterApproachLane != null){
-                            // Combine the two acceleration profiles
-                            AccelSchedule mergedAccelSchedule = new AccelSchedule();
+                result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
 
-
-                            // Add the accel profile before the approach lane
-                            beforeApproachLane.getAccelSchedule().getList().forEach(accelSchedule -> {
-                                mergedAccelSchedule.add(accelSchedule.getTime(), accelSchedule.getAcceleration());
-                            });
-                            // Add the accel profile for the approach lane. Ensure first accel is not added as it's part of the one above
-                            List<AccelSchedule.TimeAccel> afterApproachLaneAccelSchedule = afterApproachLane.getAccelSchedule().getList();
-                            if (afterApproachLaneAccelSchedule.size() > 1) {
-                                for (int index = 1; index < afterApproachLaneAccelSchedule.size(); index++) {
-                                    mergedAccelSchedule.add(afterApproachLaneAccelSchedule.get(index).getTime(),
-                                            afterApproachLaneAccelSchedule.get(index).getAcceleration());
-                                }
-                            }
-                            result = new ArrivalEstimationResult(afterApproachLane.getArrivalTime(), afterApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-                        }
-                    }
-                }
-                // Means we area already in the approach lane
-                else {
-                    assert approachLength >= dTotal;
-                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vRTop, vEndMax, accel, decel);
-                }
             } catch(ArrivalEstimationException e) {
                 if (isDebugging) {
                     System.err.printf("vin %d: arrival estimation in " +
@@ -2076,101 +1555,4 @@ public class V2ICoordinator implements Coordinator{
         }
     }
 
-//    private AccelSchedule decelToStopAtIntersection() {
-//        // stop at the buffer distance before intersection
-//        double dTotal = driver.distanceToNextIntersection() - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION;
-//
-//        if (dTotal + 0.1 > 0 && dTotal < 0) {
-//            dTotal = 0.0;
-//        }
-//        if (dTotal > 0.0) {
-//            double time1 = vehicle.gaugeTime();
-//            double v1 = vehicle.gaugeVelocity();
-//            double vRTop = DriverUtil.calculateMaxFeasibleVelocityForRoundaboutLane(vehicle);
-//            double vTop = DriverUtil.calculateMaxFeasibleVelocity(vehicle);
-//            double vEndMax = 0.0;   // make sure that it stops at the intersection
-//            double accel = vehicle.getSpec().getMaxAcceleration();
-//            double decel = vehicle.getSpec().getMaxDeceleration();
-//
-//            ArrivalEstimationResult result = null;
-//            try {
-//
-//                double approachLength = ((ArcSegmentLane)Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(1)).getArcLaneDecomposition().get(0).getLength();
-//                double lineLength = Debug.currentRimMap.getRoads().get(0).getContinuousLanes().get(0).getLength();
-//                // First check if vehicle's position is before the approach entry point
-//                if (dTotal > approachLength) {
-//                    //Now we want to make sure the vehicle will arrive at the approach point with roundabout velocity
-//                    ArrivalEstimationResult beforeApproachLane = null;
-//                    // Calculate how far the vehicle is along the lane (line lane)
-//                    double distanceAlongLane = vehicle.getDriver().getCurrentLane().distanceAlongLane(((RIMBasicAutoVehicle) vehicle).getPosition());
-//                    try {
-//                        // The distance the vehicle has to go is the line lane length - how far along the lane it is
-//                        beforeApproachLane = VelocityFirstArrivalEstimation.estimate(time1, v1, lineLength - distanceAlongLane, vTop, vTop, accel, decel);
-//                    }
-//                    catch(ArrivalEstimationException e) {
-//                        // This may fail if the vehicle is very close to the approach point. In this case, just follow the current lane and retry next time
-//                        AccelSchedule accelSchedule = new AccelSchedule();
-//                        accelSchedule.add(-1.0, -1.0);
-//                        return accelSchedule;
-//                    }
-//                    if (beforeApproachLane != null) {
-//                        // If the previous estimate worked, it means we managed to arrive at the approach lane with roundabout speed.
-//                        ArrivalEstimationResult afterApproachLane = null;
-//                        // The distance to go is the dtotal - how much distance we travelled in the previous step
-//                        try {
-//                            afterApproachLane = VelocityFirstArrivalEstimation.estimate(
-//                                    beforeApproachLane.getArrivalTime(),
-//                                    beforeApproachLane.getArrivalVelocity(),
-//                                    dTotal-(lineLength-distanceAlongLane),
-//                                    vTop,
-//                                    vEndMax,
-//                                    accel,
-//                                    decel);
-//                        }
-//                        catch(ArrivalEstimationException e) {
-//                            // Means we can't stop at intersection, need to slow down
-//                            return null;
-//                        }
-//                        if (afterApproachLane != null){
-//                            // Combine the two acceleration profiles
-//                            AccelSchedule mergedAccelSchedule = new AccelSchedule();
-//
-//                            // Add the accel profile before the approach lane
-//                            beforeApproachLane.getAccelSchedule().getList().forEach(accelSchedule -> {
-//                                mergedAccelSchedule.add(accelSchedule.getTime(), accelSchedule.getAcceleration());
-//                            });
-//                            // Add the accel profile for the approach lane. Ensure first accel is not added as it's part of the one above
-//                            List<AccelSchedule.TimeAccel> afterApproachLaneAccelSchedule = afterApproachLane.getAccelSchedule().getList();
-//                            if (afterApproachLaneAccelSchedule.size() > 1) {
-//                                for (int index = 1; index < afterApproachLaneAccelSchedule.size(); index++) {
-//                                    mergedAccelSchedule.add(afterApproachLaneAccelSchedule.get(index).getTime(),
-//                                            afterApproachLaneAccelSchedule.get(index).getAcceleration());
-//                                }
-//                            }
-//                            // Now estimate
-//                            result = new ArrivalEstimationResult(afterApproachLane.getArrivalTime(), afterApproachLane.getArrivalVelocity(), mergedAccelSchedule);
-//                        }
-//                    }
-//                }
-//                // Means we area already in the approach lane
-//                else {
-//                    assert approachLength >= dTotal;
-////                    if (dTotal<0) {
-////                        dTotal = Math.abs(dTotal);
-////                    }
-//                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
-//                }
-//            } catch(ArrivalEstimationException e) {
-//                if (isDebugging) {
-//                    System.err.printf("vin %d: arrival estimation in " +
-//                                    "decelToStopAtIntersection() failed: %s",
-//                            vehicle.getVIN(), e.getMessage());
-//                }
-//                return null;
-//            }
-//            return result.getAccelSchedule();
-//        } else {  // already inside the acceleration zone or the intersection
-//            return null;
-//        }
-//    }
 }

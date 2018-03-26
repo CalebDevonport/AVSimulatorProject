@@ -57,7 +57,7 @@ public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
                 0,
                 0);
 
-        double scaleFactor = 4;
+        double scaleFactor = 11;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
@@ -81,25 +81,25 @@ public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
         // Draw the connections between roads
         bgBuffer.draw(roadBasedIntersection.getArea());
-        // Draw the minimal circular region
-        bgBuffer.setPaint(Color.pink);
-        bgBuffer.draw(roadBasedIntersection.getMinimalCircle());
-        // Draw the maximal circular region
-        bgBuffer.setPaint(Color.yellow);
-        bgBuffer.draw(roadBasedIntersection.getMaximalCircle());
+//        // Draw the minimal circular region
+//        bgBuffer.setPaint(Color.pink);
+//        bgBuffer.draw(roadBasedIntersection.getMinimalCircle());
+//        // Draw the maximal circular region
+//        bgBuffer.setPaint(Color.yellow);
+//        bgBuffer.draw(roadBasedIntersection.getMaximalCircle());
 
-        // Draw the road areas
-        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
-        bgBuffer.setPaint(ROAD_AREA_COLOR);
-        for(Road road : map.getRoads()) {
-            Area roadArea = new Area();
-            // Find the union of the shapes of the lanes for each road
-            for(Lane lane : road.getContinuousLanes()) {
-                // Add the area from each constituent lane
-                roadArea.add(new Area(lane.getShape()));
-            }
-            bgBuffer.draw(roadArea);
-        }
+//        // Draw the road areas
+//        bgBuffer.setStroke(ROAD_BOUNDARY_STROKE);
+//        bgBuffer.setPaint(ROAD_AREA_COLOR);
+//        for(Road road : map.getRoads()) {
+//            Area roadArea = new Area();
+//            // Find the union of the shapes of the lanes for each road
+//            for(Lane lane : road.getContinuousLanes()) {
+//                // Add the area from each constituent lane
+//                roadArea.add(new Area(lane.getShape()));
+//            }
+//            bgBuffer.draw(roadArea);
+//        }
         bgBuffer.setPaint(POINTS_COLOR);
         bgBuffer.drawOval((int)roadBasedIntersection.getCentroid().getX()-1,
                 (int)roadBasedIntersection.getCentroid().getY()-1, 1, 1);
@@ -110,10 +110,10 @@ public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
         entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)roadBasedIntersection.getEntryPoint(entryLane).getX(),
                 (int)roadBasedIntersection.getEntryPoint(entryLane).getY(), 1, 1));
 
-        // Draw entry approach points
-        bgBuffer.setPaint(APPROACH_ENTRY_POINTS_COLOR);
-        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachEntryPoint(entryLane).getX(),
-                (int)roadBasedIntersection.getApproachEntryPoint(entryLane).getY(), 1, 1));
+//        // Draw entry approach points
+//        bgBuffer.setPaint(APPROACH_ENTRY_POINTS_COLOR);
+//        entryLanes.forEach( entryLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachEntryPoint(entryLane).getX(),
+//                (int)roadBasedIntersection.getApproachEntryPoint(entryLane).getY(), 1, 1));
 
         // Draw exit points
         bgBuffer.setPaint(EXIT_POINTS_COLOR);
@@ -121,10 +121,10 @@ public class RoadBasedIntersectionTestApplet extends Applet implements Runnable{
         exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)roadBasedIntersection.getExitPoint(exitLane).getX(),
                 (int)roadBasedIntersection.getExitPoint(exitLane).getY(), 1, 1));
 
-        // Draw approach exit points
-        bgBuffer.setPaint(APPROACH_EXIT_POINTS_COLOR);
-        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachExitPoint(exitLane).getX(),
-                (int)roadBasedIntersection.getApproachExitPoint(exitLane).getY(), 1, 1));
+//        // Draw approach exit points
+//        bgBuffer.setPaint(APPROACH_EXIT_POINTS_COLOR);
+//        exitLanes.forEach( exitLane -> bgBuffer.drawOval((int)roadBasedIntersection.getApproachExitPoint(exitLane).getX(),
+//                (int)roadBasedIntersection.getApproachExitPoint(exitLane).getY(), 1, 1));
 
 
     }

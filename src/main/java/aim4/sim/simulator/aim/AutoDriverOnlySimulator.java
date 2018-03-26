@@ -34,11 +34,13 @@ import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.ProxyDriver;
+import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.V2IManager;
 import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.SpawnPoint;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.lane.Lane;
@@ -205,6 +207,10 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             System.err.printf("------SIM:moveVehicles---------------\n");
         }
         moveVehicles(timeStep);
+        if (Debug.CHECK_FOR_COLLISIONS) {
+            System.err.printf("------SIM:checkForCollisions---------------\n");
+            checkForCollisions();
+        }
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
         }
@@ -351,15 +357,41 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void spawnVehicles(double timeStep) {
         for(AIMSpawnPoint spawnPoint : basicAIMIntersectionMap.getSpawnPoints()) {
-            List<AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+            List<AIMSpawnPoint.AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
-                    for(AIMSpawnSpec spawnSpec : spawnSpecs) {
-                        AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        break; // only handle the first spawn vehicle
-                        // TODO: need to fix this
+                    for(AIMSpawnPoint.AIMSpawnSpec spawnSpec : spawnSpecs) {
+
+                        // First check if there is enough space to spawn a new vehicle and still have time to stop before reaching it
+                        Lane lane = spawnPoint.getLane();
+                        Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists = computeVehicleLists();
+
+                        // If there are some vehicles on this lane
+                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()){
+                            // Determine whether there is enough distance to stop if spawned with the speed limit
+                            double initVelocity = Math.min(spawnSpec.getVehicleSpec().getMaxVelocity(), lane.getSpeedLimit());
+                            // The closest vehicle will be the first one on the list
+                            double distanceTillNextVehicle = vehicleLists.get(lane).firstKey();
+                            double stoppingDistance = VehicleUtil.calcDistanceToStop(initVelocity,
+                                    spawnSpec.getVehicleSpec().getMaxDeceleration());
+                            double followingDistance = stoppingDistance + V2IPilot.MINIMUM_FOLLOWING_DISTANCE;
+                            // Need to subtract the length of the noVehicleZone as the vehicle will be able to slow down
+                            // after passing the noVehicleZone area
+                            if (distanceTillNextVehicle - Double.max(
+                                    spawnPoint.getNoVehicleZone().getBounds2D().getHeight(),spawnPoint.getNoVehicleZone().getBounds2D().getWidth()) >
+                                    followingDistance){
+                                AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
+                                VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                                vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            } // otherwise there is not enough space to slow down so don't spawn this vehicle
+                        }
+                        // Otherwise this is the first time we spawn vehicles
+                        else {
+                            AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
+                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                            vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        }
+                        break; // Only the first vehicle needed. TODO: FIX THIS
                     }
                 } // else ignore the spawnSpecs and do nothing
             }
@@ -456,13 +488,24 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                 // Find out what IntersectionManager is coming up for this vehicle
                 IntersectionManager im =
                         lane.getLaneIM().nextIntersectionManager(vehicle.getPosition());
-                // Only include this Vehicle if it is not in the intersection.
-                if(lane.getLaneIM().distanceToNextIntersection(vehicle.getPosition())>0
-                        || im == null || !im.intersects(vehicle.getShape().getBounds2D())) {
+                // Only include this Vehicle if it is not entirely in the intersection.
+                if(im == null ||
+                        !(im.intersectsPoint(vehicle.getPosition()) && im.intersectsPoint(vehicle.getPointAtRear()))) {
                     // Now find how far along the lane it is.
                     double dst = lane.distanceAlongLane(vehicle.getPosition());
                     // Now add it to the map.
                     vehicleLists.get(lane).put(dst, vehicle);
+                    // Now check if this vehicle intersects any other lanes
+                    for (Road road : Debug.currentAimMap.getRoads()) {
+                        for (Lane otherLane : road.getLanes()) {
+                            if (otherLane.getId() != lane.getId()) {
+                                if (otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
+                                    double dstAlongOtherLane = otherLane.distanceAlongLane(vehicle.getPosition());
+                                    vehicleLists.get(otherLane).put(dstAlongOtherLane, vehicle);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

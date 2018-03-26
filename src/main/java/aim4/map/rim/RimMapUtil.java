@@ -107,6 +107,7 @@ public class RimMapUtil {
                     Road destinationRoad = destinationSelector.selectDestination(spawnPoint.getLane());
 
                     // maybe spawnPoint.getCurrentTime() is incorrect
+                    // Diana: i think it's correct
                     result.add(new RIMSpawnPoint.RIMSpawnSpec(spawnPoint.getCurrentTime(),
                             vehicleSpec,
                             destinationRoad));
@@ -288,16 +289,17 @@ public class RimMapUtil {
         while (currentTime < timeLimit) {
             //Spawn Vehicles
             List<RIMVehicleSimModel> spawnedVehicles =
-                    spawnHelper.spawnVehicles(SimConfig.RIM_TIME_STEP);
+                    spawnHelper.generateSpawnedVehicles(SimConfig.RIM_TIME_STEP);
             if (spawnedVehicles != null) {
-                assert spawnedVehicles.size() == 1;
-                VehicleSpec vSpec = spawnedVehicles.get(0).getSpec(); //Only expecting one.
-                JSONObject scheduledSpawn = new JSONObject();
-                scheduledSpawn.put("specName", vSpec.getName());
-                scheduledSpawn.put("spawnTime", currentTime);
-                scheduledSpawn.put("specArrival", spawnedVehicles.get(0).getDriver().getCurrentLane().getId());
-                scheduledSpawn.put("specDestination", ((RIMAutoDriver) spawnedVehicles.get(0).getDriver()).getDestination().getName());
-                schedule.add(scheduledSpawn);
+                for (RIMVehicleSimModel rimVehicleSimModel : spawnedVehicles){
+                    VehicleSpec vSpec = rimVehicleSimModel.getSpec();
+                    JSONObject scheduledSpawn = new JSONObject();
+                    scheduledSpawn.put("specName", vSpec.getName());
+                    scheduledSpawn.put("spawnTime", currentTime);
+                    scheduledSpawn.put("specArrival",rimVehicleSimModel.getDriver().getCurrentLane().getId());
+                    scheduledSpawn.put("specDestination", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
+                    schedule.add(scheduledSpawn);
+                }
             }
 
             //Provide sensor input
@@ -346,15 +348,17 @@ public class RimMapUtil {
         while (currentTime < timeLimit) {
             //Spawn Vehicles
             List<RIMVehicleSimModel> spawnedVehicles =
-                    spawnHelper.spawnVehicles(SimConfig.RIM_TIME_STEP);
-            if (spawnedVehicles != null && spawnedVehicles.size() > 0) {
-                JSONObject scheduledSpawn = new JSONObject();
-                VehicleSpec vSpec = spawnedVehicles.get(0).getSpec(); //Only expecting one.
-                scheduledSpawn.put("specName", vSpec.getName());
-                scheduledSpawn.put("spawnTime", currentTime);
-                scheduledSpawn.put("specArrival", spawnedVehicles.get(0).getDriver().getCurrentLane().getId());
-                scheduledSpawn.put("specDestination", ((RIMAutoDriver) spawnedVehicles.get(0).getDriver()).getDestination().getName());
-                schedule.add(scheduledSpawn);
+                    spawnHelper.generateSpawnedVehicles(SimConfig.RIM_TIME_STEP);
+            if (spawnedVehicles != null) {
+                for (RIMVehicleSimModel rimVehicleSimModel : spawnedVehicles){
+                    VehicleSpec vSpec = rimVehicleSimModel.getSpec();
+                    JSONObject scheduledSpawn = new JSONObject();
+                    scheduledSpawn.put("specName", vSpec.getName());
+                    scheduledSpawn.put("spawnTime", currentTime);
+                    scheduledSpawn.put("specArrival",rimVehicleSimModel.getDriver().getCurrentLane().getId());
+                    scheduledSpawn.put("specDestination", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
+                    schedule.add(scheduledSpawn);
+                }
 
             }
 

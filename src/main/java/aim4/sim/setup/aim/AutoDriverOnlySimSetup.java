@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.sim.setup.aim;
 
+import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
@@ -239,6 +240,19 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
             lanesPerRoad,
             medianSize,
             distanceBetween);
+    // Set the edge tile time buffer based on the maximum speed limit
+    try {
+      edgeTileTimeBufferSize = Constants.getEdgeTileTimeBufferBasedOnVelocity(speedLimit);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // Set the minimum following distance based on the maximum speed limit
+    try {
+      V2IPilot.MINIMUM_FOLLOWING_DISTANCE = Constants.getMinimumFollowingDistanceBasedOnVelocity(speedLimit);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 /* standard */
     ReservationGridManager.Config gridConfig =
             new ReservationGridManager.Config(SimConfig.TIME_STEP,

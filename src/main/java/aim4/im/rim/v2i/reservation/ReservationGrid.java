@@ -1,6 +1,7 @@
 package aim4.im.rim.v2i.reservation;
 
 import aim4.config.Constants;
+import aim4.config.Debug;
 
 import java.util.List;
 import java.util.Set;
@@ -81,7 +82,8 @@ public class ReservationGrid extends ReservationArray{
      * @param gridTimeStep  the time step.
      */
     public ReservationGrid(double granularity, double gridTimeStep) {
-        super(2 * (int) granularity);
+        //TODO: Make this depend on the map
+        super(2 * (int) granularity + 16); // 2 tiles per entrance per lane
         this.granularity = granularity;
         this.gridTimeStep = gridTimeStep;
     }

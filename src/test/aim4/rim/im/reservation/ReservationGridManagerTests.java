@@ -74,24 +74,35 @@ public class ReservationGridManagerTests {
         );
 
         double idealTime = ARRIVAL_TIME + (
+                                ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(1)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(2)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(3)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                                 ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
-                                ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition()
+                                ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition() +
+                                ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(7)).getLengthArcLaneDecomposition()
                         ) / ROUNDABOUT_SPEED_LIMIT;
         Set expectedOccupiedTiles = new LinkedHashSet<>();
+        expectedOccupiedTiles.add(20);
+        expectedOccupiedTiles.add(26);
+        expectedOccupiedTiles.add(21);
         expectedOccupiedTiles.add(9);
         expectedOccupiedTiles.add(10);
+        expectedOccupiedTiles.add(15);
         expectedOccupiedTiles.add(11);
         expectedOccupiedTiles.add(0);
+        expectedOccupiedTiles.add(17);
         expectedOccupiedTiles.add(1);
+        expectedOccupiedTiles.add(23);
         expectedOccupiedTiles.add(2);
         expectedOccupiedTiles.add(3);
+        expectedOccupiedTiles.add(25);
         expectedOccupiedTiles.add(4);
+        expectedOccupiedTiles.add(19);
         expectedOccupiedTiles.add(5);
+        expectedOccupiedTiles.add(18);
 
         //act
         Plan plan = reservationGridManager.query(query);
@@ -149,24 +160,35 @@ public class ReservationGridManagerTests {
         );
 
         double idealTime = ARRIVAL_TIME + (
+                ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(1)).getLengthArcLaneDecomposition() +
                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(2)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(3)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
-                        ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition()
+                        ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition() +
+                        ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(7)).getLengthArcLaneDecomposition()
         ) / ROUNDABOUT_SPEED_LIMIT;
         Set expectedOccupiedTiles = new LinkedHashSet<>();
+        expectedOccupiedTiles.add(20);
+        expectedOccupiedTiles.add(26);
+        expectedOccupiedTiles.add(21);
         expectedOccupiedTiles.add(9);
         expectedOccupiedTiles.add(10);
+        expectedOccupiedTiles.add(15);
         expectedOccupiedTiles.add(11);
         expectedOccupiedTiles.add(0);
+        expectedOccupiedTiles.add(17);
         expectedOccupiedTiles.add(1);
+        expectedOccupiedTiles.add(23);
         expectedOccupiedTiles.add(2);
         expectedOccupiedTiles.add(3);
+        expectedOccupiedTiles.add(25);
         expectedOccupiedTiles.add(4);
+        expectedOccupiedTiles.add(19);
         expectedOccupiedTiles.add(5);
+        expectedOccupiedTiles.add(18);
 
         //act
         Plan plan = reservationGridManager.query(query);
@@ -224,14 +246,21 @@ public class ReservationGridManagerTests {
         );
 
         double idealTime = ARRIVAL_TIME + (
+                ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(1)).getLengthArcLaneDecomposition() +
                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(2)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(3)).getLengthArcLaneDecomposition() +
-                        ((ArcSegmentLane)getEastRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition()
+                        ((ArcSegmentLane)getEastRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition() +
+                        ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(7)).getLengthArcLaneDecomposition()
         ) / ROUNDABOUT_SPEED_LIMIT;
         Set expectedOccupiedTiles = new LinkedHashSet<>();
+        expectedOccupiedTiles.add(20);
+        expectedOccupiedTiles.add(26);
+        expectedOccupiedTiles.add(21);
         expectedOccupiedTiles.add(9);
         expectedOccupiedTiles.add(10);
+        expectedOccupiedTiles.add(15);
         expectedOccupiedTiles.add(11);
+        expectedOccupiedTiles.add(14);
 
 
         //act
@@ -290,24 +319,35 @@ public class ReservationGridManagerTests {
         );
 
         double idealTime = ARRIVAL_TIME + (
+                ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(1)).getLengthArcLaneDecomposition() +
                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(2)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(3)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
-                        ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition()
+                        ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition() +
+                        ((ArcSegmentLane)getWestRoad().getContinuousLanes().get(7)).getLengthArcLaneDecomposition()
         ) / ROUNDABOUT_SPEED_LIMIT;
         Set expectedOccupiedTiles = new LinkedHashSet<>();
+        expectedOccupiedTiles.add(20);
+        expectedOccupiedTiles.add(26);
+        expectedOccupiedTiles.add(21);
         expectedOccupiedTiles.add(9);
         expectedOccupiedTiles.add(10);
+        expectedOccupiedTiles.add(15);
         expectedOccupiedTiles.add(11);
         expectedOccupiedTiles.add(0);
+        expectedOccupiedTiles.add(17);
         expectedOccupiedTiles.add(1);
+        expectedOccupiedTiles.add(23);
         expectedOccupiedTiles.add(2);
         expectedOccupiedTiles.add(3);
+        expectedOccupiedTiles.add(25);
         expectedOccupiedTiles.add(4);
+        expectedOccupiedTiles.add(19);
         expectedOccupiedTiles.add(5);
+        expectedOccupiedTiles.add(18);
 
         //act
         Plan plan = reservationGridManager.query(query);
@@ -365,19 +405,28 @@ public class ReservationGridManagerTests {
         );
 
         double idealTime = ARRIVAL_TIME + (
+                ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(1)).getLengthArcLaneDecomposition() +
                 ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(2)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(3)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(4)).getLengthArcLaneDecomposition() +
                         ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(5)).getLengthArcLaneDecomposition() +
-                        ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition()
+                        ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(6)).getLengthArcLaneDecomposition() +
+                        ((ArcSegmentLane)getNorthRoad().getContinuousLanes().get(7)).getLengthArcLaneDecomposition()
         ) / ROUNDABOUT_SPEED_LIMIT;
         Set expectedOccupiedTiles = new LinkedHashSet<>();
+        expectedOccupiedTiles.add(20);
+        expectedOccupiedTiles.add(26);
+        expectedOccupiedTiles.add(21);
         expectedOccupiedTiles.add(9);
         expectedOccupiedTiles.add(10);
+        expectedOccupiedTiles.add(15);
         expectedOccupiedTiles.add(11);
         expectedOccupiedTiles.add(0);
+        expectedOccupiedTiles.add(17);
         expectedOccupiedTiles.add(1);
+        expectedOccupiedTiles.add(23);
         expectedOccupiedTiles.add(2);
+        expectedOccupiedTiles.add(22);
 
 
         //act
