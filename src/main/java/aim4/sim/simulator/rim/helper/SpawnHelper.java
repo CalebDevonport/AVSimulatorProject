@@ -10,7 +10,6 @@ import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.rim.RIMSpawnPoint;
-import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
@@ -239,7 +238,7 @@ public class SpawnHelper {
                         initVelocity,
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime());
-        vehicle.setStartTime(spawnPoint.getCurrentTime());
+        vehicle.setStartTime(spawnSpec.getSpawnTime());
         vehicle.setMaxVelocity(initVelocity);
         vehicle.setMinVelocity(initVelocity);
 

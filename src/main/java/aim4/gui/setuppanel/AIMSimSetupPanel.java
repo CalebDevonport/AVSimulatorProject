@@ -39,6 +39,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 
 /**
  * The simulation setup panel.
@@ -135,6 +136,16 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
       simSetup2.setNumOfColumns(autoDriverOnlySetupPanel.getNumOfColumns());
       simSetup2.setNumOfRows(autoDriverOnlySetupPanel.getNumOfRows());
       simSetup2.setLanesPerRoad(autoDriverOnlySetupPanel.getLanesPerRoad());
+      if(autoDriverOnlySetupPanel.uploadTrafficSchedule != null) {
+
+        autoDriverOnlySetupPanel.uploadTrafficSchedule = new File(autoDriverOnlySetupPanel.uploadTrafficScheduleTextbox.getText());
+        simSetup2.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+
+
+      } else {
+        autoDriverOnlySetupPanel.uploadTrafficSchedule = null;
+        simSetup2.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+      }
       return simSetup2;
     } else if (comboBox.getSelectedIndex() == 1) {
       // ApproxNPhasesTrafficSignalSimSetup simSetup2 =

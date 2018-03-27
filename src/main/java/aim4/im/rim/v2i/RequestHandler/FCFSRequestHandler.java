@@ -65,6 +65,10 @@ public class FCFSRequestHandler implements RequestHandler{
         ProposalFilterResult filterResult =
                 BasePolicy.standardProposalsFilter(msg.getProposals(),
                         basePolicy.getCurrentTime());
+        // If STOP_SIGN policy filter all proposals which are not stopped at the intersection
+        if (basePolicy instanceof BasePolicy && ((BasePolicy) basePolicy).getPolicyType() == BasePolicy.PolicyType.STOP_SIGN){
+            filterResult = ((BasePolicy) basePolicy).removeProposalWithVehicleNotStoppedAtIntersection(filterResult.getProposals());
+        }
         if (filterResult.isNoProposalLeft()) {
             basePolicy.sendRejectMsg(vin,
                     msg.getRequestId(),

@@ -5,19 +5,17 @@ public class RIMVehicleResult {
     private String specType;
     private double startTime;
     private double finishTime;
-    private double delayTime;
     private double finalVelocity;
     private double maxVelocity;
     private double minVelocity;
     private double finalXPos;
     private double finalYPos;
 
-    public RIMVehicleResult(int vin, String specType, double startTime, double finishTime, double delayTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
+    public RIMVehicleResult(int vin, String specType, double startTime, double finishTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
         this.vin = vin;
         this.specType = specType;
         this.startTime = startTime;
         this.finishTime = finishTime;
-        this.delayTime = delayTime;
         this.finalVelocity = finalVelocity;
         this.maxVelocity = maxVelocity;
         this.minVelocity = minVelocity;
@@ -39,10 +37,6 @@ public class RIMVehicleResult {
 
     public double getFinishTime() {
         return finishTime;
-    }
-
-    public double getDelayTime() {
-        return delayTime;
     }
 
     public double getFinalVelocity() {

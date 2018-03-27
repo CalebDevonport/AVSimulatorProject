@@ -40,7 +40,6 @@ import aim4.im.aim.v2i.V2IManager;
 import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.lane.Lane;
@@ -216,7 +215,6 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         }
         List<AIMVehicleSimModel> completedVehicles = new ArrayList<AIMVehicleSimModel>();
         if(mergeMode) {
-            //checkForCollisions(); TODO: Fix collision prevention so that this can be run.
             completedVehicles = calculateCompletedVehicles();
         }
 

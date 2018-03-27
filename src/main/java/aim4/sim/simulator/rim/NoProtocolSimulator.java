@@ -34,10 +34,9 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * The autonomous drivers only simulator.
+ * The no protocol simulator for rim.
  */
-public class AutoDriverOnlySimulator implements RIMSimulator{
-
+public class NoProtocolSimulator implements RIMSimulator{
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -45,7 +44,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     /**
      * The result of a simulation step.
      */
-    public static class AutoDriverOnlySimStepResult implements SimStepResult {
+    public static class NoProtocolSimulatorSimStepResult implements SimStepResult {
 
         /** The VIN of the completed vehicles in this time step */
         List<Integer> completedVINs;
@@ -55,7 +54,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
          *
          * @param completedVINs  the VINs of completed vehicles.
          */
-        public AutoDriverOnlySimStepResult(List<Integer> completedVINs) {
+        public NoProtocolSimulatorSimStepResult(List<Integer> completedVINs) {
             this.completedVINs = completedVINs;
         }
 
@@ -101,7 +100,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
      *
      * @param basicRIMIntersectionMap             the map of the simulation
      */
-    public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
+    public NoProtocolSimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
         this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
@@ -124,7 +123,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
      * {@inheritDoc}
      */
     @Override
-    public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
+    public synchronized NoProtocolSimulatorSimStepResult step(double timeStep) {
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("--------------------------------------\n");
             System.err.printf("------SIM:spawnVehicles---------------\n");
@@ -153,10 +152,10 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
         }
-        if (Debug.CHECK_FOR_COLLISIONS) {
-            System.err.printf("------SIM:checkForCollisions---------------\n");
-            checkForCollisions();
-        }
+//        if (Debug.CHECK_FOR_COLLISIONS) {
+//            System.err.printf("------SIM:checkForCollisions---------------\n");
+//            checkForCollisions();
+//        }
         if (Debug.PRINT_SIMULATOR_STAGE){
             System.err.printf("------SIM:calculateCompletedVehicles---------------\n");
         }
@@ -173,7 +172,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         // debug
         checkClocks();
 
-        return new AutoDriverOnlySimStepResult(completedVINs);
+        return new NoProtocolSimulatorSimStepResult(completedVINs);
     }
 
     /////////////////////////////////
@@ -507,7 +506,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists =
                 computeVehicleLists();
         Map<RIMVehicleSimModel, RIMVehicleSimModel> nextVehicle =
-                computeNextVehicle(vehicleLists);
+                new HashMap<>();
 
         provideIntervalInfo(nextVehicle);
         provideVehicleTrackingInfo(vehicleLists);
@@ -756,7 +755,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                 i2vIter.hasNext();) {
                 I2VMessage msg = i2vIter.next();
                 RIMAutoVehicleSimModel vehicle =
-                        (RIMAutoVehicleSimModel)VinRegistry.getVehicleFromVIN(
+                        (RIMAutoVehicleSimModel) VinRegistry.getVehicleFromVIN(
                                 msg.getVin());
                 // Calculate the distance the message must travel
                 double txDistance =

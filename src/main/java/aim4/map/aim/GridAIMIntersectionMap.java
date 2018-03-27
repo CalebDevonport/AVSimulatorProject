@@ -430,6 +430,19 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
     }
 
     /**
+     * Get road by name.
+     */
+    public Road getRoadByName(String nameOfRoad) {
+        final Road[] roadByName = {null};
+        roads.forEach(road -> {
+            if (road.getName().compareTo(nameOfRoad) == 0) {
+                roadByName[0] = road;
+            }
+        });
+        return roadByName[0];
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

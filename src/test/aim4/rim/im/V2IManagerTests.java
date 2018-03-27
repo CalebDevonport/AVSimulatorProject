@@ -69,7 +69,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set request
         int vin = 1; // the vehicle id
@@ -84,7 +84,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive message (add it to the inbox)
@@ -131,7 +131,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set requests
         int vin = 1; // the vehicle id
@@ -148,7 +148,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -208,7 +208,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = CURRENT_TIME - 1; // arrival in the past
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set requests
         int vin = 1; // the vehicle id
@@ -223,7 +223,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -271,7 +271,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = CURRENT_TIME + 12; // too far in the future
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set requests
         int vin = 1; // the vehicle id
@@ -286,7 +286,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -336,7 +336,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set Proposal 2
         int arrivalLaneId2 = getNorthRoad().getEntryApproachLane().getId();
@@ -344,7 +344,7 @@ public class V2IManagerTests {
         double arrivalVelocity2 = 6.04;
         double arrivalTime2 = ARRIVAL_TIME + 1.0;
         double maxTurnVelocity2 = arrivalVelocity;
-        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2);
+        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2, false);
 
         // Set requests
         int vin1 = 1; // the vehicle id 1
@@ -364,7 +364,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -426,7 +426,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set Proposal 2
         int arrivalLaneId2 = getEastRoad().getEntryApproachLane().getId();
@@ -434,7 +434,7 @@ public class V2IManagerTests {
         double arrivalVelocity2 = 6.04;
         double arrivalTime2 = ARRIVAL_TIME - 4.0;
         double maxTurnVelocity2 = arrivalVelocity;
-        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2);
+        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2, false);
 
         // Set requests
         int vin1 = 1; // the vehicle id 1
@@ -454,7 +454,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -516,7 +516,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set Proposal 2
         int arrivalLaneId2 = getEastRoad().getEntryApproachLane().getId();
@@ -524,7 +524,7 @@ public class V2IManagerTests {
         double arrivalVelocity2 = 6.04;
         double arrivalTime2 = ARRIVAL_TIME + 1.0;
         double maxTurnVelocity2 = arrivalVelocity;
-        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2);
+        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2, false);
 
         // Set requests
         int vin1 = 1; // the vehicle id 1
@@ -544,7 +544,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)
@@ -605,7 +605,7 @@ public class V2IManagerTests {
         double arrivalVelocity = 6.04;
         double arrivalTime = ARRIVAL_TIME;
         double maxTurnVelocity = arrivalVelocity;
-        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity);
+        Proposal proposal = new Proposal(arrivalLaneId, departureLaneId, arrivalTime, arrivalVelocity, maxTurnVelocity, false);
 
         // Set Proposal 2
         int arrivalLaneId2 = getEastRoad().getEntryApproachLane().getId();
@@ -613,7 +613,7 @@ public class V2IManagerTests {
         double arrivalVelocity2 = 6.04;
         double arrivalTime2 = ARRIVAL_TIME - 4.0;
         double maxTurnVelocity2 = arrivalVelocity;
-        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2);
+        Proposal proposal2 = new Proposal(arrivalLaneId2, departureLaneId2, arrivalTime2, arrivalVelocity2, maxTurnVelocity2, false);
 
         // Set requests
         int vin1 = 1; // the vehicle id 1
@@ -635,7 +635,7 @@ public class V2IManagerTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, new ArrayListRegistry<>());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Receive messages (add it to the inbox)

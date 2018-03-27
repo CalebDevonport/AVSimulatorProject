@@ -41,6 +41,8 @@ import aim4.map.aim.GridMapUtil;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 
+import java.io.File;
+
 /**
  * The setup for the simulator in which all vehicles are autonomous.
  */
@@ -69,7 +71,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   /** Whether the batch mode is on */
   private boolean isBatchMode = false;
   /** The traffic type */
-  private TrafficType trafficType = TrafficType.UNIFORM_RANDOM;
+  private TrafficType trafficType = TrafficType.FILE;
   /** The traffic level in the horizontal direction */
   private double hTrafficLevel;
   /** The traffic level in the vertical direction */
@@ -86,8 +88,8 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   private double granularity = 1.0;
   /** The processing interval for the batch mode */
   private double processingInterval = RoadBasedReordering.DEFAULT_PROCESSING_INTERVAL;
-  /** The name of the file about the traffic volume */
-  private String trafficVolumeFileName = null;
+  /** The JSON file with schedules */
+  private File uploadTrafficSchedule;
 
   /////////////////////////////////
   // CONSTRUCTORS
@@ -195,13 +197,12 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   }
 
   /**
-   * Set the traffic volume according to the specification in a file.
+   * Set the schedule according to a specification in a file.
    *
-   * @param trafficVolumeFileName  the file name of the traffic volume
+   * @param uploadTrafficSchedule  the file with the schedule
    */
-  public void setTrafficVolume(String trafficVolumeFileName) {
-    this.trafficType = TrafficType.FILE;
-    this.trafficVolumeFileName = trafficVolumeFileName;
+  public void setUploadTrafficSchedule(File uploadTrafficSchedule) {
+    this.uploadTrafficSchedule = uploadTrafficSchedule;
   }
 
   /**
@@ -310,7 +311,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
                   vTrafficLevel);
           break;
         case FILE:
-          GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
+          setSpawnSpecs(layout);
           break;
       }
     } else {
@@ -322,5 +323,14 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
     V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
             stopDistBeforeIntersection;
     return new AutoDriverOnlySimulator(layout);
+  }
+
+  private void setSpawnSpecs(GridAIMIntersectionMap layout) {
+    assert layout instanceof GridAIMIntersectionMap;
+    if(uploadTrafficSchedule == null)
+      GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+    else
+      GridMapUtil.setJSONScheduleSpawnSpecGenerator(layout, uploadTrafficSchedule);
+
   }
 }

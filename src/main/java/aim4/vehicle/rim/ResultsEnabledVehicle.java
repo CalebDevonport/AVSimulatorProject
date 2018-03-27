@@ -3,8 +3,6 @@ package aim4.vehicle.rim;
 public interface ResultsEnabledVehicle {
     double getFinishTime();
 
-    double getDelay();
-
     double getFinalVelocity();
 
     double getMaxVelocity();
@@ -18,8 +16,6 @@ public interface ResultsEnabledVehicle {
     double getStartTime();
 
     void setFinishTime(double finishTime);
-
-    void setDelay(double delay);
 
     void setFinalVelocity(double finalVelocity);
 

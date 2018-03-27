@@ -21,6 +21,8 @@ public class Real2ProxyRequest extends Real2ProxyMsg{
     public final float arrivalVelocity;
     /** The departure lane ID */
     public final int departureLaneId;
+    /** The departure lane ID */
+    public final boolean isStoppedAtIntersection;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -40,6 +42,7 @@ public class Real2ProxyRequest extends Real2ProxyMsg{
         arrivalTimeSpan = dis.readFloat();
         departureLaneId = dis.readInt();
         arrivalVelocity = dis.readFloat();
+        isStoppedAtIntersection = dis.readBoolean();
     }
 
     /////////////////////////////////

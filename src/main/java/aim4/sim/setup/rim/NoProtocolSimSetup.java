@@ -9,14 +9,11 @@ import aim4.map.BasicRIMIntersectionMap;
 import aim4.map.rim.RimIntersectionMap;
 import aim4.map.rim.RimMapUtil;
 import aim4.sim.Simulator;
-import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.rim.NoProtocolSimulator;
 
 import java.io.File;
 
-/**
- * The setup for the simulator in which all vehicles are autonomous.
- */
-public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup{
+public class NoProtocolSimSetup extends BasicSimSetup implements RIMSimSetup{
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -43,8 +40,6 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     private boolean isBaseLineMode = false;
     /** Whether the batch mode is on */
     private boolean isBatchMode = false;
-    /** Whether the stop sign policy mode is on */
-    private boolean isStopSignMode = false;
     /** The traffic type */
     private TrafficType trafficType = TrafficType.FILE;
     /** The static buffer size */
@@ -68,7 +63,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
      *
      * @param basicSimSetup  the basic simulator setup
      */
-    public AutoDriverOnlySimSetup(BasicSimSetup basicSimSetup) {
+    public NoProtocolSimSetup(BasicSimSetup basicSimSetup) {
         super(basicSimSetup);
     }
 
@@ -90,7 +85,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
      * @param stopDistBeforeIntersection  the stopping distance before
      *                                    intersections
      */
-    public AutoDriverOnlySimSetup(int columns, int rows,
+    public NoProtocolSimSetup(int columns, int rows,
                                   double roundaboutDiameter,
                                   double entranceExitRadius,
                                   int splitFactor,
@@ -120,14 +115,6 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
         isBaseLineMode = b;
     }
 
-    /**
-     * Turn on or off the stop sign policy mode.
-     *
-     * @param b  Whether the base line mode is on
-     */
-    public void setIsStopSignMode(boolean b) {
-        isStopSignMode = b;
-    }
 
     /**
      * Set the uniform random traffic.
@@ -246,10 +233,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
 //                RimMapUtil.setBatchManagers(layout, currentTime, gridConfig,
 //                        processingInterval);
             } else {
-                if (isStopSignMode){
-                    RimMapUtil.setStopSignManagers(layout, currentTime, gridConfig);
-                }
-                else RimMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+                RimMapUtil.setNoProtocolManagers(layout, currentTime, gridConfig);
             }
 
             switch(trafficType) {
@@ -265,16 +249,13 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
                     break;
             }
         } else {
-            if (isStopSignMode){
-                RimMapUtil.setStopSignManagers(layout, currentTime, gridConfig);
-            }
-            else RimMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+            RimMapUtil.setNoProtocolManagers(layout, currentTime, gridConfig);
         }
 
 
         V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
                 stopDistBeforeIntersection;
-        return new AutoDriverOnlySimulator(layout);
+        return new NoProtocolSimulator(layout);
     }
 
     private void setSpawnSpecs(BasicRIMIntersectionMap layout) {

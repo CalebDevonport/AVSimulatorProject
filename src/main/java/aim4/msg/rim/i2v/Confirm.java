@@ -128,7 +128,9 @@ public class Confirm extends I2VMessage{
         this.aczDistance = aczDistance;
         this.accProfile = accProfile;
         messageType = Type.CONFIRM;
-        size += 3 * Constants.INTEGER_SIZE +
+        if (accProfile == null) {
+            size += 3 * Constants.INTEGER_SIZE + 5 * Constants.DOUBLE_SIZE;
+        } else size += 3 * Constants.INTEGER_SIZE +
                 (5 + 2 * accProfile.size()) * Constants.DOUBLE_SIZE;
     }
 

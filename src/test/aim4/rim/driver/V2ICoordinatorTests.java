@@ -282,7 +282,7 @@ public class V2ICoordinatorTests {
         V2IManager im = new V2IManager(roadBasedIntersection, trackModel, CURRENT_TIME, config, map.getImRegistry());
 
         // Set policy
-        Policy policy = new BasePolicy(im, fcfsRequestHandler);
+        Policy policy = new BasePolicy(im, fcfsRequestHandler, BasePolicy.PolicyType.FCFS);
         im.setPolicy(policy);
 
         // Set manager

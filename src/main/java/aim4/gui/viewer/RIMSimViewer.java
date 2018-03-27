@@ -13,6 +13,7 @@ import aim4.sim.RIMUdpListener;
 import aim4.sim.Simulator;
 import aim4.sim.setup.rim.BasicSimSetup;
 import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.rim.NoProtocolSimulator;
 import aim4.sim.simulator.rim.RIMSimulator;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
@@ -50,6 +51,12 @@ public class RIMSimViewer extends SimViewer{
         if (simStepResult instanceof AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) {
             AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult2 =
                     (AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) simStepResult;
+            for (int vin : simStepResult2.getCompletedVINs()) {
+                Debug.removeVehicleColor(vin);
+            }
+        } else if (simStepResult instanceof NoProtocolSimulator.NoProtocolSimulatorSimStepResult) {
+            NoProtocolSimulator.NoProtocolSimulatorSimStepResult simStepResult2 =
+                    (NoProtocolSimulator.NoProtocolSimulatorSimStepResult) simStepResult;
             for (int vin : simStepResult2.getCompletedVINs()) {
                 Debug.removeVehicleColor(vin);
             }
