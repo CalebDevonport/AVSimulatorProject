@@ -39,7 +39,7 @@ public class V2IPilot {
      * The default shortest distance before an intersection at which the vehicle
      * stops if the vehicle can't enter the intersection immediately.
      */
-    public static final double DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION = 1.0;
+    public static double DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION = 1.0;
 
     /**
      * The distance, expressed in units of the Vehicle's velocity, at which to

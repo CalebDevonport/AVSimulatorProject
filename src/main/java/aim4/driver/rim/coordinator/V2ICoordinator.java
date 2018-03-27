@@ -272,7 +272,9 @@ public class V2ICoordinator implements Coordinator{
             this.lateError = msg.getLateError();
             this.arrivalVelocity = msg.getArrivalVelocity();
             this.aczDistance = msg.getACZDistance();
-            this.accelerationProfile = msg.getAccelerationProfile();
+            if (msg.getAccelerationProfile() != null){
+                this.accelerationProfile = msg.getAccelerationProfile();
+            }
         }
 
         /**
@@ -1089,6 +1091,11 @@ public class V2ICoordinator implements Coordinator{
             // Make sure our arrival time is at least a certain amount
             arrivalTime = (Math.max(result.getArrivalTime(), minArrivalTime));
 
+            boolean isStoppedAtIntersection = false;
+            if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION)){
+                isStoppedAtIntersection = true;
+            }
+
             // eliminate proposals that are not valid and then return the result.
             Request.Proposal proposal = null;
             if (arrivalTime < vehicle.gaugeTime() + MAXIMUM_FUTURE_RESERVATION_TIME) {
@@ -1097,7 +1104,8 @@ public class V2ICoordinator implements Coordinator{
                                 departureLane.getId(),
                                 arrivalTime,
                                 arrivalVelocity,
-                                maximumVelocity);
+                                maximumVelocity,
+                        isStoppedAtIntersection);
             }  // else ignore the proposal because the vehicle is too far away from
             // the intersection.
             return proposal;

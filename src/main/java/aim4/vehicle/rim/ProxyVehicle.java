@@ -353,7 +353,8 @@ public class ProxyVehicle extends RIMBasicAutoVehicle implements ProxyVehicleSim
                         + DEFAULT_ARRIVAL_TIME_DELAY,
                 movement.getVelocity(),
                 //msg.arrivalVelocity,
-                maxTurnVelocity));
+                maxTurnVelocity,
+                msg.isStoppedAtIntersection));
 
         System.err.printf("msg.arrivalVelocity = %.5f\n", msg.arrivalVelocity);
         System.err.printf("this.velocity       = %.5f\n\n", movement.getVelocity());

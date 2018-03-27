@@ -96,7 +96,6 @@ public class RIMBasicAutoVehicle extends BasicAutoVehicle implements RIMAutoVehi
     //Result properties
     private double startTime;
     private double finishTime;
-    private double delayTime;
     private double finalVelocity;
     private double maxVelocity;
     private double minVelocity;
@@ -280,16 +279,6 @@ public class RIMBasicAutoVehicle extends BasicAutoVehicle implements RIMAutoVehi
     @Override
     public void setFinishTime(double finishTime) {
         this.finishTime = finishTime;
-    }
-
-    @Override
-    public double getDelay() {
-        return delayTime;
-    }
-
-    @Override
-    public void setDelay(double delayTime) {
-        this.delayTime = delayTime;
     }
 
     @Override

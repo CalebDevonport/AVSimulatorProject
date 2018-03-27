@@ -17,6 +17,7 @@ import aim4.msg.rim.v2i.V2IMessage;
 import aim4.sim.results.RIMResult;
 import aim4.sim.results.RIMVehicleResult;
 import aim4.sim.simulator.rim.helper.SpawnHelper;
+import aim4.util.Util;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.rim.ProxyVehicleSimModel;
@@ -104,6 +105,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
         this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
+        this.vehiclesRecord = new ArrayList<RIMVehicleResult>();
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
@@ -155,21 +157,18 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
             System.err.printf("------SIM:checkForCollisions---------------\n");
             checkForCollisions();
         }
-//        List<RIMVehicleSimModel> completedVehicles = new ArrayList<RIMVehicleSimModel>();
-//        if(mergeMode) {
-//            completedVehicles = calculateCompletedVehicles();
-//        }
-
+        if (Debug.PRINT_SIMULATOR_STAGE){
+            System.err.printf("------SIM:calculateCompletedVehicles---------------\n");
+        }
+        List<RIMVehicleSimModel> completedVehicles = calculateCompletedVehicles();
+        provideCompletedVehiclesWithResultsInfo(completedVehicles);
+        recordCompletedVehicles(completedVehicles);
+        updateMaxMinVelocities();
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
         }
         List<Integer> completedVINs = cleanUpCompletedVehicles();
 
-//        if(mergeMode) {
-//            provideCompletedVehiclesWithResultsInfo(completedVehicles);
-//            recordCompletedVehicles(completedVehicles);
-//            updateMaxMinVelocities();
-//        }
         currentTime += timeStep;
         // debug
         checkClocks();
@@ -888,7 +887,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                     vehicle.getSpec().getName(),
                     vehicle.getStartTime(),
                     vehicle.getFinishTime(),
-                    vehicle.getDelay(),
                     vehicle.getFinalVelocity(),
                     vehicle.getMaxVelocity(),
                     vehicle.getMinVelocity(),
@@ -901,7 +899,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     private void provideCompletedVehiclesWithResultsInfo(List<RIMVehicleSimModel> completedVehicles) {
         for(RIMVehicleSimModel vehicle : completedVehicles) {
             vehicle.setFinishTime(currentTime);
-//            vehicle.setDelay(calculateDelay(vehicle));
             vehicle.setFinalVelocity(vehicle.getVelocity());
             vehicle.setFinalXPos(vehicle.getPosition().getX());
             vehicle.setFinalYPos(vehicle.getPosition().getY());
@@ -914,7 +911,10 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
             if(vehicle.getVelocity() > vehicle.getMaxVelocity())
                 vehicle.setMaxVelocity(vehicle.getVelocity());
             else if(vehicle.getVelocity() < vehicle.getMinVelocity()) {
-                vehicle.setMinVelocity(vehicle.getVelocity());
+                if (Util.isDoubleZero(vehicle.getVelocity())){
+                    vehicle.setMinVelocity(0.0);
+                }
+                else vehicle.setMinVelocity(vehicle.getVelocity());
             }
         }
     }
@@ -964,12 +964,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         sb.append(',');
         sb.append("Throughput");
         sb.append('\n');
-        sb.append(result.getMaxDelay());
-        sb.append(',');
-        sb.append(result.getAverageDelay());
-        sb.append(',');
-        sb.append(result.getMinDelay());
-        sb.append(',');
         sb.append(result.getCompletedVehicles());
         sb.append(',');
         sb.append(result.getThroughput());
@@ -1007,8 +1001,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
             sb.append(vr.getStartTime());
             sb.append(',');
             sb.append(vr.getFinishTime());
-            sb.append(',');
-            sb.append(vr.getDelayTime());
             sb.append(',');
             sb.append(vr.getFinalVelocity());
             sb.append(',');

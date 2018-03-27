@@ -325,10 +325,19 @@ public class GridMapUtil {
         public static class ScheduledSpawn {
             private String specName;
             private Double spawnTime;
+            private String arrivalRoadName;
+            private String destinationRoadName;
 
             public ScheduledSpawn(String specName, Double spawnTime) {
                 this.specName = specName;
                 this.spawnTime = spawnTime;
+            }
+
+            public ScheduledSpawn(String specName, Double spawnTime, String arrivalRoadName, String destinationRoadName) {
+                this.specName = specName;
+                this.spawnTime = spawnTime;
+                this.arrivalRoadName = arrivalRoadName;
+                this.destinationRoadName = destinationRoadName;
             }
 
             public String getSpecName() {
@@ -338,6 +347,10 @@ public class GridMapUtil {
             public double getSpawnTime() {
                 return spawnTime;
             }
+
+            public String getArrivalRoadName() { return arrivalRoadName; }
+
+            public String getDestinationRoadName() { return destinationRoadName; }
         }
 
         // PRIVATE FIELDS //
@@ -348,6 +361,10 @@ public class GridMapUtil {
         public JsonScheduleSpawnSpecGenerator(File jsonFile, Road destinationRoad) throws IOException, ParseException {
             this.schedule = processJson(jsonFile);
             this.destinationRoad = destinationRoad;
+        }
+
+        public JsonScheduleSpawnSpecGenerator(File jsonFile, int spawnPointLaneId) throws IOException, ParseException {
+            this.schedule = processJson(jsonFile, spawnPointLaneId);
         }
 
         private Queue<ScheduledSpawn> processJson(File jsonFile) throws IOException, ParseException {
@@ -367,6 +384,26 @@ public class GridMapUtil {
             return schedule;
         }
 
+        private Queue<ScheduledSpawn> processJson(File jsonFile, int spawnPointLaneId) throws IOException, ParseException {
+            JSONParser parser = new JSONParser();
+
+            Object array = parser.parse(new FileReader(jsonFile));
+            JSONArray jsonSchedule = (JSONArray) array;
+
+            Queue<ScheduledSpawn> schedule = new LinkedList<ScheduledSpawn>();
+            for(Object spawnObj : jsonSchedule) {
+                JSONObject jsonSpawn = (JSONObject) spawnObj;
+                String specName = (String) jsonSpawn.get("specName");
+                Double spawnTime = (Double) jsonSpawn.get("spawnTime");
+                String spawnArrivalRoadName = (String) jsonSpawn.get("arrivalRoadName");
+                String spawnDestinationRoadName = (String) jsonSpawn.get("destinationRoadName");
+                if (Debug.currentAimMap.getRoad(spawnPointLaneId).getName().compareTo(spawnArrivalRoadName) == 0) {
+                    schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));
+                }
+            }
+            return schedule;
+        }
+
         // ACTION //
         @Override
         public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timestep) {
@@ -374,7 +411,9 @@ public class GridMapUtil {
             List<AIMSpawnSpec> specs = new ArrayList<AIMSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if(!schedule.isEmpty()) {
-                    if (time > schedule.peek().getSpawnTime()) {
+                    if (time > schedule.peek().getSpawnTime() &&
+                            Debug.currentAimMap.getRoad(spawnPoint.getLane().getId()).getName().compareTo(schedule.peek().getArrivalRoadName()) == 0) {
+                        Road destinationRoad = ((GridAIMIntersectionMap)Debug.currentAimMap).getRoadByName(schedule.peek().getDestinationRoadName());
                         specs.add(new AIMSpawnSpec(
                                 spawnPoint.getCurrentTime(),
                                 VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
@@ -758,6 +797,26 @@ public class GridMapUtil {
                             sp.getLane().getId() * traversalTime * numOfTraversals,
                             traversalTime));
         }
+    }
+
+    public static void setJSONScheduleSpawnSpecGenerator(GridAIMIntersectionMap map, File uploadedTrafficSchedule) {
+        try {
+            for(AIMSpawnPoint sp : map.getSpawnPoints()) {
+                sp.setVehicleSpecChooser(
+                        new GridMapUtil.JsonScheduleSpawnSpecGenerator(
+                                uploadedTrafficSchedule,
+                                sp.getLane().getId()
+                        ));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    String.format(
+                            "One of the files for the spawn schedules could not be used: %s\n",
+                            e.getMessage()),
+                    e
+            );
+        }
+
     }
 
     public static void setJSONScheduleSpawnSpecGenerator(GridAIMIntersectionMap map, File mergeSchedule, File targetSchedule) throws IOException, ParseException {

@@ -238,7 +238,7 @@ public class SpawnHelper {
                         initVelocity,
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime());
-        vehicle.setStartTime(spawnPoint.getCurrentTime());
+        vehicle.setStartTime(spawnSpec.getSpawnTime());
         vehicle.setMaxVelocity(initVelocity);
         vehicle.setMinVelocity(initVelocity);
 

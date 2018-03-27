@@ -40,6 +40,10 @@ public class Request extends V2IMessage{
          * departure lanes.
          */
         private double maximumTurnVelocity;
+        /**
+         * If the vehicle is stopped at intersection.
+         */
+        private boolean isStoppedAtIntersection;
 
 
         /////////////////////////////////
@@ -54,14 +58,16 @@ public class Request extends V2IMessage{
          * @param arrivalTime      the arrival time
          * @param arrivalVelocity  the arrival velocity
          * @param maxTurnVelocity  the maximum turn velocity
+         * @param isStoppedAtIntersection  if the vehicle is stopped at intersection
          */
         public Proposal(int arrivalLaneID, int departureLaneID, double arrivalTime,
-                        double arrivalVelocity, double maxTurnVelocity) {
+                        double arrivalVelocity, double maxTurnVelocity, boolean isStoppedAtIntersection) {
             this.arrivalLaneID = arrivalLaneID;
             this.departureLaneID = departureLaneID;
             this.arrivalTime = arrivalTime;
             this.arrivalVelocity = arrivalVelocity;
             this.maximumTurnVelocity = maxTurnVelocity;
+            this.isStoppedAtIntersection = isStoppedAtIntersection;
         }
 
         /**
@@ -75,6 +81,7 @@ public class Request extends V2IMessage{
             this.arrivalTime = p.arrivalTime;
             this.arrivalVelocity = p.arrivalVelocity;
             this.maximumTurnVelocity = p.maximumTurnVelocity;
+            this.isStoppedAtIntersection = p.isStoppedAtIntersection;
         }
 
         // ///////////////////////////////
@@ -132,6 +139,15 @@ public class Request extends V2IMessage{
          */
         public double getMaximumTurnVelocity() {
             return maximumTurnVelocity;
+        }
+
+        /**
+         * Check if the vehicle is stopped at the intersection.
+         *
+         * @return True if vehicle stopped at intersection, false otherwise
+         */
+        public boolean isStoppedAtIntersection() {
+            return isStoppedAtIntersection;
         }
 
         // ///////////////////////////////

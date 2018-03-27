@@ -7,6 +7,7 @@ import aim4.im.rim.RoadBasedIntersection;
 import aim4.im.rim.RoadBasedTrackModel;
 import aim4.im.rim.v2i.RequestHandler.FCFSRequestHandler;
 import aim4.im.rim.v2i.V2IManager;
+import aim4.im.rim.v2i.policy.AcceptAllPolicy;
 import aim4.im.rim.v2i.policy.BasePolicy;
 import aim4.im.rim.v2i.reservation.ReservationGridManager;
 import aim4.map.Road;
@@ -53,7 +54,59 @@ public class RimMapUtil {
                 V2IManager im =
                         new V2IManager(intersection, trajectoryModel, currentTime,
                                 config, layout.getImRegistry());
-                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler()));
+                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler(),BasePolicy.PolicyType.FCFS));
+                layout.setManager(column, row, im);
+            }
+        }
+    }
+
+    /**
+     * Set the no protocol managers at all intersections.
+     *
+     * @param layout       the map
+     * @param currentTime  the current time
+     * @param config       the reservation grid manager configuration
+     */
+    public static void setNoProtocolManagers(RimIntersectionMap layout,
+                                             double currentTime,
+                                             ReservationGridManager.Config config) {
+        layout.removeAllManagers();
+        for(int column = 0; column < layout.getColumns(); column++) {
+            for(int row = 0; row < layout.getRows(); row++) {
+                List<Road> roads = layout.getRoads(column, row);
+                RoadBasedIntersection intersection = new RoadBasedIntersection(roads);
+                RoadBasedTrackModel trajectoryModel =
+                        new RoadBasedTrackModel(intersection);
+                V2IManager im =
+                        new V2IManager(intersection, trajectoryModel, currentTime,
+                                config, layout.getImRegistry());
+                im.setPolicy(new AcceptAllPolicy(im));
+                layout.setManager(column, row, im);
+            }
+        }
+    }
+
+    /**
+     * Set the no protocol managers at all intersections.
+     *
+     * @param layout       the map
+     * @param currentTime  the current time
+     * @param config       the reservation grid manager configuration
+     */
+    public static void setStopSignManagers(RimIntersectionMap layout,
+                                           double currentTime,
+                                           ReservationGridManager.Config config) {
+        layout.removeAllManagers();
+        for(int column = 0; column < layout.getColumns(); column++) {
+            for(int row = 0; row < layout.getRows(); row++) {
+                List<Road> roads = layout.getRoads(column, row);
+                RoadBasedIntersection intersection = new RoadBasedIntersection(roads);
+                RoadBasedTrackModel trajectoryModel =
+                        new RoadBasedTrackModel(intersection);
+                V2IManager im =
+                        new V2IManager(intersection, trajectoryModel, currentTime,
+                                config, layout.getImRegistry());
+                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler(), BasePolicy.PolicyType.STOP_SIGN));
                 layout.setManager(column, row, im);
             }
         }
@@ -178,24 +231,24 @@ public class RimMapUtil {
         public static class ScheduledSpawn {
             private String specName;
             private Double spawnTime;
-            private Long spawnArrivalLaneId;
-            private String spawnDestinationRoadName;
+            private String arrivalRoadName;
+            private String destinationRoadName;
 
 
-            public ScheduledSpawn(String specName, Double spawnTime, Long spawnArrivalLaneId, String spawnDestinationRoadName) {
+            public ScheduledSpawn(String specName, Double spawnTime, String arrivalRoadName, String destinationRoadName) {
                 this.specName = specName;
                 this.spawnTime = spawnTime;
-                this.spawnArrivalLaneId = spawnArrivalLaneId;
-                this.spawnDestinationRoadName = spawnDestinationRoadName;
+                this.arrivalRoadName = arrivalRoadName;
+                this.destinationRoadName = destinationRoadName;
             }
 
             public String getSpecName() { return specName; }
 
             public double getSpawnTime() { return spawnTime; }
 
-            public Long getSpawnArrivalLaneId() { return spawnArrivalLaneId; }
+            public String getArrivalRoadName() { return arrivalRoadName; }
 
-            public String getSpawnDestinationRoadName() { return spawnDestinationRoadName; }
+            public String getDestinationRoadName() { return destinationRoadName; }
         }
 
         // PRIVATE FIELDS //
@@ -217,10 +270,10 @@ public class RimMapUtil {
                 JSONObject jsonSpawn = (JSONObject) spawnObj;
                 String specName = (String) jsonSpawn.get("specName");
                 Double spawnTime = (Double) jsonSpawn.get("spawnTime");
-                Long spawnArrivalLaneId = (Long) jsonSpawn.get("specArrival");
-                String spawnDestinationRoadName = (String) jsonSpawn.get("specDestination");
-                if (spawnPointLaneId == Math.toIntExact(spawnArrivalLaneId)) {
-                    schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalLaneId, spawnDestinationRoadName));
+                String spawnArrivalRoadName = (String) jsonSpawn.get("arrivalRoadName");
+                String spawnDestinationRoadName = (String) jsonSpawn.get("destinationRoadName");
+                if (Debug.currentRimMap.getRoad(spawnPointLaneId).getName().compareTo(spawnArrivalRoadName) == 0) {
+                    schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));
                 }
             }
             return schedule;
@@ -233,8 +286,9 @@ public class RimMapUtil {
             List<RIMSpawnPoint.RIMSpawnSpec> specs = new ArrayList<RIMSpawnPoint.RIMSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if(!schedule.isEmpty()) {
-                    if (time > schedule.peek().getSpawnTime() && spawnPoint.getLane().getId() == Math.toIntExact(schedule.peek().getSpawnArrivalLaneId())) {
-                        Road destinationRoad = ((RimIntersectionMap) Debug.currentRimMap).getRoadByName(schedule.peek().getSpawnDestinationRoadName());
+                    if (time > schedule.peek().getSpawnTime() &&
+                            Debug.currentRimMap.getRoad(spawnPoint.getLane().getId()).getName().compareTo(schedule.peek().getArrivalRoadName()) == 0) {
+                        Road destinationRoad = ((RimIntersectionMap) Debug.currentRimMap).getRoadByName(schedule.peek().getDestinationRoadName());
                         specs.add(new RIMSpawnPoint.RIMSpawnSpec(
                                 spawnPoint.getCurrentTime(),
                                 VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
@@ -296,8 +350,8 @@ public class RimMapUtil {
                     JSONObject scheduledSpawn = new JSONObject();
                     scheduledSpawn.put("specName", vSpec.getName());
                     scheduledSpawn.put("spawnTime", currentTime);
-                    scheduledSpawn.put("specArrival",rimVehicleSimModel.getDriver().getCurrentLane().getId());
-                    scheduledSpawn.put("specDestination", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
+                    scheduledSpawn.put("arrivalRoadName",Debug.currentRimMap.getRoad(rimVehicleSimModel.getDriver().getCurrentLane().getId()).getName());
+                    scheduledSpawn.put("destinationRoadName", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
                     schedule.add(scheduledSpawn);
                 }
             }
@@ -355,8 +409,8 @@ public class RimMapUtil {
                     JSONObject scheduledSpawn = new JSONObject();
                     scheduledSpawn.put("specName", vSpec.getName());
                     scheduledSpawn.put("spawnTime", currentTime);
-                    scheduledSpawn.put("specArrival",rimVehicleSimModel.getDriver().getCurrentLane().getId());
-                    scheduledSpawn.put("specDestination", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
+                    scheduledSpawn.put("arrivalRoadName",Debug.currentRimMap.getRoad(rimVehicleSimModel.getDriver().getCurrentLane().getId()).getName());
+                    scheduledSpawn.put("destinationRoadName", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
                     schedule.add(scheduledSpawn);
                 }
 
