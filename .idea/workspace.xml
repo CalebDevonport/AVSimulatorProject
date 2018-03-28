@@ -4,33 +4,8 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/aim4/driver/rim/coordinator/V2ICoordinator.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="Added two more protocols for RIM: No protocol &amp; stop signs&#10;Changed RIM generation to have road names instead of ids&#10;Changed AIM panel to be able to use the file independently of RIM">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/parampanel/rim/AIMCrossIntersectionParamPanel.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridRIMIntersectionMap.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/setup/rim/AIMCrossIntersectionSimSetup.java" />
+    <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="Created a normalised AIM map (250x250) to be able to compare with RIM&#10;Added this as an option in RIM sim viewer&#10;Added results processing for all of them">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/frame/VehicleInfoFrame.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/frame/VehicleInfoFrame.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/parampanel/aim/AutoDriverOnlyParamPanel.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/parampanel/aim/AutoDriverOnlyParamPanel.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/screen/rim/RIMCanvas.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/screen/rim/RIMCanvas.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/AIMSimSetupPanel.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/AIMSimSetupPanel.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/RIMSimSetupPanel.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/RIMSimSetupPanel.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/viewer/AIMSimViewer.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/viewer/AIMSimViewer.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/gui/viewer/RIMSimViewer.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/gui/viewer/RIMSimViewer.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridAIMIntersectionMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/aim/GridAIMIntersectionMap.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/results/AIMResult.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/results/MergeResult.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/results/AIMVehicleResult.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/results/MergeVehicleResult.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/results/RIMResult.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/results/Result.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/results/RIMVehicleResult.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/results/VehicleResult.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/setup/aim/AutoDriverOnlySimSetup.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/setup/aim/AutoDriverOnlySimSetup.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AIMSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AIMSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AutoDriverOnlySimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/aim/AutoDriverOnlySimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/cpm/CPMAutoDriverSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/cpm/CPMAutoDriverSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/merge/CoreMergeSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/merge/CoreMergeSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/merge/MergeSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/merge/MergeSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/AutoDriverOnlySimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/AutoDriverOnlySimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/NoProtocolSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/NoProtocolSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/RIMSimulator.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/sim/simulator/rim/RIMSimulator.java" />
-      <change beforePath="$PROJECT_DIR$/src/test/results_generation/CreateResults.java" afterPath="$PROJECT_DIR$/src/test/results_generation/CreateResults.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -219,7 +194,7 @@
     <option name="jreName" value="1.8" />
     <option name="skipTests" value="true" />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="301" />
     <option name="y" value="38" />
     <option name="width" value="2003" />
@@ -950,13 +925,6 @@
       <option name="presentableId" value="Default" />
       <updated>1516208292727</updated>
     </task>
-    <task id="LOCAL-00006" summary="Get the shape of a lane depending on arc and width">
-      <created>1517242112734</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1517242112734</updated>
-    </task>
     <task id="LOCAL-00007" summary="Decompose an Arc Lane in smaller Line Lanes">
       <created>1517335052881</created>
       <option name="number" value="00007" />
@@ -1293,7 +1261,14 @@
       <option name="project" value="LOCAL" />
       <updated>1522175227131</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Created a normalised AIM map (250x250) to be able to compare with RIM&#10;Added this as an option in RIM sim viewer&#10;Added results processing for all of them">
+      <created>1522267860149</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1522267860149</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1338,7 +1313,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="301" y="38" width="2003" height="2074" extended-state="0" />
+    <frame x="-16" y="-16" width="3872" height="2092" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284091" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1404,7 +1379,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add granularity as prop of Reservation Grid" />
     <MESSAGE value="set continuous lanes correctly (to each line lane, no arc lanes)" />
     <MESSAGE value="getters for merging lanes" />
     <MESSAGE value="Add the concept of having lanes to road (including for line lanes from arcs)" />
@@ -1429,7 +1403,8 @@
     <MESSAGE value="Made fixes to generating the spawn files + commented out ideas" />
     <MESSAGE value="Fixed tests" />
     <MESSAGE value="Added two more protocols for RIM: No protocol &amp; stop signs&#10;Changed RIM generation to have road names instead of ids&#10;Changed AIM panel to be able to use the file independently of RIM" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added two more protocols for RIM: No protocol &amp; stop signs&#10;Changed RIM generation to have road names instead of ids&#10;Changed AIM panel to be able to use the file independently of RIM" />
+    <MESSAGE value="Created a normalised AIM map (250x250) to be able to compare with RIM&#10;Added this as an option in RIM sim viewer&#10;Added results processing for all of them" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created a normalised AIM map (250x250) to be able to compare with RIM&#10;Added this as an option in RIM sim viewer&#10;Added results processing for all of them" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1737,25 +1712,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/RIMSimSetupPanel.java</url>
-          <line>129</line>
+          <line>128</line>
           <properties />
           <option name="timeStamp" value="1593" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/aim4/gui/setuppanel/RIMSimSetupPanel.java</url>
-          <line>142</line>
+          <line>141</line>
           <properties />
           <option name="timeStamp" value="1594" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/aim4/gui/screen/rim/RIMCanvas.java</url>
-          <line>302</line>
+          <line>300</line>
           <properties />
           <option name="timeStamp" value="1599" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/aim4/gui/screen/rim/RIMCanvas.java</url>
-          <line>272</line>
+          <line>270</line>
           <properties />
           <option name="timeStamp" value="1600" />
         </line-breakpoint>
