@@ -2,17 +2,17 @@ package aim4.sim.results;
 
 import java.util.List;
 
-public class RIMResult implements SimulatorResult{
-    private List<RIMVehicleResult> vehicleResults;
+public class Result implements SimulatorResult{
+    private List<VehicleResult> vehicleResults;
     private double throughput;
     private int completedVehicles;
-    public RIMResult(List<RIMVehicleResult> vehicleResults) {
+    public Result(List<VehicleResult> vehicleResults) {
         this.vehicleResults = vehicleResults;
 
         this.completedVehicles = 0;
         double lastVehicleTime = 0;
 
-        for (RIMVehicleResult result : vehicleResults) {
+        for (VehicleResult result : vehicleResults) {
             //Completed Vehicles
             this.completedVehicles++;
             //Throughput Help
@@ -24,7 +24,7 @@ public class RIMResult implements SimulatorResult{
         }
     }
 
-    public List<RIMVehicleResult> getVehicleResults() {
+    public List<VehicleResult> getVehicleResults() {
         return vehicleResults;
     }
 
@@ -87,16 +87,12 @@ public class RIMResult implements SimulatorResult{
         sb.append("Max Velocity");
         sb.append(',');
         sb.append("Min Velocity");
-        sb.append(',');
-        sb.append("Final X Position");
-        sb.append(',');
-        sb.append("Final Y Position");
         return sb.toString();
     }
 
     public String produceVehicleStatsCSV(){
         StringBuilder sb = new StringBuilder();
-        for(RIMVehicleResult vr : vehicleResults){
+        for(VehicleResult vr : vehicleResults){
             sb.append(vr.getVin());
             sb.append(',');
             sb.append(vr.getSpecType());
@@ -110,10 +106,6 @@ public class RIMResult implements SimulatorResult{
             sb.append(vr.getMaxVelocity());
             sb.append(',');
             sb.append(vr.getMinVelocity());
-            sb.append(',');
-            sb.append(vr.getFinalXPos());
-            sb.append(',');
-            sb.append(vr.getFinalYPos());
             sb.append('\n');
         }
         return sb.toString();

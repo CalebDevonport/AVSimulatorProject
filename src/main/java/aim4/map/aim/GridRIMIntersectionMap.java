@@ -1,33 +1,3 @@
-/*
-Copyright (c) 2011 Tsz-Chiu Au, Peter Stone
-University of Texas at Austin
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-3. Neither the name of the University of Texas at Austin nor the names of its
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package aim4.map.aim;
 
 import aim4.config.Debug;
@@ -48,21 +18,21 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
 
-
-/**
- * The grid layout map.
- */
-public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
+public class GridRIMIntersectionMap extends GridAIMIntersectionMap implements BasicAIMIntersectionMap {
 
     /////////////////////////////////
     // CONSTANTS
     /////////////////////////////////
 
-    /** The length of the no vehicle zone */
+    /**
+     * The length of the no vehicle zone
+     */
     private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
-    /** The position of the data collection line on a lane */
+    /**
+     * The position of the data collection line on a lane
+     */
     private static final double DATA_COLLECTION_LINE_POSITION =
             NO_VEHICLE_ZONE_LENGTH;
 
@@ -70,40 +40,72 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
     // PRIVATE FIELDS
     /////////////////////////////////
 
-    /** The number of rows */
+    /**
+     * The number of rows
+     */
     private int rows;
-    /** The number of columns */
+    /**
+     * The number of columns
+     */
     private int columns;
-    /** The dimensions of the map */
+    /**
+     * The dimensions of the map
+     */
     private Rectangle2D dimensions;
-    /** The set of roads */
+    /**
+     * The set of roads
+     */
     private List<Road> roads;
-    /** The set of horizontal roads */
+    /**
+     * The set of horizontal roads
+     */
     private List<Road> horizontalRoads = new ArrayList<Road>();
-    /** The set of vertical roads */
+    /**
+     * The set of vertical roads
+     */
     private List<Road> verticalRoads = new ArrayList<Road>();
-    /** The list of intersection managers */
+    /**
+     * The list of intersection managers
+     */
     private List<IntersectionManager> intersectionManagers;
-    /** The array of intersection managers */
+    /**
+     * The array of intersection managers
+     */
     private IntersectionManager[][] intersectionManagerGrid;
-    /** The maximum speed limit  */
+    /**
+     * The maximum speed limit
+     */
     private double memoMaximumSpeedLimit = -1;
-    /** The data collection lines */
+    /**
+     * The data collection lines
+     */
     private List<DataCollectionLine> dataCollectionLines;
-    /** The spawn points */
+    /**
+     * The spawn points
+     */
     private List<AIMSpawnPoint> spawnPoints;
-    /** The horizontal spawn points */
+    /**
+     * The horizontal spawn points
+     */
     private List<AIMSpawnPoint> horizontalSpawnPoints;
-    /** The vertical spawn points */
+    /**
+     * The vertical spawn points
+     */
     private List<AIMSpawnPoint> verticalSpawnPoints;
-    /** The lane registry */
+    /**
+     * The lane registry
+     */
     private Registry<Lane> laneRegistry =
             new ArrayListRegistry<Lane>();
-    /** The IM registry */
+    /**
+     * The IM registry
+     */
     private Registry<IntersectionManager> imRegistry =
             new ArrayListRegistry<IntersectionManager>();
-    /** A mapping form lanes to roads they belong */
-    private Map<Lane,Road> laneToRoad = new HashMap<Lane,Road>();
+    /**
+     * A mapping form lanes to roads they belong
+     */
+    private Map<Lane, Road> laneToRoad = new HashMap<Lane, Road>();
 
     /////////////////////////////////
     // CLASS CONSTRUCTORS
@@ -122,37 +124,30 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
      *                                  direction
      * @param distanceBetween           the distance between the adjacent intersections
      */
-    public GridAIMIntersectionMap(double initTime, int columns, int rows,
+    public GridRIMIntersectionMap(double initTime, int columns, int rows,
                                   double laneWidth, double speedLimit, int lanesPerRoad,
                                   double widthBetweenOppositeRoads, double distanceBetween) {
         // Can't make these unless there is at least one row and column
-        if(rows < 1 || columns < 1) {
-            throw new IllegalArgumentException("Must have at least one column "+
+        if (rows < 1 || columns < 1) {
+            throw new IllegalArgumentException("Must have at least one column " +
                     "and row!");
         }
         this.columns = columns;
         this.rows = rows;
+        lanesPerRoad = 1; // only one lane per road
+        distanceBetween = 0; // the case for multiple intersections is not handled
 
         // Generate the size of the map.
-        // Can't forget to account for the fact that we have "distanceBetween"
-        // on the outsides too, so we have to add an extra one in.
-        double height = rows * (widthBetweenOppositeRoads +
-                2 * lanesPerRoad * laneWidth +
-                distanceBetween) + distanceBetween;
-        double width = columns * (widthBetweenOppositeRoads +
-                2 * lanesPerRoad * laneWidth +
-                distanceBetween) + distanceBetween;
+        // The map is 250x250 similarly with RIM
+        double height = 250;
+        double width = 250;
         dimensions = new Rectangle2D.Double(0, 0, width, height);
 
-        // Set size of array for the data collection lines.
-        // 2 per sets of roads, one at either end.
-        dataCollectionLines = new ArrayList<DataCollectionLine>(2*(columns+rows));
+        dataCollectionLines = new ArrayList<DataCollectionLine>();
 
         // Create the vertical Roads
         for (int column = 0; column < columns; column++) {
-            double roadMiddleX =
-                    column * (widthBetweenOppositeRoads + 2 * lanesPerRoad * laneWidth + distanceBetween)
-                            + distanceBetween + lanesPerRoad * laneWidth + widthBetweenOppositeRoads / 2;
+            double roadMiddleX = height/ 2;
 
             // First create the right road (northbound)
             Road right =
@@ -178,20 +173,20 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
             // generate the data collection lines
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "NorthBound"+column+"Entrance",
+                            "NorthBound" + column + "Entrance",
                             dataCollectionLines.size(),
                             new Point2D.Double(roadMiddleX,
                                     height - DATA_COLLECTION_LINE_POSITION),
-                            new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + widthBetweenOppositeRoads,
+                            new Point2D.Double(roadMiddleX + lanesPerRoad * laneWidth + widthBetweenOppositeRoads,
                                     height - DATA_COLLECTION_LINE_POSITION),
                             true));
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "NorthBound"+column+"Exit",
+                            "NorthBound" + column + "Exit",
                             dataCollectionLines.size(),
                             new Point2D.Double(roadMiddleX,
                                     DATA_COLLECTION_LINE_POSITION),
-                            new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + widthBetweenOppositeRoads,
+                            new Point2D.Double(roadMiddleX + lanesPerRoad * laneWidth + widthBetweenOppositeRoads,
                                     DATA_COLLECTION_LINE_POSITION),
                             true));
 
@@ -217,20 +212,20 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
             // generate the data collection lines
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "SouthBound"+column+"Entrance",
+                            "SouthBound" + column + "Entrance",
                             dataCollectionLines.size(),
                             new Point2D.Double(roadMiddleX,
                                     DATA_COLLECTION_LINE_POSITION),
-                            new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - widthBetweenOppositeRoads,
+                            new Point2D.Double(roadMiddleX - lanesPerRoad * laneWidth - widthBetweenOppositeRoads,
                                     DATA_COLLECTION_LINE_POSITION),
                             true));
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "SouthBound"+column+"Exit",
+                            "SouthBound" + column + "Exit",
                             dataCollectionLines.size(),
                             new Point2D.Double(roadMiddleX,
                                     height - DATA_COLLECTION_LINE_POSITION),
-                            new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - widthBetweenOppositeRoads,
+                            new Point2D.Double(roadMiddleX - lanesPerRoad * laneWidth - widthBetweenOppositeRoads,
                                     height - DATA_COLLECTION_LINE_POSITION),
                             true));
 
@@ -240,9 +235,7 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
 
         // Create the horizontal Roads
         for (int row = 0; row < rows; row++) {
-            double roadMiddleY =
-                    row * (widthBetweenOppositeRoads + 2 * lanesPerRoad * laneWidth + distanceBetween)
-                            + distanceBetween + lanesPerRoad * laneWidth + widthBetweenOppositeRoads / 2;
+            double roadMiddleY = width / 2;
             // First create the lower (eastbound)
             Road lower = new Road(GeomMath.ordinalize(row + 1) + " Street E", this);
             for (int i = 0; i < lanesPerRoad; i++) {
@@ -265,21 +258,21 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
             // generate the data collection lines
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "EastBound"+row+"Entrance",
+                            "EastBound" + row + "Entrance",
                             dataCollectionLines.size(),
                             new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
                                     roadMiddleY),
                             new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
-                                    roadMiddleY + lanesPerRoad*laneWidth + widthBetweenOppositeRoads),
+                                    roadMiddleY + lanesPerRoad * laneWidth + widthBetweenOppositeRoads),
                             true));
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "EastBound"+row+"Exit",
+                            "EastBound" + row + "Exit",
                             dataCollectionLines.size(),
                             new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
                                     roadMiddleY),
                             new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
-                                    roadMiddleY + lanesPerRoad*laneWidth + widthBetweenOppositeRoads),
+                                    roadMiddleY + lanesPerRoad * laneWidth + widthBetweenOppositeRoads),
                             true));
 
 
@@ -305,21 +298,21 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
             // generate the data collection lines
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "WestBound"+row+"Entrance",
+                            "WestBound" + row + "Entrance",
                             dataCollectionLines.size(),
                             new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
                                     roadMiddleY),
                             new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
-                                    roadMiddleY - lanesPerRoad*laneWidth - widthBetweenOppositeRoads),
+                                    roadMiddleY - lanesPerRoad * laneWidth - widthBetweenOppositeRoads),
                             true));
             dataCollectionLines.add(
                     new DataCollectionLine(
-                            "WestBound"+row+"Exit",
+                            "WestBound" + row + "Exit",
                             dataCollectionLines.size(),
                             new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
                                     roadMiddleY),
                             new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
-                                    roadMiddleY - lanesPerRoad*laneWidth - widthBetweenOppositeRoads),
+                                    roadMiddleY - lanesPerRoad * laneWidth - widthBetweenOppositeRoads),
                             true));
 
             // Set up the "dual" relationship
@@ -337,7 +330,7 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
         initializeSpawnPoints(initTime);
     }
 
-    public GridAIMIntersectionMap(GridAIMIntersectionMap map, double laneWidth,
+    public GridRIMIntersectionMap(GridAIMIntersectionMap map, double laneWidth,
                                   double widthBetweenOppositeRoads, double distanceBetween) {
         this(0, map.getColumns(), map.getRows(),
                 laneWidth, map.getMaximumSpeedLimit(),
@@ -345,29 +338,24 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
                 widthBetweenOppositeRoads, distanceBetween);
     }
 
-    public GridAIMIntersectionMap() {
-        // Constructor needed to extend this class
-        // TODO: Fix this
-    }
-
     /**
      * Initialize spawn points.
      *
-     * @param initTime  the initial time
+     * @param initTime the initial time
      */
     private void initializeSpawnPoints(double initTime) {
-        spawnPoints = new ArrayList<AIMSpawnPoint>(columns+rows);
+        spawnPoints = new ArrayList<AIMSpawnPoint>(columns + rows);
         horizontalSpawnPoints = new ArrayList<AIMSpawnPoint>(rows);
         verticalSpawnPoints = new ArrayList<AIMSpawnPoint>(columns);
 
-        for(Road road : horizontalRoads) {
-            for(Lane lane : road.getLanes()) {
+        for (Road road : horizontalRoads) {
+            for (Lane lane : road.getLanes()) {
                 horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
             }
         }
 
-        for(Road road : verticalRoads) {
-            for(Lane lane : road.getLanes()) {
+        for (Road road : verticalRoads) {
+            for (Lane lane : road.getLanes()) {
                 verticalSpawnPoints.add(makeSpawnPoint(initTime, lane));
             }
         }
@@ -383,10 +371,10 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
      * Added this method so we can follow one driver agent when debugging.
      * Useful to understand more how their driver agent works.
      *
-     * @param initTime  the initial time
+     * @param initTime the initial time
      */
     private void initializeOneSpawnPoint(double initTime) {
-        if(rows > 1 || columns > 1) {
+        if (rows > 1 || columns > 1) {
             throw new IllegalArgumentException("Undefined behaviour with one spawn point");
         }
         spawnPoints = new ArrayList<AIMSpawnPoint>(1);
@@ -403,8 +391,8 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
     /**
      * Make spawn points.
      *
-     * @param initTime  the initial time
-     * @param lane      the lane
+     * @param initTime the initial time
+     * @param lane     the lane
      * @return the spawn point
      */
     private AIMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
@@ -469,10 +457,10 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
      */
     @Override
     public double getMaximumSpeedLimit() {
-        if(memoMaximumSpeedLimit < 0) {
-            for(Road r : getRoads()) {
-                for(Lane l : r.getLanes()) {
-                    if(l.getSpeedLimit() > memoMaximumSpeedLimit) {
+        if (memoMaximumSpeedLimit < 0) {
+            for (Road r : getRoads()) {
+                for (Lane l : r.getLanes()) {
+                    if (l.getSpeedLimit() > memoMaximumSpeedLimit) {
                         memoMaximumSpeedLimit = l.getSpeedLimit();
                     }
                 }
@@ -550,13 +538,13 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
     /**
      * Get the list of all roads that enter a particular intersection.
      *
-     * @param column  the column of the intersection
-     * @param row     the row of the intersection
+     * @param column the column of the intersection
+     * @param row    the row of the intersection
      * @return the list of roads that enter the intersection at (column, row)
      */
     public List<Road> getRoads(int column, int row) {
         // First some error checking
-        if(row >= rows || column >= columns || row < 0 || column < 0) {
+        if (row >= rows || column >= columns || row < 0 || column < 0) {
             throw new ArrayIndexOutOfBoundsException("(" + column + "," + row +
                     " are not valid indices. " +
                     "This GridLayout only has " +
@@ -624,8 +612,8 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
     /**
      * Get the intersection manager of a particular intersection.
      *
-     * @param column  the column of the intersection
-     * @param row     the row of the intersection
+     * @param column the column of the intersection
+     * @param row    the row of the intersection
      */
     public IntersectionManager getManager(int column, int row) {
         return intersectionManagerGrid[column][row];
@@ -650,8 +638,8 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
      * Remove managers in all intersections.
      */
     public void removeAllManagers() {
-        for(int column = 0; column < columns; column++) {
-            for(int row = 0; row < rows; row++) {
+        for (int column = 0; column < columns; column++) {
+            for (int row = 0; row < rows; row++) {
                 intersectionManagerGrid[column][row] = null;
             }
         }
@@ -674,7 +662,7 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
         outfile.printf("VIN,Time,DCLname,vType,startLaneId,destRoad\n");
         for (DataCollectionLine line : dataCollectionLines) {
             for (int vin : line.getAllVIN()) {
-                for(double time : line.getTimes(vin)) {
+                for (double time : line.getTimes(vin)) {
                     outfile.printf("%d,%.4f,%s,%s,%d,%s\n",
                             vin, time, line.getName(),
                             VinRegistry.getVehicleSpecFromVIN(vin).getName(),
@@ -686,5 +674,4 @@ public class GridAIMIntersectionMap implements BasicAIMIntersectionMap {
 
         outfile.close();
     }
-
 }

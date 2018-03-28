@@ -33,8 +33,6 @@ package aim4.gui.frame;
 import aim4.config.Constants;
 import aim4.gui.viewer.SimViewer;
 import aim4.vehicle.VehicleSimModel;
-import aim4.vehicle.aim.AIMVehicleSimModel;
-import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,7 +57,6 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
     Rectangle rect = viewer.getBounds();
     this.setLocation((int) rect.getMaxX() + 1, (int) rect.getMinY());
     setVehicle(null);
-    setRIMVehicle(null);
   }
 
   /**
@@ -67,7 +64,7 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
    *
    * @param vehicle  the vehicle
    */
-  public void setVehicle(AIMVehicleSimModel vehicle) {
+  public void setVehicle(VehicleSimModel vehicle) {
     this.vehicle = vehicle;
     if (vehicle != null) {
       vinLabel.setText(Integer.toString(vehicle.getVIN()));
@@ -75,27 +72,6 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
       headingLabel.setText(Constants.TWO_DEC.format(vehicle.getHeading()));
       accelerationLabel.setText(Constants.TWO_DEC.format(
           vehicle.getAcceleration()));
-    } else {
-      vinLabel.setText("");
-      velocityLabel.setText("");
-      headingLabel.setText("");
-      accelerationLabel.setText("");
-    }
-  }
-
-  /**
-   * Set the vehicle.
-   *
-   * @param vehicle  the vehicle
-   */
-  public void setRIMVehicle(RIMVehicleSimModel vehicle) {
-    this.vehicle = vehicle;
-    if (vehicle != null) {
-      vinLabel.setText(Integer.toString(vehicle.getVIN()));
-      velocityLabel.setText(Constants.TWO_DEC.format(vehicle.getVelocity()));
-      headingLabel.setText(Constants.TWO_DEC.format(vehicle.getHeading()));
-      accelerationLabel.setText(Constants.TWO_DEC.format(
-              vehicle.getAcceleration()));
     } else {
       vinLabel.setText("");
       velocityLabel.setText("");

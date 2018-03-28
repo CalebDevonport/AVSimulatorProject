@@ -5,11 +5,13 @@ import aim4.map.merge.MergeMap;
 import aim4.map.merge.RoadNames;
 import aim4.sim.results.CoreMergeResult;
 import aim4.sim.results.CoreMergeVehicleResult;
+import aim4.sim.results.SimulatorResult;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.merge.MergeVehicleSimModel;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -192,10 +194,16 @@ public class CoreMergeSimulator implements MergeSimulator {
 
     // RESULTS PRODUCTION //
     public String produceResultsCSV(){
-        return produceResult().produceCSVString();
+        return produceMergeResult().produceCSVString();
     }
 
-    public CoreMergeResult produceResult() {
+    @Override
+    public SimulatorResult produceResult() {
+        //Sorry, Core Merge does not produce results in this way.
+        throw new NotImplementedException();
+    }
+
+    public CoreMergeResult produceMergeResult() {
         CoreMergeResult result = new CoreMergeResult(vehiclesRecord);
         return result;
     }

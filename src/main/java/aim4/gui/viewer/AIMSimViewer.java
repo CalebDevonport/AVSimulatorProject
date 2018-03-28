@@ -1,20 +1,20 @@
 package aim4.gui.viewer;
 
 import aim4.config.Debug;
-import aim4.gui.screen.aim.AIMCanvas;
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
+import aim4.gui.screen.aim.AIMCanvas;
 import aim4.gui.setuppanel.AIMSimSetupPanel;
 import aim4.im.aim.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
-import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
-import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.setup.aim.BasicSimSetup;
-import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.sim.simulator.aim.AIMSimulator;
+import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
+import aim4.vehicle.VehicleSimModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -145,7 +145,7 @@ public class AIMSimViewer extends SimViewer {
                 assert sim instanceof AIMSimulator;
                 Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
                 // See if we hit any vehicles
-                for (AIMVehicleSimModel vehicle : ((AIMSimulator) sim).getActiveVehicles()) {
+                for (VehicleSimModel vehicle : ((AIMSimulator) sim).getActiveVehicles()) {
                     if (vehicle.getShape().contains(leftClickPoint)) {
                         if (Debug.getTargetVIN() != vehicle.getVIN()) {
                             Debug.setTargetVIN(vehicle.getVIN());

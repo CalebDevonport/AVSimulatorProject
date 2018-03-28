@@ -14,8 +14,8 @@ import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.msg.rim.i2v.I2VMessage;
 import aim4.msg.rim.v2i.V2IMessage;
-import aim4.sim.results.RIMResult;
-import aim4.sim.results.RIMVehicleResult;
+import aim4.sim.results.Result;
+import aim4.sim.results.VehicleResult;
 import aim4.sim.simulator.rim.helper.SpawnHelper;
 import aim4.util.Util;
 import aim4.vehicle.VehicleUtil;
@@ -87,7 +87,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     private int totalBitsReceivedByCompletedVehicles;
 
     //Results aids//
-    private List<RIMVehicleResult> vehiclesRecord;
+    private List<VehicleResult> vehiclesRecord;
 
     //HELPERS//
     SpawnHelper spawnHelper;
@@ -105,7 +105,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
         this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
-        this.vehiclesRecord = new ArrayList<RIMVehicleResult>();
+        this.vehiclesRecord = new ArrayList<VehicleResult>();
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
@@ -882,16 +882,14 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
 
     private void recordCompletedVehicles(List<RIMVehicleSimModel> completedVehicles) {
         for(RIMVehicleSimModel vehicle : completedVehicles) {
-            vehiclesRecord.add(new RIMVehicleResult(
+            vehiclesRecord.add(new VehicleResult(
                     vehicle.getVIN(),
                     vehicle.getSpec().getName(),
                     vehicle.getStartTime(),
                     vehicle.getFinishTime(),
                     vehicle.getFinalVelocity(),
                     vehicle.getMaxVelocity(),
-                    vehicle.getMinVelocity(),
-                    vehicle.getFinalXPos(),
-                    vehicle.getFinalYPos()
+                    vehicle.getMinVelocity()
             ));
         }
     }
@@ -919,101 +917,12 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         }
     }
 
-    private double calculateDelay(RIMVehicleSimModel vehicle) {
-//        if(vehicle.getStartingRoad() == RoadNames.TARGET_ROAD) {
-//            if (specToExpectedTimeTargetLane != null) {
-//                double delay = vehicle.getFinishTime() -
-//                        vehicle.getStartTime() -
-//                        specToExpectedTimeTargetLane.get(vehicle.getSpec().getName()).doubleValue();
-//                if (delay < 0)
-//                    delay = 0;
-//                return delay;
-//            }
-//        }
-//        else if(vehicle.getStartingRoad() == RoadNames.MERGING_ROAD) {
-//            if (specToExpectedTimeMergeLane != null) {
-//                double delay = vehicle.getFinishTime() -
-//                        vehicle.getStartTime() -
-//                        specToExpectedTimeMergeLane.get(vehicle.getSpec().getName()).doubleValue();
-//                if (delay < 0)
-//                    delay = 0;
-//                return delay;
-//            }
-//        }
-        return Double.MAX_VALUE;
-    }
-
     public String produceResultsCSV(){
         return produceResult().produceCSVString();
     }
 
-    public RIMResult produceResult() {
-        return new RIMResult(vehiclesRecord);
-    }
-
-    protected String resultsToCSV(RIMResult result) {
-        StringBuilder sb = new StringBuilder();
-        //Global Stats
-        sb.append("Maximum Delay");
-        sb.append(',');
-        sb.append("Average Delay");
-        sb.append(',');
-        sb.append("Minimum Delay");
-        sb.append(',');
-        sb.append("No. Completed Vehicles");
-        sb.append(',');
-        sb.append("Throughput");
-        sb.append('\n');
-        sb.append(result.getCompletedVehicles());
-        sb.append(',');
-        sb.append(result.getThroughput());
-        sb.append('\n');
-        sb.append('\n');
-        //Headings
-        sb.append("VIN");
-        sb.append(',');
-        sb.append("Starting Road");
-        sb.append(',');
-        sb.append("Vehicle Spec");
-        sb.append(',');
-        sb.append("Start Time");
-        sb.append(',');
-        sb.append("Finish Time");
-        sb.append(',');
-        sb.append("Delay");
-        sb.append(',');
-        sb.append("Final Velocity");
-        sb.append(',');
-        sb.append("Max Velocity");
-        sb.append(',');
-        sb.append("Min Velocity");
-        sb.append(',');
-        sb.append("Final X Position");
-        sb.append(',');
-        sb.append("Final Y Position");
-        sb.append('\n');
-        //Vehicle Data
-        for(RIMVehicleResult vr : result.getVehicleResults()){
-            sb.append(vr.getVin());
-            sb.append(',');
-            sb.append(vr.getSpecType());
-            sb.append(',');
-            sb.append(vr.getStartTime());
-            sb.append(',');
-            sb.append(vr.getFinishTime());
-            sb.append(',');
-            sb.append(vr.getFinalVelocity());
-            sb.append(',');
-            sb.append(vr.getMaxVelocity());
-            sb.append(',');
-            sb.append(vr.getMinVelocity());
-            sb.append(',');
-            sb.append(vr.getFinalXPos());
-            sb.append(',');
-            sb.append(vr.getFinalYPos());
-            sb.append('\n');
-        }
-        return sb.toString();
+    public Result produceResult() {
+        return new Result(vehiclesRecord);
     }
 
     /////////////////////////////////

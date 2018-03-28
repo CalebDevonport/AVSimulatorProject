@@ -1,23 +1,34 @@
 package aim4.gui.screen.rim;
 
 import aim4.config.Debug;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.rim.RIMAutoDriver;
 import aim4.driver.rim.coordinator.V2ICoordinator;
 import aim4.gui.Viewer;
 import aim4.gui.screen.Canvas;
 import aim4.gui.viewer.RIMSimViewer;
+import aim4.im.aim.v2i.RequestHandler.TrafficSignalRequestHandler;
+import aim4.im.aim.v2i.policy.BasePolicy;
+import aim4.im.aim.v2i.policy.Policy;
 import aim4.im.rim.IntersectionManager;
 import aim4.im.rim.v2i.V2IManager;
+import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.BasicMap;
 import aim4.map.BasicRIMIntersectionMap;
 import aim4.map.Road;
+import aim4.map.aim.GridRIMIntersectionMap;
+import aim4.map.lane.Lane;
 import aim4.map.track.*;
 import aim4.msg.rim.v2i.Request;
 import aim4.msg.rim.v2i.V2IMessage;
 import aim4.sim.Simulator;
+import aim4.sim.simulator.aim.AIMSimulator;
+import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.simulator.rim.RIMSimulator;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSimModel;
+import aim4.vehicle.aim.AIMAutoVehicleSimModel;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.rim.RIMAutoVehicleSimModel;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
@@ -50,6 +61,11 @@ public class RIMCanvas extends Canvas{
     // IM debug shapes
     /** The color of IM debug shapes */
     private static final Color IM_DEBUG_SHAPE_COLOR = Color.CYAN;
+    /**
+     * The radius, in meters, of the sectors used to visualize the state of
+     * traffic lights. {@value} meters.
+     */
+    private static final double TRAFFIC_LIGHT_RADIUS = 2; // meter
 
     /**
      * Whether or not the Canvas will try to draw the IntersectionManagers'
@@ -73,39 +89,75 @@ public class RIMCanvas extends Canvas{
      */
     @Override
     protected Image createMapImage(BasicMap map, double scale) {
-        assert map instanceof BasicRIMIntersectionMap;
-        BasicRIMIntersectionMap intersectionMap = (BasicRIMIntersectionMap) map;
+        if (map instanceof BasicRIMIntersectionMap) {
+            BasicRIMIntersectionMap intersectionMap = (BasicRIMIntersectionMap) map;
 
-        Rectangle2D mapRect = intersectionMap.getDimensions();
-        // First, set up an image buffer
-        Image bgImage = createImage((int) (mapRect.getWidth() * scale),
-                (int) (mapRect.getHeight() * scale));
-        Graphics2D bgBuffer = (Graphics2D) bgImage.getGraphics();
-        // Set the transform
-        AffineTransform tf = new AffineTransform();
-        tf.translate(0, 0);
-        tf.scale(scale, scale);
-        bgBuffer.setTransform(tf);
-        // create the textures that depends on the scale
-        TexturePaint grassTexture = makeScaledTexture(grassImage, scale);
-        TexturePaint asphaltTexture = makeScaledTexture(asphaltImage, scale);
-        // paint the background with the red color in order to
-        // show that no space in the buffer is not redrawn.
-        paintEntireBuffer(bgBuffer, Color.RED);
-        // draw the grass on the map only
-        drawGrass(bgBuffer, mapRect, grassTexture);
-        // Next, loop through the roads and draw them all
-        for (Road road : intersectionMap.getRoads()) {
-            drawRoundaboutRoad(bgBuffer, road, asphaltTexture);
-        }
-        // Draw all the intersections
-        for (IntersectionManager im : intersectionMap.getIntersectionManagers()) {
-            drawIntersectionManager(bgBuffer, im, asphaltTexture);
-        }
-        // Then draw the data collection lines
-        drawDataCollectionLines(bgBuffer, intersectionMap.getDataCollectionLines());
+            Rectangle2D mapRect = intersectionMap.getDimensions();
+            // First, set up an image buffer
+            Image bgImage = createImage((int) (mapRect.getWidth() * scale),
+                    (int) (mapRect.getHeight() * scale));
+            Graphics2D bgBuffer = (Graphics2D) bgImage.getGraphics();
+            // Set the transform
+            AffineTransform tf = new AffineTransform();
+            tf.translate(0, 0);
+            tf.scale(scale, scale);
+            bgBuffer.setTransform(tf);
+            // create the textures that depends on the scale
+            TexturePaint grassTexture = makeScaledTexture(grassImage, scale);
+            TexturePaint asphaltTexture = makeScaledTexture(asphaltImage, scale);
+            // paint the background with the red color in order to
+            // show that no space in the buffer is not redrawn.
+            paintEntireBuffer(bgBuffer, Color.RED);
+            // draw the grass on the map only
+            drawGrass(bgBuffer, mapRect, grassTexture);
+            // Next, loop through the roads and draw them all
+            for (Road road : intersectionMap.getRoads()) {
+                drawRoundaboutRoad(bgBuffer, road, asphaltTexture);
+            }
+            // Draw all the intersections
+            for (IntersectionManager im : intersectionMap.getIntersectionManagers()) {
+                drawIntersectionManager(bgBuffer, im, asphaltTexture);
+            }
+            // Then draw the data collection lines
+            drawDataCollectionLines(bgBuffer, intersectionMap.getDataCollectionLines());
 
-        return bgImage;
+            return bgImage;
+        }
+        else if (map instanceof GridRIMIntersectionMap){
+            BasicAIMIntersectionMap intersectionMap = (BasicAIMIntersectionMap) map;
+
+            Rectangle2D mapRect = intersectionMap.getDimensions();
+            // First, set up an image buffer
+            Image bgImage = createImage((int) (mapRect.getWidth() * scale),
+                    (int) (mapRect.getHeight() * scale));
+            Graphics2D bgBuffer = (Graphics2D) bgImage.getGraphics();
+            // Set the transform
+            AffineTransform tf = new AffineTransform();
+            tf.translate(0, 0);
+            tf.scale(scale, scale);
+            bgBuffer.setTransform(tf);
+            // create the textures that depends on the scale
+            TexturePaint grassTexture = makeScaledTexture(grassImage, scale);
+            TexturePaint asphaltTexture = makeScaledTexture(asphaltImage, scale);
+            // paint the background with the red color in order to
+            // show that no space in the buffer is not redrawn.
+            paintEntireBuffer(bgBuffer, Color.RED);
+            // draw the grass on the map only
+            drawGrass(bgBuffer, mapRect, grassTexture);
+            // Next, loop through the roads and draw them all
+            for (Road road : intersectionMap.getRoads()) {
+                drawRoad(bgBuffer, road, asphaltTexture);
+            }
+            // Draw all the intersections
+            for (aim4.im.aim.IntersectionManager im : intersectionMap.getIntersectionManagers()) {
+                drawIntersectionManager(bgBuffer, im, asphaltTexture);
+            }
+            // Then draw the data collection lines
+            drawDataCollectionLines(bgBuffer, intersectionMap.getDataCollectionLines());
+
+            return bgImage;
+        }
+        else return null;
     }
 
     /**
@@ -142,6 +194,39 @@ public class RIMCanvas extends Canvas{
     }
 
     /**
+     * Draw an intersection on the display buffer.
+     *
+     * @param bgBuffer        the display buffer
+     * @param im              the intersection manager
+     * @param asphaltTexture  the asphaltTexture
+     */
+    private void drawIntersectionManager(Graphics2D bgBuffer,
+                                         aim4.im.aim.IntersectionManager im,
+                                         TexturePaint asphaltTexture) {
+
+        boolean selected = (Debug.getTargetIMid() == im.getId());
+
+        // First, fill in the intersection with asphalt color/texture
+        if (asphaltTexture == null) {
+            bgBuffer.setPaint(ASPHALT_COLOR);
+        } else {
+            bgBuffer.setPaint(asphaltTexture);
+        }
+        bgBuffer.fill(im.getIntersection().getArea());
+        // Then, outline it with the appropriate color
+        if (im instanceof aim4.im.aim.v2i.V2IManager) {
+            if (selected) {
+                bgBuffer.setPaint(SELECTED_IM_OUTLINE_COLOR);
+            } else {
+                bgBuffer.setPaint(IM_OUTLINE_COLOR);
+            }
+            bgBuffer.setStroke(IM_OUTLINE_STROKE);
+            bgBuffer.draw(im.getIntersection().getArea());
+        }
+
+    }
+
+    /**
      * Update the canvas to visualize the current state of simulation.
      */
     @Override
@@ -150,35 +235,71 @@ public class RIMCanvas extends Canvas{
         Simulator sim = simViewer.getSimulator();
         // if the simulator exists, draw the current view
         if (sim != null) {
-            Collection<IntersectionManager> ims =
-                    ((BasicRIMIntersectionMap) sim.getMap()).getIntersectionManagers();
-            // draw the intersection managers' debug shapes
-            if (isShowIMDebugShapes) {
-                for (IntersectionManager im : ims) {
-                    drawIMDebugShapes(displayBuffer, im);
+            if (sim instanceof AutoDriverOnlySimulator){
+                Collection<aim4.im.aim.IntersectionManager> ims =
+                        ((BasicAIMIntersectionMap) sim.getMap()).getIntersectionManagers();
+                // draw the intersection managers' debug shapes
+                if (isShowIMDebugShapes) {
+                    for (aim4.im.aim.IntersectionManager im : ims) {
+                        drawAIMIMDebugShapes(displayBuffer, im);
+                    }
                 }
-            }
-            // draw the vehicles
-            for (RIMVehicleSimModel v : ((RIMSimulator) sim).getActiveVehicles()) {
-                drawVehicle(displayBuffer, v, sim.getSimulationTime());
-            }
+                // draw the vehicles
+                for (AIMVehicleSimModel v : ((AIMSimulator) sim).getActiveVehicles()) {
+                    drawVehicle(displayBuffer, v, sim.getSimulationTime());
+                }
+                // draw the traffic lights
+                for (aim4.im.aim.IntersectionManager im : ims) {
+                    drawTrafficLights(displayBuffer, im);
+                }
+                // draw simulation time.
+                if (isShowSimulationTime) {
+                    drawSimulationTime(displayBuffer, sim.getSimulationTime());
+                }
+                // draw the debug points
+                drawDebugPoints(displayBuffer, Debug.getLongTermDebugPoints());
+                drawDebugPoints(displayBuffer, Debug.getShortTermDebugPoints());
+                // draw tracks
+                // drawTracks(displayBuffer);
+                // lastly, draw the vehicles' information string
+                for (AIMVehicleSimModel v : ((AIMSimulator) sim).getActiveVehicles()) {
+                    drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
+                }
+                // Finally display the new image
+                repaint();
+            } // else no simulator no drawing
+            else {
+                Collection<IntersectionManager> ims =
+                        ((BasicRIMIntersectionMap) sim.getMap()).getIntersectionManagers();
+                // draw the intersection managers' debug shapes
+                if (isShowIMDebugShapes) {
+                    for (IntersectionManager im : ims) {
+                        drawRIMIMDebugShapes(displayBuffer, im);
+                    }
+                }
+                // draw the vehicles
+                for (RIMVehicleSimModel v : ((RIMSimulator) sim).getActiveVehicles()) {
+                    drawVehicle(displayBuffer, v, sim.getSimulationTime());
+                }
 
-            // draw simulation time.
-            if (isShowSimulationTime) {
-                drawSimulationTime(displayBuffer, sim.getSimulationTime());
+                // draw simulation time.
+                if (isShowSimulationTime) {
+                    drawSimulationTime(displayBuffer, sim.getSimulationTime());
+                }
+                // draw the debug points
+                drawDebugPoints(displayBuffer, Debug.getLongTermDebugPoints());
+                drawDebugPoints(displayBuffer, Debug.getShortTermDebugPoints());
+                // draw tracks
+                // drawTracks(displayBuffer);
+                // lastly, draw the vehicles' information string
+                for (RIMVehicleSimModel v : ((RIMSimulator) sim).getActiveVehicles()) {
+                    drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
+                }
+                // Finally display the new image
+                repaint();
             }
-            // draw the debug points
-            drawDebugPoints(displayBuffer, Debug.getLongTermDebugPoints());
-            drawDebugPoints(displayBuffer, Debug.getShortTermDebugPoints());
-            // draw tracks
-            // drawTracks(displayBuffer);
-            // lastly, draw the vehicles' information string
-            for (RIMVehicleSimModel v : ((RIMSimulator) sim).getActiveVehicles()) {
-                drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
-            }
-            // Finally display the new image
-            repaint();
-        } // else no simulator no drawing
+        }
+
     }
 
     /**
@@ -208,6 +329,21 @@ public class RIMCanvas extends Canvas{
                 if (autoDriver.getCurrentCoordinator() instanceof V2ICoordinator) {
                     V2ICoordinator coordinator =
                             (V2ICoordinator) autoDriver.getCurrentCoordinator();
+                    if (coordinator.isAwaitingResponse()) {
+                        buffer.setPaint(VEHICLE_WAITING_FOR_RESPONSE_COLOR);
+                    } else if (coordinator.getReservationParameter() != null) {
+                        buffer.setPaint(VEHICLE_HAS_RESERVATION_COLOR);
+                    } else {
+                        buffer.setPaint(VEHICLE_COLOR);  // the default color
+                    }
+                } else {
+                    buffer.setPaint(VEHICLE_COLOR);  // the default color
+                }
+            } else if (vehicle.getDriver() instanceof AIMAutoDriver) {
+                AIMAutoDriver autoDriver = (AIMAutoDriver) vehicle.getDriver();
+                if (autoDriver.getCurrentCoordinator() instanceof aim4.driver.aim.coordinator.V2ICoordinator) {
+                    aim4.driver.aim.coordinator.V2ICoordinator coordinator =
+                            (aim4.driver.aim.coordinator.V2ICoordinator) autoDriver.getCurrentCoordinator();
                     if (coordinator.isAwaitingResponse()) {
                         buffer.setPaint(VEHICLE_WAITING_FOR_RESPONSE_COLOR);
                     } else if (coordinator.getReservationParameter() != null) {
@@ -306,6 +442,55 @@ public class RIMCanvas extends Canvas{
                     }
                 }
             }
+        } else if (vehicle instanceof AIMAutoVehicleSimModel
+                && vehicle.getDriver() instanceof AIMAutoDriver) {
+            AIMAutoDriver da = (AIMAutoDriver) vehicle.getDriver();
+            if (da.getCurrentCoordinator() instanceof aim4.driver.aim.coordinator.V2ICoordinator) {
+                aim4.driver.aim.coordinator.V2ICoordinator coordinator =
+                        (aim4.driver.aim.coordinator.V2ICoordinator) da.getCurrentCoordinator();
+
+                // display the arrival time of the request (if any)
+                if (Debug.SHOW_ARRIVAL_TIME) {
+                    if (coordinator.isAwaitingResponse()
+                            || coordinator.getReservationParameter() != null) {
+                        aim4.msg.aim.v2i.V2IMessage msg =
+                                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
+                        if (msg instanceof aim4.msg.aim.v2i.Request) {
+                            aim4.msg.aim.v2i.Request request = (aim4.msg.aim.v2i.Request) msg;
+                            if (request.getProposals().size() > 0) {
+                                // one arrival time is enough.
+                                double arrival_time =
+                                        request.getProposals().get(0).getArrivalTime();
+                                infos.add(String.format("%.2f", arrival_time));
+                            } else {
+                                infos.add("No Proposals");
+                            }
+                        } // else ignore other types of messages
+                    }
+                }
+
+                if (Debug.SHOW_REMAINING_ARRIVAL_TIME) {
+                    if (coordinator.isAwaitingResponse()
+                            || coordinator.getReservationParameter() != null) {
+                        aim4.msg.aim.v2i.V2IMessage msg =
+                                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
+                        if (msg instanceof aim4.msg.aim.v2i.Request) {
+                            aim4.msg.aim.v2i.Request request = (aim4.msg.aim.v2i.Request) msg;
+                            if (request.getProposals().size() > 0) {
+                                // one arrival time is enough.
+                                double arrival_time =
+                                        request.getProposals().get(0).getArrivalTime();
+                                if (coordinator.getReservationParameter() == null
+                                        || arrival_time - currentTime >= 0) {
+                                    infos.add(String.format("%.2f", arrival_time - currentTime));
+                                }
+                            } else {
+                                infos.add("No Proposals");
+                            }
+                        } // else ignore other types of messages
+                    }
+                }
+            }
         }
 
         if (infos.size() > 0) {
@@ -326,10 +511,75 @@ public class RIMCanvas extends Canvas{
      * @param buffer  the display buffer
      * @param im      the intersection manager whose debug shapes to draw
      */
-    private void drawIMDebugShapes(Graphics2D buffer, IntersectionManager im) {
+    private void drawRIMIMDebugShapes(Graphics2D buffer, IntersectionManager im) {
         for (Shape s : im.getDebugShapes()) {
             buffer.setPaint(IM_DEBUG_SHAPE_COLOR);
             buffer.fill(s);
+        }
+    }
+
+    /**
+     * Draw the debugging shapes that the IntersectionManagers provide. These
+     * are usually things like used tiles for a tile-based reservation policy,
+     * current heuristic values and so forth.
+     *
+     * @param buffer  the display buffer
+     * @param im      the intersection manager whose debug shapes to draw
+     */
+    private void drawAIMIMDebugShapes(Graphics2D buffer, aim4.im.aim.IntersectionManager im) {
+        for (Shape s : im.getDebugShapes()) {
+            buffer.setPaint(IM_DEBUG_SHAPE_COLOR);
+            buffer.fill(s);
+        }
+    }
+
+    /**
+     * Draw the current state of the lights for all IntersectionManagers.
+     *
+     * @param buffer  the display buffer
+     * @param im      the intersection manager whose traffic lights to draw
+     */
+    private void drawTrafficLights(Graphics2D buffer, aim4.im.aim.IntersectionManager im) {
+        if (im instanceof aim4.im.aim.v2i.V2IManager) {
+            Policy policy = ((aim4.im.aim.v2i.V2IManager) im).getPolicy();
+            if (policy instanceof BasePolicy) {
+                BasePolicy basePolicy = (BasePolicy) policy;
+                if (basePolicy.getRequestHandler() instanceof TrafficSignalRequestHandler) {
+                    TrafficSignalRequestHandler requestHandler =
+                            (TrafficSignalRequestHandler) basePolicy.getRequestHandler();
+                    for (Lane entryLane : im.getIntersection().getEntryLanes()) {
+                        switch (requestHandler.getSignal(entryLane.getId())) {
+                            case GREEN:
+                                buffer.setPaint(Color.GREEN);
+                                break;
+                            case YELLOW:
+                                buffer.setPaint(Color.YELLOW);
+                                break;
+                            case RED:
+                                buffer.setPaint(Color.RED);
+                                break;
+                            default:
+                                throw new RuntimeException("Unknown traffic signals.\n");
+                        }
+                        // Now create the shape we will use to draw the light
+                        // For some reason, Java's angles increase to the right instead of
+                        // to the left
+                        // TODO: cache it
+                        Arc2D lightShape =
+                                new Arc2D.Double(im.getIntersection().getEntryPoint(entryLane).getX()
+                                        - TRAFFIC_LIGHT_RADIUS, // x
+                                        im.getIntersection().getEntryPoint(entryLane).getY()
+                                                - TRAFFIC_LIGHT_RADIUS, // y
+                                        TRAFFIC_LIGHT_RADIUS * 2, // width
+                                        TRAFFIC_LIGHT_RADIUS * 2, // height
+                                        90 - // start
+                                                Math.toDegrees(im.getIntersection().getEntryHeading(entryLane)), 180.0, // extent
+                                        Arc2D.PIE); // type
+                        // Now draw it!
+                        buffer.fill(lightShape);
+                    }
+                }
+            }
         }
     }
 

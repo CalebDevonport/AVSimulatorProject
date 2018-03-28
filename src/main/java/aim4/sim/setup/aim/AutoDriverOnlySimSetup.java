@@ -71,7 +71,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   /** Whether the batch mode is on */
   private boolean isBatchMode = false;
   /** The traffic type */
-  private TrafficType trafficType = TrafficType.FILE;
+  private TrafficType trafficType = TrafficType.UNIFORM_RANDOM;
   /** The traffic level in the horizontal direction */
   private double hTrafficLevel;
   /** The traffic level in the vertical direction */

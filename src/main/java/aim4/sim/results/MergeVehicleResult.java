@@ -3,7 +3,7 @@ package aim4.sim.results;
 /**
  * Created by Callum on 21/04/2017.
  */
-public class AIMVehicleResult {
+public class MergeVehicleResult {
     private int vin;
     private String startingRoad;
     private String specType;
@@ -16,7 +16,7 @@ public class AIMVehicleResult {
     private double finalXPos;
     private double finalYPos;
 
-    public AIMVehicleResult(int vin, String startingRoad, String specType, double startTime, double finishTime, double delayTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
+    public MergeVehicleResult(int vin, String startingRoad, String specType, double startTime, double finishTime, double delayTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
         this.vin = vin;
         this.startingRoad = startingRoad;
         this.specType = specType;

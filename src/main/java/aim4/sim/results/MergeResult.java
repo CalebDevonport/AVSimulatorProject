@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * Created by Callum on 21/04/2017.
  */
-public class AIMResult implements SimulatorResult {
-    private List<AIMVehicleResult> vehicleResults;
+public class MergeResult implements SimulatorResult {
+    private List<MergeVehicleResult> vehicleResults;
     private double maxDelay;
     private double maxTargetDelay;
     private double maxMergeDelay;
@@ -29,10 +29,10 @@ public class AIMResult implements SimulatorResult {
     private int completedTargetVehicles;
     private int completedMergeVehicles;
 
-    public AIMResult(List<AIMVehicleResult> vehicleResults) {
+    public MergeResult(List<MergeVehicleResult> vehicleResults) {
         this.vehicleResults = vehicleResults;
-        List<AIMVehicleResult> targetVehicleResults = new ArrayList<AIMVehicleResult>();
-        List<AIMVehicleResult> mergeVehicleResults = new ArrayList<AIMVehicleResult>();
+        List<MergeVehicleResult> targetVehicleResults = new ArrayList<MergeVehicleResult>();
+        List<MergeVehicleResult> mergeVehicleResults = new ArrayList<MergeVehicleResult>();
 
         this.completedVehicles = 0;
         this.completedMergeVehicles = 0;
@@ -51,7 +51,7 @@ public class AIMResult implements SimulatorResult {
         double totalTargetDelay = 0;
         double totalMergeDelay = 0;
 
-        for(AIMVehicleResult result : vehicleResults) {
+        for(MergeVehicleResult result : vehicleResults) {
             //Split Vehicles
             if(result.getStartingRoad() == RoadNames.TARGET_ROAD.toString()) {
                 targetVehicleResults.add(result);
@@ -110,7 +110,7 @@ public class AIMResult implements SimulatorResult {
         this.throughputMerge = completedMergeVehicles / lastMergeVehicleTime;
     }
 
-    public List<AIMVehicleResult> getVehicleResults() {
+    public List<MergeVehicleResult> getVehicleResults() {
         return vehicleResults;
     }
 
@@ -308,7 +308,7 @@ public class AIMResult implements SimulatorResult {
 
     public String produceVehicleStatsCSV(){
         StringBuilder sb = new StringBuilder();
-        for(AIMVehicleResult vr : vehicleResults){
+        for(MergeVehicleResult vr : vehicleResults){
             sb.append(vr.getVin());
             sb.append(',');
             sb.append(vr.getStartingRoad());
@@ -335,11 +335,11 @@ public class AIMResult implements SimulatorResult {
         return sb.toString();
     }
 
-    private double calculateStdDeviationDelay(List<AIMVehicleResult> results, double mean) {
+    private double calculateStdDeviationDelay(List<MergeVehicleResult> results, double mean) {
         double variance = 0;
 
         double temp = 0;
-        for(AIMVehicleResult result : results) {
+        for(MergeVehicleResult result : results) {
             temp += (result.getDelayTime() - mean)*(result.getDelayTime() - mean);
         }
         variance = temp / results.size();

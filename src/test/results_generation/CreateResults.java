@@ -3,8 +3,8 @@ package results_generation;
 import aim4.config.SimConfig;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.RoadNames;
-import aim4.sim.results.AIMResult;
 import aim4.sim.results.CoreMergeResult;
+import aim4.sim.results.MergeResult;
 import aim4.sim.setup.aim.MergeMimicSimSetup;
 import aim4.sim.setup.merge.S2SSimSetup;
 import aim4.sim.setup.merge.enums.ProtocolType;
@@ -175,7 +175,7 @@ public class CreateResults {
                 if(!sim.getVinToVehicles().isEmpty())
                     results.add(null); //Failed to process all vehicles within 5 * TIME_LIMIT
                 else {
-                    CoreMergeResult result = sim.produceResult();
+                    CoreMergeResult result = sim.produceMergeResult();
                     String csvResult = sim.produceResultsCSV();
                     results.add(result);
 
@@ -241,7 +241,7 @@ public class CreateResults {
                     getSpawnSchedules(RoadNames.MERGING_ROAD, TestType.TRAFFIC_LEVEL_AIM, trafficRate);
 
             //Get results
-            List<AIMResult> results = new ArrayList<AIMResult>();
+            List<MergeResult> results = new ArrayList<MergeResult>();
             for(int i = 0; i < TEST_COUNTS; i++) {
                 File targetSpawnSchedule = targetSpawnSchedules.get(i);
                 File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -258,7 +258,7 @@ public class CreateResults {
                 if(!sim.getActiveVehicles().isEmpty())
                     results.add(null); //Failed to process all vehicles within 5 * TIME_LIMIT
                 else {
-                    AIMResult result = sim.produceResult();
+                    MergeResult result = sim.produceMergeResult();
                     String csvResult = sim.produceResultsCSV();
                     results.add(result);
 
@@ -279,8 +279,8 @@ public class CreateResults {
                             new Double(trafficRate).intValue()
                     )
             );
-            summaryResultsCSV.add(AIMResult.produceGlobalStatsCSVHeader());
-            for(AIMResult result : results) {
+            summaryResultsCSV.add(MergeResult.produceGlobalStatsCSVHeader());
+            for(MergeResult result : results) {
                 if(result == null)
                     summaryResultsCSV.add("FAILED TO COMPLETE AFTER " + 5 * TIME_LIMIT + " SECONDS");
                 else
@@ -344,7 +344,7 @@ public class CreateResults {
                 if(!sim.getVinToVehicles().isEmpty())
                     results.add(null); //Failed to process all vehicles within 5 * TIME_LIMIT
                 else {
-                    CoreMergeResult result = sim.produceResult();
+                    CoreMergeResult result = sim.produceMergeResult();
                     String csvResult = sim.produceResultsCSV();
                     results.add(result);
 
@@ -432,7 +432,7 @@ public class CreateResults {
                     if (!sim.getVinToVehicles().isEmpty())
                         results.add(null); //Failed to process all vehicles within 5 * TIME_LIMIT
                     else {
-                        CoreMergeResult result = sim.produceResult();
+                        CoreMergeResult result = sim.produceMergeResult();
                         String csvResult = sim.produceResultsCSV();
                         results.add(result);
 
@@ -528,7 +528,7 @@ public class CreateResults {
                     if (!sim.getVinToVehicles().isEmpty())
                         results.add(null); //Failed to process all vehicles within 5 * TIME_LIMIT
                     else {
-                        CoreMergeResult result = sim.produceResult();
+                        CoreMergeResult result = sim.produceMergeResult();
                         String csvResult = sim.produceResultsCSV();
                         results.add(result);
 
@@ -574,7 +574,7 @@ public class CreateResults {
         saveGlobalResultsFile(TestType.LEAD_IN, summaryResultsCSV);
     }
 
-    private List<String> produceMeanAIMRow(List<AIMResult> results, String dataTitle) {
+    private List<String> produceMeanAIMRow(List<MergeResult> results, String dataTitle) {
         double totalMaxDelay = 0;
         double totalMaxTargetDelay = 0;
         double totalMaxMergeDelay = 0;
@@ -594,7 +594,7 @@ public class CreateResults {
         int totalCompletedTargetVehicles = 0;
         int totalCompletedMergeVehicles = 0;
         int nonNullResults = 0;
-        for(AIMResult result : results) {
+        for(MergeResult result : results) {
             if(result == null)
                 continue;
             nonNullResults++;

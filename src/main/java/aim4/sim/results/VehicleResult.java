@@ -1,6 +1,6 @@
 package aim4.sim.results;
 
-public class RIMVehicleResult {
+public class VehicleResult {
     private int vin;
     private String specType;
     private double startTime;
@@ -8,10 +8,8 @@ public class RIMVehicleResult {
     private double finalVelocity;
     private double maxVelocity;
     private double minVelocity;
-    private double finalXPos;
-    private double finalYPos;
 
-    public RIMVehicleResult(int vin, String specType, double startTime, double finishTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
+    public VehicleResult(int vin, String specType, double startTime, double finishTime, double finalVelocity, double maxVelocity, double minVelocity) {
         this.vin = vin;
         this.specType = specType;
         this.startTime = startTime;
@@ -19,8 +17,6 @@ public class RIMVehicleResult {
         this.finalVelocity = finalVelocity;
         this.maxVelocity = maxVelocity;
         this.minVelocity = minVelocity;
-        this.finalXPos = finalXPos;
-        this.finalYPos = finalYPos;
     }
 
     public int getVin() {
@@ -35,9 +31,7 @@ public class RIMVehicleResult {
         return startTime;
     }
 
-    public double getFinishTime() {
-        return finishTime;
-    }
+    public double getFinishTime() { return finishTime; }
 
     public double getFinalVelocity() {
         return finalVelocity;
@@ -49,13 +43,5 @@ public class RIMVehicleResult {
 
     public double getMinVelocity() {
         return minVelocity;
-    }
-
-    public double getFinalXPos() {
-        return finalXPos;
-    }
-
-    public double getFinalYPos() {
-        return finalYPos;
     }
 }

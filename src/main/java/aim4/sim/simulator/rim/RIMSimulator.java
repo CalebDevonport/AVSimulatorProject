@@ -2,7 +2,7 @@ package aim4.sim.simulator.rim;
 
 import aim4.map.BasicRIMIntersectionMap;
 import aim4.sim.Simulator;
-import aim4.sim.results.RIMResult;
+import aim4.sim.results.Result;
 import aim4.vehicle.rim.ProxyVehicleSimModel;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
@@ -26,5 +26,5 @@ public interface RIMSimulator extends Simulator {
      */
     void addProxyVehicle(ProxyVehicleSimModel vehicle);
 
-    RIMResult produceResult();
+    Result produceResult();
 }
