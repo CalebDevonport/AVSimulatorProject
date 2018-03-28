@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface MergeSimulator extends Simulator {
     public Map<Integer, MergeVehicleSimModel> getVinToVehicles();
-    public CoreMergeResult produceResult();
+    public CoreMergeResult produceMergeResult();
 }

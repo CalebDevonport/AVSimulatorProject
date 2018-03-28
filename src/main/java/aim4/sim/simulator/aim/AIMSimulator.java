@@ -2,7 +2,8 @@ package aim4.sim.simulator.aim;
 
 import aim4.map.BasicAIMIntersectionMap;
 import aim4.sim.Simulator;
-import aim4.sim.results.AIMResult;
+import aim4.sim.results.MergeResult;
+import aim4.sim.results.Result;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
 
@@ -29,5 +30,7 @@ public interface AIMSimulator extends Simulator {
      */
     void addProxyVehicle(ProxyVehicleSimModel vehicle);
 
-    AIMResult produceResult();
+    MergeResult produceMergeResult();
+
+    Result produceResult();
 }

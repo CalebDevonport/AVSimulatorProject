@@ -34,16 +34,11 @@ import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.aim.BasicSimSetup;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
 /**
  * The autonomous driver only simulation parameter panel.
  */
-public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
+public class AutoDriverOnlyParamPanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
   LabeledSlider trafficRateSlider;
@@ -52,16 +47,6 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
   LabeledSlider numOfColumnSlider;
   LabeledSlider numOfRowSlider;
   LabeledSlider lanesPerRoadSlider;
-  //todo: set these to private
-  private JPanel optionPane;
-  public JTextArea uploadTrafficScheduleTextbox;
-  public File uploadTrafficSchedule;
-
-  //ENUM FOR BUTTON ACTIONS//
-  private enum ButtonActionCommands {
-    UPLOAD_CLEAR,
-    UPLOAD_SELECT
-  }
 
   /**
    * Create the autonomous driver only simulation parameter panel.
@@ -121,61 +106,6 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                         "%.0f");
     add(lanesPerRoadSlider);
 
-    //Schedule selector from file
-    JLabel uploadTrafficScheduleLabel = new JLabel("Upload Schedule:");
-    uploadTrafficScheduleTextbox = new JTextArea(1,20);
-    JButton uploadTrafficScheduleSelectButton = new JButton("Browse...");
-    JButton uploadTrafficScheduleClearButton = new JButton("Clear");
-
-    //Set its buttons
-    uploadTrafficScheduleSelectButton.addActionListener(this);
-    uploadTrafficScheduleSelectButton.setActionCommand(ButtonActionCommands.UPLOAD_SELECT.toString());
-    uploadTrafficScheduleClearButton.addActionListener(this);
-    uploadTrafficScheduleClearButton.setActionCommand(ButtonActionCommands.UPLOAD_CLEAR.toString());
-    JLabel uploadTrafficScheduleWarningLabel = new JLabel("To use a predefined schedule a single-lane intersection has to be used.");
-
-    //Create schedule pane
-    JPanel uploadTrafficSchedulePane = new JPanel();
-    uploadTrafficSchedulePane.setLayout(new FlowLayout());
-
-    uploadTrafficSchedulePane.add(uploadTrafficScheduleLabel);
-    uploadTrafficSchedulePane.add(uploadTrafficScheduleTextbox);
-    uploadTrafficSchedulePane.add(uploadTrafficScheduleSelectButton);
-    uploadTrafficSchedulePane.add(uploadTrafficScheduleClearButton);
-    uploadTrafficSchedulePane.add(uploadTrafficScheduleWarningLabel);
-
-    optionPane = new JPanel();
-    optionPane.setLayout(new BoxLayout(optionPane, BoxLayout.PAGE_AXIS));
-    optionPane.add(uploadTrafficSchedulePane);
-    add(optionPane, BorderLayout.CENTER);
-
-
-  }
-
-  public void actionPerformed(ActionEvent e) {
-    switch(ButtonActionCommands.valueOf(e.getActionCommand())) {
-      case UPLOAD_CLEAR:
-        uploadTrafficSchedule = null;
-        uploadTrafficScheduleTextbox.setText("");
-        break;
-      case UPLOAD_SELECT:
-        uploadTrafficSchedule = getFileFromUser();
-        if(uploadTrafficSchedule != null)
-          uploadTrafficScheduleTextbox.setText(uploadTrafficSchedule.getAbsolutePath());
-        break;
-    }
-  }
-
-  private File getFileFromUser() {
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
-    final JFileChooser fc = new JFileChooser();
-    fc.setFileFilter(filter);
-    int returnVal = fc.showOpenDialog(this);
-
-    if(returnVal == JFileChooser.APPROVE_OPTION)
-      return fc.getSelectedFile();
-    else
-      return null;
   }
 
   /**

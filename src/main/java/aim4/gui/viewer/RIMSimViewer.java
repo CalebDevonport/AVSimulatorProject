@@ -12,10 +12,11 @@ import aim4.map.lane.Lane;
 import aim4.sim.RIMUdpListener;
 import aim4.sim.Simulator;
 import aim4.sim.setup.rim.BasicSimSetup;
+import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
 import aim4.sim.simulator.rim.NoProtocolSimulator;
 import aim4.sim.simulator.rim.RIMSimulator;
-import aim4.vehicle.rim.RIMVehicleSimModel;
+import aim4.vehicle.VehicleSimModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -27,7 +28,8 @@ public class RIMSimViewer extends SimViewer{
     private RIMUdpListener udpListener;
 
     public RIMSimViewer(StatusPanelContainer statusPanel, Viewer viewer){
-        super(statusPanel, viewer, new RIMSimSetupPanel(new BasicSimSetup(
+        super(statusPanel, viewer, new RIMSimSetupPanel(
+                new BasicSimSetup(
                 1, // columns
                 1, // rows
                 45.0, // roundabout diameter
@@ -36,6 +38,15 @@ public class RIMSimViewer extends SimViewer{
                 3.014, // lane width
                 13.88, // speed limit
                 9.72, // roundabout speed limit
+                1, // lanes per road
+                1, // median size
+                150, // distance between
+                0.28, // traffic level
+                1.0 // stop distance before intersection
+        ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
+                1, // rows
+                4, // lane width
+                13.88, // speed limit
                 1, // lanes per road
                 1, // median size
                 150, // distance between
@@ -57,6 +68,12 @@ public class RIMSimViewer extends SimViewer{
         } else if (simStepResult instanceof NoProtocolSimulator.NoProtocolSimulatorSimStepResult) {
             NoProtocolSimulator.NoProtocolSimulatorSimStepResult simStepResult2 =
                     (NoProtocolSimulator.NoProtocolSimulatorSimStepResult) simStepResult;
+            for (int vin : simStepResult2.getCompletedVINs()) {
+                Debug.removeVehicleColor(vin);
+            }
+        } else if (simStepResult instanceof aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) {
+            aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult2 =
+                    (aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) simStepResult;
             for (int vin : simStepResult2.getCompletedVINs()) {
                 Debug.removeVehicleColor(vin);
             }
@@ -89,7 +106,6 @@ public class RIMSimViewer extends SimViewer{
      * Start the UDP listening.
      */
     public void startUdpListening() {
-        assert sim instanceof RIMSimulator;
         if (sim != null) {
             if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
                 System.err.print("Starting UDP listener...\n");
@@ -130,7 +146,6 @@ public class RIMSimViewer extends SimViewer{
 
     protected void runBeforeCreatingSimulator() {
         assert udpListener == null;
-        assert sim instanceof RIMSimulator;
     }
 
     protected void runBeforeResettingSimulator() {
@@ -151,52 +166,99 @@ public class RIMSimViewer extends SimViewer{
         // right click
         if (e.getButton() == MouseEvent.BUTTON1) {
             if (sim != null) {
-                assert sim instanceof RIMSimulator;
-                Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
-                // See if we hit any vehicles
-                for (RIMVehicleSimModel vehicle : ((RIMSimulator) sim).getActiveVehicles()) {
-                    if (vehicle.getShape().contains(leftClickPoint)) {
-                        if (Debug.getTargetVIN() != vehicle.getVIN()) {
-                            Debug.setTargetVIN(vehicle.getVIN());
-                            if (vehicleInfoFrame == null) {
-                                vehicleInfoFrame = new VehicleInfoFrame(this);
+                if (sim instanceof RIMSimulator) {
+                    Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
+                    // See if we hit any vehicles
+                    for (VehicleSimModel vehicle : ((RIMSimulator) sim).getActiveVehicles()) {
+                        if (vehicle.getShape().contains(leftClickPoint)) {
+                            if (Debug.getTargetVIN() != vehicle.getVIN()) {
+                                Debug.setTargetVIN(vehicle.getVIN());
+                                if (vehicleInfoFrame == null) {
+                                    vehicleInfoFrame = new VehicleInfoFrame(this);
+                                }
+                                if (!vehicleInfoFrame.isVisible()) {
+                                    vehicleInfoFrame.setVisible(true);
+                                    this.requestFocusInWindow();
+                                    this.requestFocus();
+                                }
+                                vehicleInfoFrame.setVehicle(vehicle);
+                            } else {
+                                Debug.removeTargetVIN();
+                                vehicleInfoFrame.setVehicle(null);
                             }
-                            if (!vehicleInfoFrame.isVisible()) {
-                                vehicleInfoFrame.setVisible(true);
-                                this.requestFocusInWindow();
-                                this.requestFocus();
+                            canvas.update();
+                            return;  // just exit
+                        }
+                    }
+                    // see if we hit any intersection
+                    for (IntersectionManager im : ((RIMSimulator)sim).getMap().getIntersectionManagers()) {
+                        if (im.getIntersection().getArea().contains(leftClickPoint)) {
+                            if (Debug.getTargetIMid() != im.getId()) {
+                                Debug.setTargetIMid(im.getId());
+                            } else {
+                                Debug.removeTargetIMid();
                             }
-                            vehicleInfoFrame.setRIMVehicle(vehicle);
-                        } else {
-                            Debug.removeTargetVIN();
-                            vehicleInfoFrame.setRIMVehicle(null);
+                            canvas.cleanUp();  // TODO: ugly code, one more reason to move this
+                            // function to canvas
+                            canvas.update();
+                            return;  // just exit
                         }
-                        canvas.update();
-                        return;  // just exit
                     }
-                }
-                // see if we hit any intersection
-                for (IntersectionManager im : ((RIMSimulator)sim).getMap().getIntersectionManagers()) {
-                    if (im.getIntersection().getArea().contains(leftClickPoint)) {
-                        if (Debug.getTargetIMid() != im.getId()) {
-                            Debug.setTargetIMid(im.getId());
-                        } else {
-                            Debug.removeTargetIMid();
+                    // hit nothing, just unselect the vehicle and intersection manager.
+                    Debug.removeTargetVIN();
+                    if (vehicleInfoFrame != null) {
+                        vehicleInfoFrame.setVehicle(null);
+                    }
+                    Debug.removeTargetIMid();
+                    canvas.cleanUp();
+                    canvas.update();
+                } else if (sim instanceof AIMSimulator){
+                    Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
+                    // See if we hit any vehicles
+                    for (VehicleSimModel vehicle : ((AIMSimulator) sim).getActiveVehicles()) {
+                        if (vehicle.getShape().contains(leftClickPoint)) {
+                            if (Debug.getTargetVIN() != vehicle.getVIN()) {
+                                Debug.setTargetVIN(vehicle.getVIN());
+                                if (vehicleInfoFrame == null) {
+                                    vehicleInfoFrame = new VehicleInfoFrame(this);
+                                }
+                                if (!vehicleInfoFrame.isVisible()) {
+                                    vehicleInfoFrame.setVisible(true);
+                                    this.requestFocusInWindow();
+                                    this.requestFocus();
+                                }
+                                vehicleInfoFrame.setVehicle(vehicle);
+                            } else {
+                                Debug.removeTargetVIN();
+                                vehicleInfoFrame.setVehicle(null);
+                            }
+                            canvas.update();
+                            return;  // just exit
                         }
-                        canvas.cleanUp();  // TODO: ugly code, one more reason to move this
-                        // function to canvas
-                        canvas.update();
-                        return;  // just exit
                     }
+                    // see if we hit any intersection
+                    for (aim4.im.aim.IntersectionManager im : ((AIMSimulator)sim).getMap().getIntersectionManagers()) {
+                        if (im.getIntersection().getArea().contains(leftClickPoint)) {
+                            if (Debug.getTargetIMid() != im.getId()) {
+                                Debug.setTargetIMid(im.getId());
+                            } else {
+                                Debug.removeTargetIMid();
+                            }
+                            canvas.cleanUp();  // TODO: ugly code, one more reason to move this
+                            // function to canvas
+                            canvas.update();
+                            return;  // just exit
+                        }
+                    }
+                    // hit nothing, just unselect the vehicle and intersection manager.
+                    Debug.removeTargetVIN();
+                    if (vehicleInfoFrame != null) {
+                        vehicleInfoFrame.setVehicle(null);
+                    }
+                    Debug.removeTargetIMid();
+                    canvas.cleanUp();
+                    canvas.update();
                 }
-                // hit nothing, just unselect the vehicle and intersection manager.
-                Debug.removeTargetVIN();
-                if (vehicleInfoFrame != null) {
-                    vehicleInfoFrame.setVehicle(null);
-                }
-                Debug.removeTargetIMid();
-                canvas.cleanUp();
-                canvas.update();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             if (sim != null) {

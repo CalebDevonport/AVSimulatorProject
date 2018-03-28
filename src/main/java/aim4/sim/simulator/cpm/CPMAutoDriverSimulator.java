@@ -683,7 +683,13 @@ public class CPMAutoDriverSimulator implements Simulator {
         return sb.toString();
     }
 
-    public SimulatorResult produceResult(){
+    @Override
+    public SimulatorResult produceResult() {
+        //Sorry, CPM does not produce results in this way.
+        throw new NotImplementedException();
+    }
+
+    public SimulatorResult produceMergeResult(){
         //Sorry, CPM does not produce results in this way.
         throw new NotImplementedException();
     }
