@@ -30,35 +30,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
-import java.awt.geom.Point2D;
-import java.util.LinkedList;
-import java.util.List;
-import java.lang.Math;
-
-import aim4.msg.aim.v2i.Done;
-import aim4.msg.aim.udp.Proxy2RealAdapter;
-import aim4.msg.aim.udp.Real2ProxyCancel;
-import aim4.msg.aim.udp.Real2ProxyMsg;
-import aim4.msg.aim.udp.Real2ProxyRequest;
+import aim4.config.Debug;
+import aim4.driver.aim.ProxyDriver;
+import aim4.im.aim.IntersectionManager;
+import aim4.map.lane.Lane;
 import aim4.msg.aim.i2v.Confirm;
 import aim4.msg.aim.i2v.I2VMessage;
 import aim4.msg.aim.i2v.Reject;
-import aim4.im.aim.IntersectionManager;
-import aim4.map.lane.Lane;
-import aim4.msg.aim.v2i.Request;
+import aim4.msg.aim.udp.*;
 import aim4.msg.aim.v2i.Cancel;
-import aim4.config.Debug;
-import aim4.driver.aim.ProxyDriver;
-import aim4.msg.aim.udp.Real2ProxyPVUpdate;
-import aim4.msg.aim.v2i.V2IMessage;
+import aim4.msg.aim.v2i.Done;
+import aim4.msg.aim.v2i.Request;
 import aim4.msg.aim.v2i.Request.Proposal;
+import aim4.msg.aim.v2i.V2IMessage;
 import aim4.vehicle.BasicVehicle;
 import aim4.vehicle.VehicleSpecDatabase;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The proxy vehicle.
@@ -397,7 +391,8 @@ public class ProxyVehicle extends AIMBasicAutoVehicle
                                  + DEFAULT_ARRIVAL_TIME_DELAY,
                                movement.getVelocity(),
                                //msg.arrivalVelocity,
-                               maxTurnVelocity));
+                               maxTurnVelocity,
+                              msg.isStoppedAtIntersection));
 
     System.err.printf("msg.arrivalVelocity = %.5f\n", msg.arrivalVelocity);
     System.err.printf("this.velocity       = %.5f\n\n", movement.getVelocity());

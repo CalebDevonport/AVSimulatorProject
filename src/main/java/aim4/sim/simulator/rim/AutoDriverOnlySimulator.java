@@ -25,7 +25,6 @@ import aim4.vehicle.rim.RIMAutoVehicleSimModel;
 import aim4.vehicle.rim.RIMVehicleSimModel;
 
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -104,7 +103,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
-        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
+        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles, 0);
         this.vehiclesRecord = new ArrayList<VehicleResult>();
 
         currentTime = 0.0;
@@ -343,9 +342,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                                                     interval = dstAlongOtherLane;
                                                 }
                                             }
-                                            if (interval < 0) {
-                                                int i = 2;
-                                            }
                                             if (interval < Double.MAX_VALUE) {
                                                 vehicleLists.get(otherLineLane).put(interval, vehicle);
                                             }
@@ -361,9 +357,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                                                 interval = dstAlongOtherLane;
                                             }
                                         }
-                                        if (interval < 0) {
-                                            int i = 2;
-                                        }
                                         if (interval < Double.MAX_VALUE) {
                                             vehicleLists.get(otherLane).put(interval, vehicle);
                                         }
@@ -377,33 +370,6 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         }
 
         return vehicleLists;
-    }
-
-    /**
-     * Determine whether the given point intersects the Area governed
-     * by this IntersectionManager.
-     *
-     * @return          whether the point intersects the Area governed by
-     *                  this IntersectionManager
-     */
-    public boolean intersectsEntirely(Rectangle2D bounds, Shape vehicle) {
-        Area laneArea = new Area(bounds);
-        return laneArea.contains(vehicle.getBounds2D()) && laneArea.intersects(vehicle.getBounds2D());
-    }
-
-
-    /**
-     * Determine whether the given point intersects the Area governed
-     * by this IntersectionManager.
-     *
-     * @param point     the Point
-     * @return          whether the point intersects the Area governed by
-     *                  this IntersectionManager
-     */
-    public boolean intersectsPoint(Rectangle2D bounds, Point2D point) {
-        return (bounds.getX() < point.getX() && bounds.getY() < point.getY() &&
-                bounds.getX() + bounds.getWidth() > point.getX()  &&
-                bounds.getY() + bounds.getHeight() > point.getY());
     }
 
     /**
@@ -923,6 +889,10 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
 
     public Result produceResult() {
         return new Result(vehiclesRecord);
+    }
+
+    public int getNumOfVehiclesWhichCouldNotBeSpawned(){
+        return spawnHelper.getNumOfVehicleWhichCouldNotBeSpawned();
     }
 
     /////////////////////////////////

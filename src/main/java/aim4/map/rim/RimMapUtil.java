@@ -67,9 +67,9 @@ public class RimMapUtil {
      * @param currentTime  the current time
      * @param config       the reservation grid manager configuration
      */
-    public static void setNoProtocolManagers(RimIntersectionMap layout,
-                                       double currentTime,
-                                       ReservationGridManager.Config config) {
+    public static void setOptimalProtocolManagers(RimIntersectionMap layout,
+                                                  double currentTime,
+                                                  ReservationGridManager.Config config) {
         layout.removeAllManagers();
         for(int column = 0; column < layout.getColumns(); column++) {
             for(int row = 0; row < layout.getRows(); row++) {
@@ -334,7 +334,7 @@ public class RimMapUtil {
 
         //Create SpawnHelper
         Map<Integer, RIMVehicleSimModel> vinToVehicles = new HashMap<Integer, RIMVehicleSimModel>();
-        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
+        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles, 0);
         SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 
         //Create schedule
@@ -393,7 +393,7 @@ public class RimMapUtil {
 
         //Create SpawnHelper
         Map<Integer, RIMVehicleSimModel> vinToVehicles = new HashMap<Integer, RIMVehicleSimModel>();
-        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
+        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles, 0);
         SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 
         //Create schedule

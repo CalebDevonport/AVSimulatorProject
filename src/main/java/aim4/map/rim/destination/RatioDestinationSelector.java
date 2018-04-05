@@ -57,9 +57,9 @@ public class RatioDestinationSelector implements DestinationSelector{
         for(RIMSpawnPoint sp: map.getSpawnPoints()) {
             int laneId = sp.getLane().getId();
             leftTurnProb.put(laneId, trafficVolume.getLeftTurnVolume(laneId) /
-                    trafficVolume.getThroughVolume(laneId));
+                    trafficVolume.getTotalVolume(laneId));
             rightTurnProb.put(laneId, trafficVolume.getRightTurnVolume(laneId) /
-                    trafficVolume.getThroughVolume(laneId));
+                    trafficVolume.getTotalVolume(laneId));
         }
     }
 

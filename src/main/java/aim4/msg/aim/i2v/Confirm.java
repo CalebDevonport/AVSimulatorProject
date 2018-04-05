@@ -30,9 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.msg.aim.i2v;
 
-import java.util.Queue;
-
 import aim4.config.Constants;
+
+import java.util.Queue;
 
 /**
  * Message sent from an Intersection Manager to a Vehicle to confirm a
@@ -160,8 +160,10 @@ public class Confirm extends I2VMessage {
     this.aczDistance = aczDistance;
     this.accProfile = accProfile;
     messageType = Type.CONFIRM;
-    size += 3 * Constants.INTEGER_SIZE +
-              (5 + 2 * accProfile.size()) * Constants.DOUBLE_SIZE;
+    if (accProfile == null) {
+      size += 3 * Constants.INTEGER_SIZE + 5 * Constants.DOUBLE_SIZE;
+    } else size += 3 * Constants.INTEGER_SIZE +
+            (5 + 2 * accProfile.size()) * Constants.DOUBLE_SIZE;
   }
 
   /////////////////////////////////

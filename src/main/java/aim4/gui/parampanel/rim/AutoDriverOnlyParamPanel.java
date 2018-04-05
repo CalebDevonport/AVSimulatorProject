@@ -81,7 +81,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
         add(roundaboutDiameterSlider);
 
         laneSpeedLimitSlider =
-                new LabeledSlider(0.0, 21.0,
+                new LabeledSlider(0.0, 30.0,
                         simSetup.getLaneSpeedLimit(),
                         1, 1,
                         "Lane Speed Limit: %.0f meters/second",
@@ -130,7 +130,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
 
         scheduleTimeLimitSlider =
                 new LabeledSlider(0.0, 5000.0,
-                        1000.0,
+                        1800.0,
                         500.0, 100.0,
                         "Schedule time limit: %.0fs",
                         "%.0fs");

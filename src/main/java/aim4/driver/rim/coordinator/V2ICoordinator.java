@@ -1032,7 +1032,8 @@ public class V2ICoordinator implements Coordinator{
             arrivalTime = (Math.max(result.getArrivalTime(), minArrivalTime));
 
             boolean isStoppedAtIntersection = false;
-            if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION)){
+            if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION) &&
+                    Util.isDoubleZero(vehicle.gaugeVelocity())){
                 isStoppedAtIntersection = true;
             }
             // eliminate proposals that are not valid and then return the result.

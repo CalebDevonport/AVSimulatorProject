@@ -1,7 +1,7 @@
 package aim4.gui.parampanel.rim;
 
 import aim4.gui.component.LabeledSlider;
-import aim4.sim.setup.rim.BasicSimSetup;
+import aim4.sim.setup.aim.BasicSimSetup;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -10,27 +10,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-/**
- * The no protocol simulation parameter panel for rim.
- */
-public class NoProtocolParamPanel extends JPanel implements ActionListener {
+public class AIMCrossParamPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     LabeledSlider trafficRateSlider;
-    LabeledSlider roundaboutDiameterSlider;
-    LabeledSlider laneSpeedLimitSlider;
-    LabeledSlider roundaboutSpeedLimitSlider;
+    LabeledSlider speedLimitSlider;
     LabeledSlider stopDistToIntersectionSlider;
     LabeledSlider numOfColumnSlider;
     LabeledSlider numOfRowSlider;
     LabeledSlider lanesPerRoadSlider;
-
-    /**The JPanel containing all of the option sliders**/
+    //todo: set these to private
     private JPanel optionPane;
     public JTextArea uploadTrafficScheduleTextbox;
-
-    //JSON FILES
-    //todo: set these to private
     public File uploadTrafficSchedule;
 
     //ENUM FOR BUTTON ACTIONS//
@@ -39,49 +30,31 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
         UPLOAD_SELECT
     }
 
-
     /**
      * Create the autonomous driver only simulation parameter panel.
      *
-     * @param simSetup  the simulation setup
+     * @param simSetup the simulation setup
      */
-    public NoProtocolParamPanel(BasicSimSetup simSetup) {
+    public AIMCrossParamPanel(BasicSimSetup simSetup) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
 
         // create the components
 
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
                         simSetup.getTrafficLevel() * 3600.0,
-                        500, 100,
+                        500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
         add(trafficRateSlider);
 
-        roundaboutDiameterSlider =
-                new LabeledSlider(30.0, 45.0,
-                        simSetup.getRoundaboutDiameter(),
-                        35.0, 1.0,
-                        "Roundabout diameter: %.0f meters",
+        speedLimitSlider =
+                new LabeledSlider(0.0, 80.0,
+                        simSetup.getSpeedLimit(),
+                        10.0, 1.0,
+                        "Speed Limit: %.0f meters/second",
                         "%.0f");
-        add(roundaboutDiameterSlider);
-
-        laneSpeedLimitSlider =
-                new LabeledSlider(0.0, 21.0,
-                        simSetup.getLaneSpeedLimit(),
-                        1, 1,
-                        "Lane Speed Limit: %.0f meters/second",
-                        "%.0f");
-        add(laneSpeedLimitSlider);
-
-        roundaboutSpeedLimitSlider =
-                new LabeledSlider(0.0, 10.0,
-                        simSetup.getRoundaboutSpeedLimit(),
-                        1.0, 1.0,
-                        "Roundabout Speed Limit: %.0f meters/second",
-                        "%.0f");
-        add(roundaboutSpeedLimitSlider);
+        add(speedLimitSlider);
 
         stopDistToIntersectionSlider =
                 new LabeledSlider(0.0, 50.0,
@@ -92,7 +65,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
         add(stopDistToIntersectionSlider);
 
         numOfColumnSlider =
-                new LabeledSlider(1.0, 1,
+                new LabeledSlider(1.0, 1.0,
                         simSetup.getColumns(),
                         1.0, 1.0,
                         "Number of North-bound/South-bound Roads: %.0f",
@@ -100,7 +73,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
         add(numOfColumnSlider);
 
         numOfRowSlider =
-                new LabeledSlider(1.0, 1,
+                new LabeledSlider(1.0, 1.0,
                         simSetup.getColumns(),
                         1.0, 1.0,
                         "Number of East-bound/West-bound Roads: %.0f",
@@ -108,7 +81,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
         add(numOfRowSlider);
 
         lanesPerRoadSlider =
-                new LabeledSlider(1.0, 1,
+                new LabeledSlider(1.0, 1.0,
                         simSetup.getLanesPerRoad(),
                         1.0, 1.0,
                         "Number of Lanes per Road: %.0f",
@@ -117,7 +90,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
 
         //Schedule selector from file
         JLabel uploadTrafficScheduleLabel = new JLabel("Upload Schedule:");
-        uploadTrafficScheduleTextbox = new JTextArea(1,20);
+        uploadTrafficScheduleTextbox = new JTextArea(1, 20);
         JButton uploadTrafficScheduleSelectButton = new JButton("Browse...");
         JButton uploadTrafficScheduleClearButton = new JButton("Clear");
 
@@ -136,7 +109,6 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
         uploadTrafficSchedulePane.add(uploadTrafficScheduleSelectButton);
         uploadTrafficSchedulePane.add(uploadTrafficScheduleClearButton);
 
-
         optionPane = new JPanel();
         optionPane.setLayout(new BoxLayout(optionPane, BoxLayout.PAGE_AXIS));
         optionPane.add(uploadTrafficSchedulePane);
@@ -146,30 +118,31 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        switch(ButtonActionCommands.valueOf(e.getActionCommand())) {
+        switch (ButtonActionCommands.valueOf(e.getActionCommand())) {
             case UPLOAD_CLEAR:
                 uploadTrafficSchedule = null;
                 uploadTrafficScheduleTextbox.setText("");
                 break;
             case UPLOAD_SELECT:
                 uploadTrafficSchedule = getFileFromUser();
-                if(uploadTrafficSchedule != null)
+                if (uploadTrafficSchedule != null)
                     uploadTrafficScheduleTextbox.setText(uploadTrafficSchedule.getAbsolutePath());
                 break;
         }
     }
 
     private File getFileFromUser() {
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(filter);
         int returnVal = fc.showOpenDialog(this);
 
-        if(returnVal == JFileChooser.APPROVE_OPTION)
+        if (returnVal == JFileChooser.APPROVE_OPTION)
             return fc.getSelectedFile();
         else
             return null;
     }
+
     /**
      * Get the traffic rate.
      *
@@ -180,30 +153,12 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Get the roundabout diameter.
+     * Get the speed limit.
      *
      * @return the speed limit
      */
-    public double getRoundaboutDiameter() {
-        return roundaboutDiameterSlider.getValue();
-    }
-
-    /**
-     * Get the lane speed limit.
-     *
-     * @return the speed limit
-     */
-    public double getLaneSpeedLimit() {
-        return laneSpeedLimitSlider.getValue();
-    }
-
-    /**
-     * Get the lane speed limit.
-     *
-     * @return the speed limit
-     */
-    public double getRoundaboutSpeedLimit() {
-        return roundaboutSpeedLimitSlider.getValue();
+    public double getSpeedLimit() {
+        return speedLimitSlider.getValue();
     }
 
     /**
@@ -213,7 +168,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
      */
     public double getStopDistToIntersection() {
         double d = stopDistToIntersectionSlider.getValue();
-        return (d < 1.0)?1.0:d;
+        return (d < 1.0) ? 1.0 : d;
     }
 
     /**
@@ -222,7 +177,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
      * @return the number of columns
      */
     public int getNumOfColumns() {
-        return (int)numOfColumnSlider.getValue();
+        return (int) numOfColumnSlider.getValue();
     }
 
     /**
@@ -231,7 +186,7 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
      * @return the number of rows
      */
     public int getNumOfRows() {
-        return (int)numOfRowSlider.getValue();
+        return (int) numOfRowSlider.getValue();
     }
 
     /**
@@ -240,6 +195,6 @@ public class NoProtocolParamPanel extends JPanel implements ActionListener {
      * @return the number of lanes per road
      */
     public int getLanesPerRoad() {
-        return (int)lanesPerRoadSlider.getValue();
+        return (int) lanesPerRoadSlider.getValue();
     }
 }

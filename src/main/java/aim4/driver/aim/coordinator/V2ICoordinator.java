@@ -719,7 +719,9 @@ public class V2ICoordinator implements Coordinator {
       this.lateError = msg.getLateError();
       this.arrivalVelocity = msg.getArrivalVelocity();
       this.aczDistance = msg.getACZDistance();
-      this.accelerationProfile = msg.getAccelerationProfile();
+      if (msg.getAccelerationProfile() != null){
+        this.accelerationProfile = msg.getAccelerationProfile();
+      }
     }
 
     /**
@@ -1538,6 +1540,11 @@ public class V2ICoordinator implements Coordinator {
         // Make sure our arrival time is at least a certain amount
         arrivalTimes.add(Math.max(result.getArrivalTime(), minArrivalTime));
       }
+      boolean isStoppedAtIntersection = false;
+      if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION) &&
+              Util.isDoubleZero(vehicle.gaugeVelocity())){
+        isStoppedAtIntersection = true;
+      }
       // Convert the arrival and departure lanes to ID numbers and put them
       // in lists to prepare to make the request
       List<Integer> arrivalLaneIDs = new ArrayList<Integer>(n);
@@ -1559,7 +1566,8 @@ public class V2ICoordinator implements Coordinator {
               departureLaneIDs.get(i),
               arrivalTimes.get(i),
               arrivalVelocities.get(i),
-              maximumVelocities.get(i)));
+              maximumVelocities.get(i),
+                    isStoppedAtIntersection));
         }  // else ignore the proposal because the vehicle is too far away from
            // the intersection.
       }

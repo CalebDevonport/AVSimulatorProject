@@ -23,10 +23,12 @@ import java.util.*;
 public class SpawnHelper {
     private BasicRIMIntersectionMap map;
     private Map<Integer, RIMVehicleSimModel> vinToVehicles;
+    private int numOfVehicleWhichCouldNotBeSpawned;
 
-    public SpawnHelper(BasicRIMIntersectionMap map, Map<Integer, RIMVehicleSimModel> vinToVehicles) {
+    public SpawnHelper(BasicRIMIntersectionMap map, Map<Integer, RIMVehicleSimModel> vinToVehicles, int numOfVehicleWhichCouldNotBeSpawned) {
         this.map = map;
         this.vinToVehicles = vinToVehicles;
+        this.numOfVehicleWhichCouldNotBeSpawned = numOfVehicleWhichCouldNotBeSpawned;
     }
 
     /**
@@ -111,7 +113,9 @@ public class SpawnHelper {
                                 RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
-                            } // otherwise there is not enough space to slow down so don't spawn this vehicle
+                            } else {
+                                numOfVehicleWhichCouldNotBeSpawned++;
+                            }
                         }
                         // Otherwise this is the first time we spawn vehicles
                         else {
@@ -121,6 +125,8 @@ public class SpawnHelper {
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }
+                } else {
+                    numOfVehicleWhichCouldNotBeSpawned++;
                 }
             }
         }
@@ -249,5 +255,17 @@ public class SpawnHelper {
         vehicle.setDriver(driver);
 
         return vehicle;
+    }
+
+    public BasicRIMIntersectionMap getMap() {
+        return map;
+    }
+
+    public Map<Integer, RIMVehicleSimModel> getVinToVehicles() {
+        return vinToVehicles;
+    }
+
+    public int getNumOfVehicleWhichCouldNotBeSpawned() {
+        return numOfVehicleWhichCouldNotBeSpawned;
     }
 }

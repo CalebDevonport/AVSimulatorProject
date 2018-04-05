@@ -1,33 +1,3 @@
-/*
-Copyright (c) 2011 Tsz-Chiu Au, Peter Stone
-University of Texas at Austin
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-3. Neither the name of the University of Texas at Austin nor the names of its
-contributors may be used to endorse or promote products derived from this
-software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package aim4.sim.simulator.aim;
 
 import aim4.config.Debug;
@@ -41,7 +11,6 @@ import aim4.map.BasicAIMIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
-import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.map.merge.RoadNames;
 import aim4.msg.aim.i2v.I2VMessage;
@@ -65,10 +34,7 @@ import java.util.*;
 import java.util.List;
 import java.util.Queue;
 
-/**
- * The autonomous drivers only simulator.
- */
-public class AutoDriverOnlySimulator implements AIMSimulator {
+public class AIMOptimalSimulator implements AIMSimulator {
 
     /////////////////////////////////
     // NESTED CLASSES
@@ -77,17 +43,19 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * The result of a simulation step.
      */
-    public static class AutoDriverOnlySimStepResult implements SimStepResult {
+    public static class AIMOptimalSimulatorSimStepResult implements SimStepResult {
 
-        /** The VIN of the completed vehicles in this time step */
+        /**
+         * The VIN of the completed vehicles in this time step
+         */
         List<Integer> completedVINs;
 
         /**
          * Create a result of a simulation step
          *
-         * @param completedVINs  the VINs of completed vehicles.
+         * @param completedVINs the VINs of completed vehicles.
          */
-        public AutoDriverOnlySimStepResult(List<Integer> completedVINs) {
+        public AIMOptimalSimulatorSimStepResult(List<Integer> completedVINs) {
             this.completedVINs = completedVINs;
         }
 
@@ -105,19 +73,31 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     // PRIVATE FIELDS
     /////////////////////////////////
 
-    /** The map */
+    /**
+     * The map
+     */
     private BasicAIMIntersectionMap basicAIMIntersectionMap;
-    /** All active vehicles, in form of a map from VINs to vehicle objects. */
-    private Map<Integer,AIMVehicleSimModel> vinToVehicles;
-    /** The current time */
+    /**
+     * All active vehicles, in form of a map from VINs to vehicle objects.
+     */
+    private Map<Integer, AIMVehicleSimModel> vinToVehicles;
+    /**
+     * The current time
+     */
     private double currentTime;
-    /** The number of completed vehicles */
+    /**
+     * The number of completed vehicles
+     */
     private int numOfCompletedVehicles;
     /** The number of vehicles which could not be spawned*/
     private int numOfVehicleWhichCouldNotBeSpawned;
-    /** The total number of bits transmitted by the completed vehicles */
+    /**
+     * The total number of bits transmitted by the completed vehicles
+     */
     private int totalBitsTransmittedByCompletedVehicles;
-    /** The total number of bits received by the completed vehicles */
+    /**
+     * The total number of bits received by the completed vehicles
+     */
     private int totalBitsReceivedByCompletedVehicles;
 
     //Results aids//
@@ -138,35 +118,35 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Create an instance of the simulator.
      *
-     * @param basicAIMIntersectionMap             the map of the simulation
+     * @param basicAIMIntersectionMap the map of the simulation
      */
-    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap) {
+    public AIMOptimalSimulator(BasicAIMIntersectionMap basicAIMIntersectionMap) {
         this(basicAIMIntersectionMap, false, null, null);
     }
 
-    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap, boolean mergeMode) {
+    public AIMOptimalSimulator(BasicAIMIntersectionMap basicAIMIntersectionMap, boolean mergeMode) {
         this(basicAIMIntersectionMap, mergeMode, null, null);
     }
 
     //Only used with MergeMimicSimSetup
-    public AutoDriverOnlySimulator(BasicAIMIntersectionMap basicAIMIntersectionMap,
-                                   boolean mergeMode,
-                                   Map<String, Double> specToExpectedTimeMergeLane,
-                                   Map<String, Double> specToExpectedTimeTargetLane){
+    public AIMOptimalSimulator(BasicAIMIntersectionMap basicAIMIntersectionMap,
+                               boolean mergeMode,
+                               Map<String, Double> specToExpectedTimeMergeLane,
+                               Map<String, Double> specToExpectedTimeTargetLane) {
         this.mergeMode = mergeMode;
         this.basicAIMIntersectionMap = basicAIMIntersectionMap;
-        this.vinToVehicles = new HashMap<Integer,AIMVehicleSimModel>();
+        this.vinToVehicles = new HashMap<Integer, AIMVehicleSimModel>();
         this.vehiclesRecord = new ArrayList<VehicleResult>();
-        if(mergeMode) {
+        if (mergeMode) {
             Map<String, Double> fakeDelayTimes = new HashMap<String, Double>();
-            for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++)
+            for (int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++)
                 fakeDelayTimes.put(VehicleSpecDatabase.getVehicleSpecById(specID).getName(), new Double(0));
             this.mergeVehiclesRecord = new ArrayList<MergeVehicleResult>();
-            if(specToExpectedTimeMergeLane != null)
+            if (specToExpectedTimeMergeLane != null)
                 this.specToExpectedTimeMergeLane = specToExpectedTimeMergeLane;
             else
                 this.specToExpectedTimeMergeLane = fakeDelayTimes;
-            if(specToExpectedTimeTargetLane != null)
+            if (specToExpectedTimeTargetLane != null)
                 this.specToExpectedTimeTargetLane = specToExpectedTimeMergeLane;
             else
                 this.specToExpectedTimeTargetLane = fakeDelayTimes;
@@ -190,7 +170,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * {@inheritDoc}
      */
     @Override
-    public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
+    public synchronized AIMOptimalSimulatorSimStepResult step(double timeStep) {
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("--------------------------------------\n");
             System.err.printf("------SIM:spawnVehicles---------------\n");
@@ -216,10 +196,6 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             System.err.printf("------SIM:moveVehicles---------------\n");
         }
         moveVehicles(timeStep);
-        if (Debug.CHECK_FOR_COLLISIONS) {
-            System.err.printf("------SIM:checkForCollisions---------------\n");
-            checkForCollisions();
-        }
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
         }
@@ -228,7 +204,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         recordCompletedVehicles(completedVehicles);
         updateMaxMinVelocities();
 
-        if(mergeMode) {
+        if (mergeMode) {
             provideMergeCompletedVehiclesWithResultsInfo(completedVehicles);
             recordMergeCompletedVehicles(completedVehicles);
             updateMaxMinVelocities();
@@ -239,7 +215,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         // debug
         checkClocks();
 
-        return new AutoDriverOnlySimStepResult(completedVINs);
+        return new AIMOptimalSimulatorSimStepResult(completedVINs);
     }
 
     /////////////////////////////////
@@ -278,7 +254,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     @Override
     public synchronized double getAvgBitsTransmittedByCompletedVehicles() {
         if (numOfCompletedVehicles > 0) {
-            return ((double)totalBitsTransmittedByCompletedVehicles)
+            return ((double) totalBitsTransmittedByCompletedVehicles)
                     / numOfCompletedVehicles;
         } else {
             return 0.0;
@@ -291,7 +267,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     @Override
     public synchronized double getAvgBitsReceivedByCompletedVehicles() {
         if (numOfCompletedVehicles > 0) {
-            return ((double)totalBitsReceivedByCompletedVehicles)
+            return ((double) totalBitsReceivedByCompletedVehicles)
                     / numOfCompletedVehicles;
         } else {
             return 0.0;
@@ -328,8 +304,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         Lane minLane = null;
         double minDistance = -1.0;
 
-        for(Road road : basicAIMIntersectionMap.getRoads()) {
-            for(Lane lane : road.getLanes()) {
+        for (Road road : basicAIMIntersectionMap.getRoads()) {
+            for (Lane lane : road.getLanes()) {
                 double d = lane.nearestDistance(pos);
                 if (minLane == null || d < minDistance) {
                     minLane = lane;
@@ -361,21 +337,21 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Spawn vehicles.
      *
-     * @param timeStep  the time step
+     * @param timeStep the time step
      */
     private void spawnVehicles(double timeStep) {
-        for(AIMSpawnPoint spawnPoint : basicAIMIntersectionMap.getSpawnPoints()) {
+        for (AIMSpawnPoint spawnPoint : basicAIMIntersectionMap.getSpawnPoints()) {
             List<AIMSpawnPoint.AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
-                    for(AIMSpawnPoint.AIMSpawnSpec spawnSpec : spawnSpecs) {
+                    for (AIMSpawnPoint.AIMSpawnSpec spawnSpec : spawnSpecs) {
 
                         // First check if there is enough space to spawn a new vehicle and still have time to stop before reaching it
                         Lane lane = spawnPoint.getLane();
-                        Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists = computeVehicleLists();
+                        Map<Lane, SortedMap<Double, AIMVehicleSimModel>> vehicleLists = computeVehicleLists();
 
                         // If there are some vehicles on this lane
-                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()){
+                        if (!vehicleLists.isEmpty() && !vehicleLists.get(lane).isEmpty()) {
                             // Determine whether there is enough distance to stop if spawned with the speed limit
                             double initVelocity = Math.min(spawnSpec.getVehicleSpec().getMaxVelocity(), lane.getSpeedLimit());
                             // The closest vehicle will be the first one on the list
@@ -386,13 +362,12 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                             // Need to subtract the length of the noVehicleZone as the vehicle will be able to slow down
                             // after passing the noVehicleZone area
                             if (distanceTillNextVehicle - Double.max(
-                                    spawnPoint.getNoVehicleZone().getBounds2D().getHeight(),spawnPoint.getNoVehicleZone().getBounds2D().getWidth()) >
-                                    followingDistance){
+                                    spawnPoint.getNoVehicleZone().getBounds2D().getHeight(), spawnPoint.getNoVehicleZone().getBounds2D().getWidth()) >
+                                    followingDistance) {
                                 AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
                             } // otherwise there is not enough space to slow down so don't spawn this vehicle
-                            else numOfVehicleWhichCouldNotBeSpawned++;
                         }
                         // Otherwise this is the first time we spawn vehicles
                         else {
@@ -413,14 +388,14 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Whether a spawn point can spawn any vehicle
      *
-     * @param spawnPoint  the spawn point
+     * @param spawnPoint the spawn point
      * @return Whether the spawn point can spawn any vehicle
      */
     private boolean canSpawnVehicle(AIMSpawnPoint spawnPoint) {
         // TODO: can be made much faster.
         assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
         Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
-        for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             if (vehicle.getShape().intersects(noVehicleZone)) {
                 return false;
             }
@@ -431,12 +406,12 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Create a vehicle at a spawn point.
      *
-     * @param spawnPoint  the spawn point
-     * @param spawnSpec   the spawn specification
+     * @param spawnPoint the spawn point
+     * @param spawnSpec  the spawn specification
      * @return the vehicle
      */
     private AIMVehicleSimModel makeVehicle(AIMSpawnPoint spawnPoint,
-                                           AIMSpawnSpec spawnSpec) {
+                                           AIMSpawnPoint.AIMSpawnSpec spawnSpec) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
         // Now just take the minimum of the max velocity of the vehicle, and
@@ -455,7 +430,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         vehicle.setStartTime(spawnSpec.getSpawnTime());
         vehicle.setMinVelocity(initVelocity);
         vehicle.setMaxVelocity(initVelocity);
-        if(spawnPoint.getHeading() == 0)
+        if (spawnPoint.getHeading() == 0)
             vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
         else
             vehicle.setStartingRoad(RoadNames.MERGING_ROAD);
@@ -478,29 +453,29 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * Compute the lists of vehicles of all lanes.
      *
      * @return a mapping from lanes to lists of vehicles sorted by their
-     *         distance on their lanes
+     * distance on their lanes
      */
-    private Map<Lane,SortedMap<Double,AIMVehicleSimModel>> computeVehicleLists() {
+    private Map<Lane, SortedMap<Double, AIMVehicleSimModel>> computeVehicleLists() {
         // Set up the structure that will hold all the Vehicles as they are
         // currently ordered in the Lanes
-        Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists =
-                new HashMap<Lane,SortedMap<Double,AIMVehicleSimModel>>();
-        for(Road road : basicAIMIntersectionMap.getRoads()) {
-            for(Lane lane : road.getLanes()) {
-                vehicleLists.put(lane, new TreeMap<Double,AIMVehicleSimModel>());
+        Map<Lane, SortedMap<Double, AIMVehicleSimModel>> vehicleLists =
+                new HashMap<Lane, SortedMap<Double, AIMVehicleSimModel>>();
+        for (Road road : basicAIMIntersectionMap.getRoads()) {
+            for (Lane lane : road.getLanes()) {
+                vehicleLists.put(lane, new TreeMap<Double, AIMVehicleSimModel>());
             }
         }
         // Now add each of the Vehicles, but make sure to exclude those that are
         // already inside (partially or entirely) the intersection
-        for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             // Find out what lanes it is in.
             Set<Lane> lanes = vehicle.getDriver().getCurrentlyOccupiedLanes();
-            for(Lane lane : lanes) {
+            for (Lane lane : lanes) {
                 // Find out what IntersectionManager is coming up for this vehicle
                 IntersectionManager im =
                         lane.getLaneIM().nextIntersectionManager(vehicle.getPosition());
                 // Only include this Vehicle if it is not entirely in the intersection.
-                if(im == null ||
+                if (im == null ||
                         !(im.intersectsPoint(vehicle.getPosition()) && im.intersectsPoint(vehicle.getPointAtRear()))) {
                     // Now find how far along the lane it is.
                     double dst = lane.distanceAlongLane(vehicle.getPosition());
@@ -521,13 +496,13 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             }
         }
         // Now consolidate the lists based on lanes
-        for(Road road : basicAIMIntersectionMap.getRoads()) {
-            for(Lane lane : road.getLanes()) {
+        for (Road road : basicAIMIntersectionMap.getRoads()) {
+            for (Lane lane : road.getLanes()) {
                 // We may have already removed this Lane from the map
-                if(vehicleLists.containsKey(lane)) {
+                if (vehicleLists.containsKey(lane)) {
                     Lane currLane = lane;
                     // Now run through the lanes
-                    while(currLane.hasNextLane()) {
+                    while (currLane.hasNextLane()) {
                         currLane = currLane.getNextLane();
                         // Put everything from the next lane into the original lane
                         // and remove the mapping for the next lane
@@ -543,26 +518,26 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Compute the next vehicles of all vehicles.
      *
-     * @param vehicleLists  a mapping from lanes to lists of vehicles sorted by
-     *                      their distance on their lanes
+     * @param vehicleLists a mapping from lanes to lists of vehicles sorted by
+     *                     their distance on their lanes
      * @return a mapping from vehicles to next vehicles
      */
     private Map<AIMVehicleSimModel, AIMVehicleSimModel> computeNextVehicle(
-            Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists) {
+            Map<Lane, SortedMap<Double, AIMVehicleSimModel>> vehicleLists) {
         // At this point we should only have mappings for start Lanes, and they
         // should include all the Lanes they run into.  Now we need to turn this
         // into a hash map that maps Vehicles to the next vehicle in the Lane
         // or any Lane the Lane runs into
         Map<AIMVehicleSimModel, AIMVehicleSimModel> nextVehicle =
-                new HashMap<AIMVehicleSimModel,AIMVehicleSimModel>();
+                new HashMap<AIMVehicleSimModel, AIMVehicleSimModel>();
         // For each of the ordered lists of vehicles
-        for(SortedMap<Double,AIMVehicleSimModel> vehicleList : vehicleLists.values()) {
+        for (SortedMap<Double, AIMVehicleSimModel> vehicleList : vehicleLists.values()) {
             AIMVehicleSimModel lastVehicle = null;
             // Go through the Vehicles in order of their position in the Lane
-            for(AIMVehicleSimModel currVehicle : vehicleList.values()) {
-                if(lastVehicle != null) {
+            for (AIMVehicleSimModel currVehicle : vehicleList.values()) {
+                if (lastVehicle != null) {
                     // Create the mapping from the previous Vehicle to the current one
-                    nextVehicle.put(lastVehicle,currVehicle);
+                    nextVehicle.put(lastVehicle, currVehicle);
                 }
                 lastVehicle = currVehicle;
             }
@@ -581,10 +556,10 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * state of its sensors, we provide it with the appropriate sensor input.
      */
     private void provideSensorInput() {
-        Map<Lane,SortedMap<Double,AIMVehicleSimModel>> vehicleLists =
+        Map<Lane, SortedMap<Double, AIMVehicleSimModel>> vehicleLists =
                 computeVehicleLists();
         Map<AIMVehicleSimModel, AIMVehicleSimModel> nextVehicle =
-                computeNextVehicle(vehicleLists);
+                new HashMap<>();
 
         provideIntervalInfo(nextVehicle);
         provideVehicleTrackingInfo(vehicleLists);
@@ -594,24 +569,24 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Provide sensing information to the intervalometers of all vehicles.
      *
-     * @param nextVehicle  a mapping from vehicles to next vehicles
+     * @param nextVehicle a mapping from vehicles to next vehicles
      */
     private void provideIntervalInfo(
             Map<AIMVehicleSimModel, AIMVehicleSimModel> nextVehicle) {
 
         // Now that we have this list set up, let's provide input to all the
         // Vehicles.
-        for(AIMVehicleSimModel vehicle: vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             // If the vehicle is autonomous
             if (vehicle instanceof AIMAutoVehicleSimModel) {
-                AIMAutoVehicleSimModel autoVehicle = (AIMAutoVehicleSimModel)vehicle;
+                AIMAutoVehicleSimModel autoVehicle = (AIMAutoVehicleSimModel) vehicle;
 
-                switch(autoVehicle.getLRFMode()) {
+                switch (autoVehicle.getLRFMode()) {
                     case DISABLED:
                         // Find the interval to the next vehicle
                         double interval;
                         // If there is a next vehicle, then calculate it
-                        if(nextVehicle.containsKey(autoVehicle)) {
+                        if (nextVehicle.containsKey(autoVehicle)) {
                             // It's the distance from the front of this Vehicle to the point
                             // at the rear of the Vehicle in front of it
                             interval = calcInterval(autoVehicle, nextVehicle.get(autoVehicle));
@@ -642,16 +617,16 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Provide tracking information to vehicles.
      *
-     * @param vehicleLists  a mapping from lanes to lists of vehicles sorted by
-     *                      their distance on their lanes
+     * @param vehicleLists a mapping from lanes to lists of vehicles sorted by
+     *                     their distance on their lanes
      */
     private void provideVehicleTrackingInfo(
             Map<Lane, SortedMap<Double, AIMVehicleSimModel>> vehicleLists) {
         // Vehicle Tracking
-        for(AIMVehicleSimModel vehicle: vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             // If the vehicle is autonomous
             if (vehicle instanceof AIMAutoVehicleSimModel) {
-                AIMAutoVehicleSimModel autoVehicle = (AIMAutoVehicleSimModel)vehicle;
+                AIMAutoVehicleSimModel autoVehicle = (AIMAutoVehicleSimModel) vehicle;
 
                 if (autoVehicle.isVehicleTracking()) {
                     AIMAutoDriver driver = autoVehicle.getDriver();
@@ -662,27 +637,27 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                     // initialize the distances to infinity
                     double frontDst = Double.MAX_VALUE;
                     double rearDst = Double.MAX_VALUE;
-                    AIMVehicleSimModel frontVehicle = null ;
-                    AIMVehicleSimModel rearVehicle = null ;
+                    AIMVehicleSimModel frontVehicle = null;
+                    AIMVehicleSimModel rearVehicle = null;
 
                     // only consider the vehicles on the target lane
-                    SortedMap<Double,AIMVehicleSimModel> vehiclesOnTargetLane =
+                    SortedMap<Double, AIMVehicleSimModel> vehiclesOnTargetLane =
                             vehicleLists.get(targetLane);
 
                     // compute the distances and the corresponding vehicles
                     try {
                         double d = vehiclesOnTargetLane.tailMap(dst).firstKey();
                         frontVehicle = vehiclesOnTargetLane.get(d);
-                        frontDst = (d-dst)-frontVehicle.getSpec().getLength();
-                    } catch(NoSuchElementException e) {
+                        frontDst = (d - dst) - frontVehicle.getSpec().getLength();
+                    } catch (NoSuchElementException e) {
                         frontDst = Double.MAX_VALUE;
                         frontVehicle = null;
                     }
                     try {
                         double d = vehiclesOnTargetLane.headMap(dst).lastKey();
                         rearVehicle = vehiclesOnTargetLane.get(d);
-                        rearDst = dst-d;
-                    } catch(NoSuchElementException e) {
+                        rearDst = dst - d;
+                    } catch (NoSuchElementException e) {
                         rearDst = Double.MAX_VALUE;
                         rearVehicle = null;
                     }
@@ -694,13 +669,13 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
 
                     // assign the vehicles' velocities
 
-                    if(frontVehicle!=null) {
+                    if (frontVehicle != null) {
                         autoVehicle.getFrontVehicleSpeedSensor().record(
                                 frontVehicle.getVelocity());
                     } else {
                         autoVehicle.getFrontVehicleSpeedSensor().record(Double.MAX_VALUE);
                     }
-                    if(rearVehicle!=null) {
+                    if (rearVehicle != null) {
                         autoVehicle.getRearVehicleSpeedSensor().record(
                                 rearVehicle.getVelocity());
                     } else {
@@ -710,9 +685,9 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                     // show the section on the viewer
                     if (Debug.isTargetVIN(driver.getVehicle().getVIN())) {
                         Point2D p1 = targetLane.getPointAtNormalizedDistance(
-                                Math.max((dst-rearDst)/targetLane.getLength(),0.0));
+                                Math.max((dst - rearDst) / targetLane.getLength(), 0.0));
                         Point2D p2 = targetLane.getPointAtNormalizedDistance(
-                                Math.min((frontDst+dst)/targetLane.getLength(),1.0));
+                                Math.min((frontDst + dst) / targetLane.getLength(), 1.0));
                         Debug.addLongTermDebugPoint(
                                 new DebugPoint(p2, p1, "cl", Color.RED.brighter()));
                     }
@@ -726,10 +701,10 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * Provide traffic signals.
      */
     private void provideTrafficSignal() {
-        for(AIMVehicleSimModel vehicle: vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             if (vehicle instanceof HumanDrivenVehicleSimModel) {
                 HumanDrivenVehicleSimModel manualVehicle =
-                        (HumanDrivenVehicleSimModel)vehicle;
+                        (HumanDrivenVehicleSimModel) vehicle;
                 provideTrafficLightSignal(manualVehicle);
             }
         }
@@ -738,8 +713,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Calculate the distance between vehicle and the next vehicle on a lane.
      *
-     * @param vehicle      the vehicle
-     * @param nextVehicle  the next vehicle
+     * @param vehicle     the vehicle
+     * @param nextVehicle the next vehicle
      * @return the distance between vehicle and the next vehicle on a lane
      */
     private double calcInterval(AIMVehicleSimModel vehicle,
@@ -747,14 +722,14 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         // From Chiu: Kurt, if you think this function is not okay, probably
         // we should talk to see what to do.
         Point2D pos = vehicle.getPosition();
-        if(nextVehicle.getShape().contains(pos)) {
+        if (nextVehicle.getShape().contains(pos)) {
             return 0.0;
         } else {
             // TODO: make it more efficient
-            double interval = Double.MAX_VALUE ;
-            for(Line2D edge : nextVehicle.getEdges()) {
+            double interval = Double.MAX_VALUE;
+            for (Line2D edge : nextVehicle.getEdges()) {
                 double dst = edge.ptSegDist(pos);
-                if(dst < interval){
+                if (dst < interval) {
                     interval = dst;
                 }
             }
@@ -768,7 +743,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Provide traffic light signals to a vehicle.
      *
-     * @param vehicle  the vehicle
+     * @param vehicle the vehicle
      */
     private void provideTrafficLightSignal(HumanDrivenVehicleSimModel vehicle) {
         // TODO: implement it later
@@ -809,7 +784,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      * Allow each driver to act.
      */
     private void letDriversAct() {
-        for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             vehicle.getDriver().act();
         }
     }
@@ -821,10 +796,10 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Allow each intersection manager to act.
      *
-     * @param timeStep  the time step
+     * @param timeStep the time step
      */
     private void letIntersectionManagersAct(double timeStep) {
-        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
+        for (IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
             im.act(timeStep);
         }
     }
@@ -847,12 +822,12 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void deliverV2IMessages() {
         // Go through each vehicle and deliver each of its messages
-        for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             // Start with V2I messages
             if (vehicle instanceof AIMAutoVehicleSimModel) {
-                AIMAutoVehicleSimModel sender = (AIMAutoVehicleSimModel)vehicle;
+                AIMAutoVehicleSimModel sender = (AIMAutoVehicleSimModel) vehicle;
                 Queue<V2IMessage> v2iOutbox = sender.getV2IOutbox();
-                while(!v2iOutbox.isEmpty()) {
+                while (!v2iOutbox.isEmpty()) {
                     V2IMessage msg = v2iOutbox.poll();
                     V2IManager receiver =
                             (V2IManager) basicAIMIntersectionMap.getImRegistry().get(msg.getImId());
@@ -861,7 +836,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                             sender.getPosition().distance(
                                     receiver.getIntersection().getCentroid());
                     // Find out if the message will make it that far
-                    if(transmit(txDistance, sender.getTransmissionPower())) {
+                    if (transmit(txDistance, sender.getTransmissionPower())) {
                         // Actually deliver the message
                         receiver.receive(msg);
                         // Add the delivery to the debugging information
@@ -877,20 +852,20 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void deliverI2VMessages() {
         // Now deliver all the I2V messages
-        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
-            V2IManager senderIM = (V2IManager)im;
-            for(Iterator<I2VMessage> i2vIter = senderIM.outboxIterator();
-                i2vIter.hasNext();) {
+        for (IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
+            V2IManager senderIM = (V2IManager) im;
+            for (Iterator<I2VMessage> i2vIter = senderIM.outboxIterator();
+                 i2vIter.hasNext(); ) {
                 I2VMessage msg = i2vIter.next();
                 AIMAutoVehicleSimModel vehicle =
-                        (AIMAutoVehicleSimModel)VinRegistry.getVehicleFromVIN(
+                        (AIMAutoVehicleSimModel) VinRegistry.getVehicleFromVIN(
                                 msg.getVin());
                 // Calculate the distance the message must travel
                 double txDistance =
                         senderIM.getIntersection().getCentroid().distance(
                                 vehicle.getPosition());
                 // Find out if the message will make it that far
-                if(transmit(txDistance, senderIM.getTransmissionPower())) {
+                if (transmit(txDistance, senderIM.getTransmissionPower())) {
                     // Actually deliver the message
                     vehicle.receive(msg);
                 }
@@ -978,8 +953,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Whether the transmission of a message is successful
      *
-     * @param distance  the distance of the transmission
-     * @param power     the power of the transmission
+     * @param distance the distance of the transmission
+     * @param power    the power of the transmission
      * @return whether the transmission of a messsage is successful
      */
     private boolean transmit(double distance, double power) {
@@ -995,14 +970,14 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     /**
      * Move all the vehicles.
      *
-     * @param timeStep  the time step
+     * @param timeStep the time step
      */
     private void moveVehicles(double timeStep) {
-        for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
-            for(DataCollectionLine line : basicAIMIntersectionMap.getDataCollectionLines()) {
+            for (DataCollectionLine line : basicAIMIntersectionMap.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }
             if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
@@ -1016,12 +991,12 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void checkForCollisions() {
         Integer[] keys = vinToVehicles.keySet().toArray(new Integer[]{});
-        for(int i = 0; i < keys.length - 1; i++) { //-1 because we won't compare the last element with anything.
+        for (int i = 0; i < keys.length - 1; i++) { //-1 because we won't compare the last element with anything.
             Integer[] keysToCompare = Arrays.copyOfRange(keys, i + 1, keys.length);
             AIMVehicleSimModel vehicle1 = vinToVehicles.get(keys[i]);
-            for(int j = 0; j < keysToCompare.length; j++) {
+            for (int j = 0; j < keysToCompare.length; j++) {
                 AIMVehicleSimModel vehicle2 = vinToVehicles.get(keysToCompare[j]);
-                if(VehicleUtil.collision(vehicle1, vehicle2)) {
+                if (VehicleUtil.collision(vehicle1, vehicle2)) {
                     throw new RuntimeException(String.format("There was a collision between vehicles %d and %d",
                             vehicle1.getVIN(),
                             vehicle2.getVIN()));
@@ -1046,14 +1021,14 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         Rectangle2D mapBoundary = basicAIMIntersectionMap.getDimensions();
 
         List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
-        for(int vin : vinToVehicles.keySet()) {
+        for (int vin : vinToVehicles.keySet()) {
             AIMVehicleSimModel v = vinToVehicles.get(vin);
             // If the vehicle is no longer in the layout
             // TODO: this should be replaced with destination zone.
-            if(!v.getShape().intersects(mapBoundary)) {
+            if (!v.getShape().intersects(mapBoundary)) {
                 // Process all the things we need to from this vehicle
                 if (v instanceof AIMAutoVehicleSimModel) {
-                    AIMAutoVehicleSimModel v2 = (AIMAutoVehicleSimModel)v;
+                    AIMAutoVehicleSimModel v2 = (AIMAutoVehicleSimModel) v;
                     totalBitsTransmittedByCompletedVehicles += v2.getBitsTransmitted();
                     totalBitsReceivedByCompletedVehicles += v2.getBitsReceived();
                 }
@@ -1061,7 +1036,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
             }
         }
         // Remove the marked vehicles
-        for(int vin : removedVINs) {
+        for (int vin : removedVINs) {
             vinToVehicles.remove(vin);
             completedVINs.add(vin);
             numOfCompletedVehicles++;
@@ -1075,8 +1050,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         List<AIMVehicleSimModel> completedVehicles = new LinkedList<AIMVehicleSimModel>();
 
         Rectangle2D mapBoundary = basicAIMIntersectionMap.getDimensions();
-        for(int vin : vinToVehicles.keySet()) {
-            if(!vinToVehicles.get(vin).getShape().intersects(mapBoundary))
+        for (int vin : vinToVehicles.keySet()) {
+            if (!vinToVehicles.get(vin).getShape().intersects(mapBoundary))
                 completedVehicles.add(vinToVehicles.get(vin));
         }
 
@@ -1084,7 +1059,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     private void recordCompletedVehicles(List<AIMVehicleSimModel> completedVehicles) {
-        for(AIMVehicleSimModel vehicle : completedVehicles) {
+        for (AIMVehicleSimModel vehicle : completedVehicles) {
             vehiclesRecord.add(new VehicleResult(
                     vehicle.getVIN(),
                     vehicle.getSpec().getName(),
@@ -1098,7 +1073,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     private void recordMergeCompletedVehicles(List<AIMVehicleSimModel> completedVehicles) {
-        for(AIMVehicleSimModel vehicle : completedVehicles) {
+        for (AIMVehicleSimModel vehicle : completedVehicles) {
             mergeVehiclesRecord.add(new MergeVehicleResult(
                     vehicle.getVIN(),
                     vehicle.getStartingRoad().toString(),
@@ -1116,7 +1091,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     private void provideCompletedVehiclesWithResultsInfo(List<AIMVehicleSimModel> completedVehicles) {
-        for(AIMVehicleSimModel vehicle : completedVehicles) {
+        for (AIMVehicleSimModel vehicle : completedVehicles) {
             vehicle.setFinishTime(currentTime);
             vehicle.setFinalVelocity(vehicle.getVelocity());
         }
@@ -1124,7 +1099,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
 
     private void provideMergeCompletedVehiclesWithResultsInfo(List<AIMVehicleSimModel> completedVehicles) {
         provideCompletedVehiclesWithResultsInfo(completedVehicles);
-        for(AIMVehicleSimModel vehicle : completedVehicles) {
+        for (AIMVehicleSimModel vehicle : completedVehicles) {
             vehicle.setDelay(calculateDelay(vehicle));
             vehicle.setFinalXPos(vehicle.getPosition().getX());
             vehicle.setFinalYPos(vehicle.getPosition().getY());
@@ -1132,21 +1107,20 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     private void updateMaxMinVelocities() {
-        for(int vin : vinToVehicles.keySet()) {
+        for (int vin : vinToVehicles.keySet()) {
             AIMVehicleSimModel vehicle = vinToVehicles.get(vin);
-            if(vehicle.getVelocity() > vehicle.getMaxVelocity())
+            if (vehicle.getVelocity() > vehicle.getMaxVelocity())
                 vehicle.setMaxVelocity(vehicle.getVelocity());
-            else if(vehicle.getVelocity() < vehicle.getMinVelocity()) {
-                if (Util.isDoubleZero(vehicle.getVelocity())){
+            else if (vehicle.getVelocity() < vehicle.getMinVelocity()) {
+                if (Util.isDoubleZero(vehicle.getVelocity())) {
                     vehicle.setMinVelocity(0.0);
-                }
-                else vehicle.setMinVelocity(vehicle.getVelocity());
+                } else vehicle.setMinVelocity(vehicle.getVelocity());
             }
         }
     }
 
     private double calculateDelay(AIMVehicleSimModel vehicle) {
-        if(vehicle.getStartingRoad() == RoadNames.TARGET_ROAD) {
+        if (vehicle.getStartingRoad() == RoadNames.TARGET_ROAD) {
             if (specToExpectedTimeTargetLane != null) {
                 double delay = vehicle.getFinishTime() -
                         vehicle.getStartTime() -
@@ -1155,8 +1129,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                     delay = 0;
                 return delay;
             }
-        }
-        else if(vehicle.getStartingRoad() == RoadNames.MERGING_ROAD) {
+        } else if (vehicle.getStartingRoad() == RoadNames.MERGING_ROAD) {
             if (specToExpectedTimeMergeLane != null) {
                 double delay = vehicle.getFinishTime() -
                         vehicle.getStartTime() -
@@ -1169,7 +1142,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         return Double.MAX_VALUE;
     }
 
-    public String produceResultsCSV(){
+    public String produceResultsCSV() {
         return produceResult().produceCSVString();
     }
 
@@ -1231,7 +1204,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         sb.append("Final Y Position");
         sb.append('\n');
         //Vehicle Data
-        for(MergeVehicleResult vr : result.getVehicleResults()){
+        for (MergeVehicleResult vr : result.getVehicleResults()) {
             sb.append(vr.getVin());
             sb.append(',');
             sb.append(vr.getStartingRoad());
@@ -1267,14 +1240,12 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
      */
     private void checkClocks() {
         // Check the clocks for all autonomous vehicles.
-        for(AIMVehicleSimModel vehicle: vinToVehicles.values()) {
+        for (AIMVehicleSimModel vehicle : vinToVehicles.values()) {
             vehicle.checkCurrentTime(currentTime);
         }
         // Check the clocks for all the intersection managers.
-        for(IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
+        for (IntersectionManager im : basicAIMIntersectionMap.getIntersectionManagers()) {
             im.checkCurrentTime(currentTime);
         }
     }
-
-
 }

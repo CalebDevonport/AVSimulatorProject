@@ -6,18 +6,15 @@ import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.aim.v2i.batch.RoadBasedReordering;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
-import aim4.map.aim.GridAIMIntersectionMap;
 import aim4.map.aim.GridMapUtil;
 import aim4.map.aim.GridRIMIntersectionMap;
 import aim4.sim.Simulator;
-import aim4.sim.setup.aim.AutoDriverOnlySimSetup;
 import aim4.sim.setup.aim.BasicSimSetup;
-import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.aim.AIMOptimalSimulator;
 
 import java.io.File;
 
-public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSetup implements RIMSimSetup {
-
+public class AIMCrossOptimalSimSetup extends aim4.sim.setup.aim.BasicSimSetup implements RIMSimSetup {
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -41,7 +38,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
     /** Whether the batch mode is on */
     private boolean isBatchMode = false;
     /** The traffic type */
-    private AutoDriverOnlySimSetup.TrafficType trafficType = AutoDriverOnlySimSetup.TrafficType.FILE;
+    private TrafficType trafficType = TrafficType.FILE;
     /** The traffic level in the horizontal direction */
     private double hTrafficLevel;
     /** The traffic level in the vertical direction */
@@ -70,7 +67,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      *
      * @param basicSimSetup  the basic simulator setup
      */
-    public AIMCrossIntersectionSimSetup(BasicSimSetup basicSimSetup) {
+    public AIMCrossOptimalSimSetup(BasicSimSetup basicSimSetup) {
         super(basicSimSetup);
     }
 
@@ -88,14 +85,14 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param stopDistBeforeIntersection  the stopping distance before
      *                                    intersections
      */
-    public AIMCrossIntersectionSimSetup(int columns, int rows,
-                                  double laneWidth,
-                                  double speedLimit,
-                                  int lanesPerRoad,
-                                  double medianSize,
-                                  double distanceBetween,
-                                  double trafficLevel,
-                                  double stopDistBeforeIntersection) {
+    public AIMCrossOptimalSimSetup(int columns, int rows,
+                                   double laneWidth,
+                                   double speedLimit,
+                                   int lanesPerRoad,
+                                   double medianSize,
+                                   double distanceBetween,
+                                   double trafficLevel,
+                                   double stopDistBeforeIntersection) {
         super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
                 medianSize, distanceBetween, trafficLevel,
                 stopDistBeforeIntersection);
@@ -139,7 +136,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param trafficLevel  the traffic level
      */
     public void setUniformRandomTraffic(double trafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.UNIFORM_RANDOM;
+        this.trafficType = TrafficType.UNIFORM_RANDOM;
         this.trafficLevel = trafficLevel;
     }
 
@@ -149,7 +146,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param trafficLevel the traffic level
      */
     public void setUniformTurnBasedTraffic(double trafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.UNIFORM_TURNBASED;
+        this.trafficType = TrafficType.UNIFORM_TURNBASED;
         this.trafficLevel = trafficLevel;
     }
 
@@ -161,7 +158,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      */
     public void setHVdirectionalRandomTraffic(double hTrafficLevel,
                                               double vTrafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.HVDIRECTIONAL_RANDOM;
+        this.trafficType = TrafficType.HVDIRECTIONAL_RANDOM;
         this.hTrafficLevel = hTrafficLevel;
         this.vTrafficLevel = vTrafficLevel;
     }
@@ -265,7 +262,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
                 GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
                         processingInterval);
             } else {
-                GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+                GridMapUtil.setOptimalProtocolManagers(layout, currentTime, gridConfig);
             }
 
             switch(trafficType) {
@@ -285,18 +282,18 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
                     break;
             }
         } else {
-            GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+            GridMapUtil.setOptimalProtocolManagers(layout, currentTime, gridConfig);
             GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
         }
 
 
         V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
                 stopDistBeforeIntersection;
-        return new AutoDriverOnlySimulator(layout);
+        return new AIMOptimalSimulator(layout);
     }
 
-    private void setSpawnSpecs(GridAIMIntersectionMap layout) {
-        assert layout instanceof GridAIMIntersectionMap;
+    private void setSpawnSpecs(GridRIMIntersectionMap layout) {
+        assert layout instanceof GridRIMIntersectionMap;
         if(uploadTrafficSchedule == null)
             GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
         else

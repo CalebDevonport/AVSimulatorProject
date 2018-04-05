@@ -12,9 +12,10 @@ import aim4.map.lane.Lane;
 import aim4.sim.RIMUdpListener;
 import aim4.sim.Simulator;
 import aim4.sim.setup.rim.BasicSimSetup;
+import aim4.sim.simulator.aim.AIMOptimalSimulator;
 import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
-import aim4.sim.simulator.rim.NoProtocolSimulator;
+import aim4.sim.simulator.rim.RIMOptimalSimulator;
 import aim4.sim.simulator.rim.RIMSimulator;
 import aim4.vehicle.VehicleSimModel;
 
@@ -36,8 +37,8 @@ public class RIMSimViewer extends SimViewer{
                 20.0, // entrance & exit circle radius
                 4, // split factor
                 3.014, // lane width
-                13.88, // speed limit
-                9.72, // roundabout speed limit
+                15, // speed limit
+                10, // roundabout speed limit
                 1, // lanes per road
                 1, // median size
                 150, // distance between
@@ -46,7 +47,7 @@ public class RIMSimViewer extends SimViewer{
         ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
                 1, // rows
                 4, // lane width
-                13.88, // speed limit
+                15, // speed limit
                 1, // lanes per road
                 1, // median size
                 150, // distance between
@@ -65,15 +66,21 @@ public class RIMSimViewer extends SimViewer{
             for (int vin : simStepResult2.getCompletedVINs()) {
                 Debug.removeVehicleColor(vin);
             }
-        } else if (simStepResult instanceof NoProtocolSimulator.NoProtocolSimulatorSimStepResult) {
-            NoProtocolSimulator.NoProtocolSimulatorSimStepResult simStepResult2 =
-                    (NoProtocolSimulator.NoProtocolSimulatorSimStepResult) simStepResult;
+        } else if (simStepResult instanceof RIMOptimalSimulator.RIMOptimalSimulatorSimStepResult) {
+            RIMOptimalSimulator.RIMOptimalSimulatorSimStepResult simStepResult2 =
+                    (RIMOptimalSimulator.RIMOptimalSimulatorSimStepResult) simStepResult;
             for (int vin : simStepResult2.getCompletedVINs()) {
                 Debug.removeVehicleColor(vin);
             }
         } else if (simStepResult instanceof aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) {
             aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult2 =
                     (aim4.sim.simulator.aim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult) simStepResult;
+            for (int vin : simStepResult2.getCompletedVINs()) {
+                Debug.removeVehicleColor(vin);
+            }
+        } else if (simStepResult instanceof AIMOptimalSimulator.AIMOptimalSimulatorSimStepResult) {
+            AIMOptimalSimulator.AIMOptimalSimulatorSimStepResult simStepResult2 =
+                    (AIMOptimalSimulator.AIMOptimalSimulatorSimStepResult) simStepResult;
             for (int vin : simStepResult2.getCompletedVINs()) {
                 Debug.removeVehicleColor(vin);
             }
