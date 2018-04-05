@@ -30,12 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.msg.aim.v2i;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.LinkedList;
-
 import aim4.config.Constants;
 import aim4.vehicle.VehicleSpec;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Message sent from a Vehicle to an Intersection Manager to request a
@@ -71,6 +71,10 @@ public class Request extends V2IMessage {
      * departure lanes.
      */
     private double maximumTurnVelocity;
+    /**
+     * If the vehicle is stopped at intersection.
+     */
+    private boolean isStoppedAtIntersection;
 
 
     /////////////////////////////////
@@ -85,14 +89,16 @@ public class Request extends V2IMessage {
      * @param arrivalTime      the arrival time
      * @param arrivalVelocity  the arrival velocity
      * @param maxTurnVelocity  the maximum turn velocity
+     * @param isStoppedAtIntersection  if the vehicle is stopped at intersection
      */
     public Proposal(int arrivalLaneID, int departureLaneID, double arrivalTime,
-                    double arrivalVelocity, double maxTurnVelocity) {
+                    double arrivalVelocity, double maxTurnVelocity, boolean isStoppedAtIntersection) {
       this.arrivalLaneID = arrivalLaneID;
       this.departureLaneID = departureLaneID;
       this.arrivalTime = arrivalTime;
       this.arrivalVelocity = arrivalVelocity;
       this.maximumTurnVelocity = maxTurnVelocity;
+      this.isStoppedAtIntersection = isStoppedAtIntersection;
     }
 
     /**
@@ -106,6 +112,7 @@ public class Request extends V2IMessage {
       this.arrivalTime = p.arrivalTime;
       this.arrivalVelocity = p.arrivalVelocity;
       this.maximumTurnVelocity = p.maximumTurnVelocity;
+      this.isStoppedAtIntersection = p.isStoppedAtIntersection;
     }
 
     // ///////////////////////////////
@@ -163,6 +170,15 @@ public class Request extends V2IMessage {
      */
     public double getMaximumTurnVelocity() {
       return maximumTurnVelocity;
+    }
+
+    /**
+     * Check if the vehicle is stopped at the intersection.
+     *
+     * @return True if vehicle stopped at intersection, false otherwise
+     */
+    public boolean isStoppedAtIntersection() {
+      return isStoppedAtIntersection;
     }
 
     // ///////////////////////////////

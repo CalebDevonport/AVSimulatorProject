@@ -22,6 +22,7 @@ import aim4.map.track.*;
 import aim4.msg.rim.v2i.Request;
 import aim4.msg.rim.v2i.V2IMessage;
 import aim4.sim.Simulator;
+import aim4.sim.simulator.aim.AIMOptimalSimulator;
 import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.simulator.rim.RIMSimulator;
@@ -235,7 +236,7 @@ public class RIMCanvas extends Canvas{
         Simulator sim = simViewer.getSimulator();
         // if the simulator exists, draw the current view
         if (sim != null) {
-            if (sim instanceof AutoDriverOnlySimulator){
+            if (sim instanceof AutoDriverOnlySimulator || sim instanceof AIMOptimalSimulator){
                 Collection<aim4.im.aim.IntersectionManager> ims =
                         ((BasicAIMIntersectionMap) sim.getMap()).getIntersectionManagers();
                 // draw the intersection managers' debug shapes

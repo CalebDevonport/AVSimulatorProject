@@ -1040,7 +1040,7 @@ public class V2ICoordinator implements Coordinator{
                 // Means we area already in the approach lane
                 else {
                     assert approachLength >= dTotal;
-                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vRTop, vEndMax, accel, decel);
+                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
                 }
             } catch(ArrivalEstimationException e) {
                 if (isDebugging) {
@@ -1092,7 +1092,8 @@ public class V2ICoordinator implements Coordinator{
             arrivalTime = (Math.max(result.getArrivalTime(), minArrivalTime));
 
             boolean isStoppedAtIntersection = false;
-            if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION)){
+            if (Util.isDoubleZero(Math.round(vehicle.getDriver().distanceToNextIntersection()) - V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION) &&
+                    Util.isDoubleZero(vehicle.gaugeVelocity())){
                 isStoppedAtIntersection = true;
             }
 
@@ -1661,7 +1662,7 @@ public class V2ICoordinator implements Coordinator{
                 // Means we area already in the approach lane
                 else {
                     assert approachLength >= dTotal;
-                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vRTop, vEndMax, accel, decel);
+                    result = VelocityFirstArrivalEstimation.estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
                 }
             } catch(ArrivalEstimationException e) {
                 if (isDebugging) {

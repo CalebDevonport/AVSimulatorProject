@@ -39,6 +39,7 @@ import aim4.im.aim.v2i.RequestHandler.*;
 import aim4.im.aim.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.CyclicSignalController;
 import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.batch.RoadBasedReordering;
+import aim4.im.aim.v2i.policy.AcceptAllPolicy;
 import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
 import aim4.map.BasicAIMIntersectionMap;
@@ -508,7 +509,59 @@ public class GridMapUtil {
                 V2IManager im =
                         new V2IManager(intersection, trajectoryModel, currentTime,
                                 config, layout.getImRegistry());
-                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler()));
+                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler(), BasePolicy.PolicyType.FCFS));
+                layout.setManager(column, row, im);
+            }
+        }
+    }
+
+    /**
+     * Set the no protocol managers at all intersections.
+     *
+     * @param layout       the map
+     * @param currentTime  the current time
+     * @param config       the reservation grid manager configuration
+     */
+    public static void setOptimalProtocolManagers(GridAIMIntersectionMap layout,
+                                                  double currentTime,
+                                                  ReservationGridManager.Config config) {
+        layout.removeAllManagers();
+        for(int column = 0; column < layout.getColumns(); column++) {
+            for(int row = 0; row < layout.getRows(); row++) {
+                List<Road> roads = layout.getRoads(column, row);
+                RoadBasedIntersection intersection = new RoadBasedIntersection(roads);
+                RoadBasedTrackModel trajectoryModel =
+                        new RoadBasedTrackModel(intersection);
+                V2IManager im =
+                        new V2IManager(intersection, trajectoryModel, currentTime,
+                                config, layout.getImRegistry());
+                im.setPolicy(new AcceptAllPolicy(im));
+                layout.setManager(column, row, im);
+            }
+        }
+    }
+
+    /**
+     * Set the no protocol managers at all intersections.
+     *
+     * @param layout       the map
+     * @param currentTime  the current time
+     * @param config       the reservation grid manager configuration
+     */
+    public static void setStopSignManagers(GridAIMIntersectionMap layout,
+                                           double currentTime,
+                                           ReservationGridManager.Config config) {
+        layout.removeAllManagers();
+        for(int column = 0; column < layout.getColumns(); column++) {
+            for(int row = 0; row < layout.getRows(); row++) {
+                List<Road> roads = layout.getRoads(column, row);
+                RoadBasedIntersection intersection = new RoadBasedIntersection(roads);
+                RoadBasedTrackModel trajectoryModel =
+                        new RoadBasedTrackModel(intersection);
+                V2IManager im =
+                        new V2IManager(intersection, trajectoryModel, currentTime,
+                                config, layout.getImRegistry());
+                im.setPolicy(new BasePolicy(im, new FCFSRequestHandler(), BasePolicy.PolicyType.STOP_SIGN));
                 layout.setManager(column, row, im);
             }
         }
@@ -540,7 +593,7 @@ public class GridMapUtil {
                         new BatchModeRequestHandler(
                                 new RoadBasedReordering(processingInterval),
                                 new BatchModeRequestHandler.RequestStatCollector());
-                im.setPolicy(new BasePolicy(im, rh));
+                im.setPolicy(new BasePolicy(im, rh, BasePolicy.PolicyType.FCFS));
                 layout.setManager(column, row, im);
             }
         }
@@ -576,7 +629,7 @@ public class GridMapUtil {
                 ApproxSimpleTrafficSignalRequestHandler requestHandler =
                         new ApproxSimpleTrafficSignalRequestHandler(greenLightDuration,
                                 yellowLightDuration);
-                im.setPolicy(new BasePolicy(im, requestHandler));
+                im.setPolicy(new BasePolicy(im, requestHandler, BasePolicy.PolicyType.FCFS));
                 layout.setManager(column, row, im);
             }
         }
@@ -611,7 +664,7 @@ public class GridMapUtil {
                 Approx4PhasesTrafficSignalRequestHandler requestHandler =
                         new Approx4PhasesTrafficSignalRequestHandler(greenLightDuration,
                                 yellowLightDuration);
-                im.setPolicy(new BasePolicy(im, requestHandler));
+                im.setPolicy(new BasePolicy(im, requestHandler, BasePolicy.PolicyType.FCFS));
                 layout.setManager(column, row, im);
             }
         }
@@ -657,7 +710,7 @@ public class GridMapUtil {
                     }
                 }
 
-                im.setPolicy(new BasePolicy(im, requestHandler));
+                im.setPolicy(new BasePolicy(im, requestHandler, BasePolicy.PolicyType.FCFS));
                 layout.setManager(column, row, im);
             }
         }
@@ -685,7 +738,7 @@ public class GridMapUtil {
                                 config, layout.getImRegistry());
                 ApproxStopSignRequestHandler requestHandler =
                         new ApproxStopSignRequestHandler();
-                im.setPolicy(new BasePolicy(im, requestHandler));
+                im.setPolicy(new BasePolicy(im, requestHandler, BasePolicy.PolicyType.FCFS));
                 layout.setManager(column, row, im);
             }
         }
@@ -848,146 +901,6 @@ public class GridMapUtil {
                     @Override
                     public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
                         return new ArrayList<AIMSpawnSpec>();
-                    }
-                });
-            }
-        }
-    }
-
-    public static void setJSONScheduleSpawnSpecGenerator(GridAIMIntersectionMap map, File leftSchedule, File rightSchedule, File straightSchedule) throws IOException, ParseException {
-        for(AIMSpawnPoint sp : map.getSpawnPoints()) {
-            if(sp.getHeading() == 0) { // is going east
-                Road targetRoad = null;
-                for(Road r : map.getDestinationRoads()) {
-                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (straight)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        straightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI + Math.PI/2) { //will go north (left)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        leftSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI/2) { //will go south (right)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        rightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                }
-            } else if(sp.getHeading() == Math.PI/2) { //is going south
-                Road targetRoad = null;
-                for(Road r : map.getDestinationRoads()) {
-                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (left)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        leftSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (right)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        rightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI/2) { //will go south (straight)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        straightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                }
-            }
-            else if(sp.getHeading() == Math.PI + Math.PI/2) { //is going north
-                Road targetRoad = null;
-                for(Road r : map.getDestinationRoads()) {
-                    if (r.getIndexLane().getInitialHeading() == 0) { // will go east (right)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        rightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (left)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        leftSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI+ Math.PI/2) { //will go north (straight)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        straightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                }
-            }
-            else if(sp.getHeading() == Math.PI) { //is going west
-                Road targetRoad = null;
-                for(Road r : map.getDestinationRoads()) {
-                    if (r.getIndexLane().getInitialHeading() == Math.PI/2) { // will go south (left)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        leftSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI) { //will go west (straight)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        straightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                    if(r.getIndexLane().getInitialHeading() == Math.PI+ Math.PI/2) { //will go north (right)
-                        targetRoad = r;
-                        assert targetRoad != null;
-                        sp.setVehicleSpecChooser(
-                                new GridMapUtil.JsonScheduleSpawnSpecGenerator(
-                                        rightSchedule,
-                                        targetRoad
-                                ));
-                    }
-                }
-            }
-            else  {
-                sp.setVehicleSpecChooser(new AIMSpawnPoint.AIMSpawnSpecGenerator() {
-                    @Override
-                    public List<AIMSpawnPoint.AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
-                        return new ArrayList<AIMSpawnPoint.AIMSpawnSpec>();
                     }
                 });
             }

@@ -106,7 +106,6 @@ public class LaneRIM {
      */
     public double distanceToFirstIntersection() {
         assert lane instanceof LineSegmentLane;
-        assert !intersectionManagers.isEmpty();
         if(intersectionManagers.isEmpty()) {
             if(lane.hasNextLane()) {
                 return lane.getLength() +

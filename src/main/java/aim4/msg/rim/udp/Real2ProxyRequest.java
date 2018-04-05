@@ -21,7 +21,7 @@ public class Real2ProxyRequest extends Real2ProxyMsg{
     public final float arrivalVelocity;
     /** The departure lane ID */
     public final int departureLaneId;
-    /** The departure lane ID */
+    /** If the vehicle is stopped at intersection */
     public final boolean isStoppedAtIntersection;
 
     /////////////////////////////////

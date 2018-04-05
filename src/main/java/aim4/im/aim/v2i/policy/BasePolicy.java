@@ -71,6 +71,14 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    */
   private static final double LATE_ERROR = 0.01;
 
+  /**
+   * The type of policy
+   */
+  public enum PolicyType {
+    FCFS,
+    STOP_SIGN
+  }
+
 
   /////////////////////////////////
   // NESTED CLASSES
@@ -311,6 +319,27 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
     }
   }
 
+  /**
+   * Remove proposals whose vehicles are not stopped at intersection.
+   *
+   * @param proposals    a list of proposals
+   */
+  public static ProposalFilterResult removeProposalWithVehicleNotStoppedAtIntersection(
+          List<Request.Proposal> proposals) {
+    // copy the proposals to a list first.
+    List<Request.Proposal> myProposals =
+            new LinkedList<Proposal>(proposals);
+    for(Iterator<Proposal> tpIter = myProposals.listIterator();
+        tpIter.hasNext();) {
+      Request.Proposal prop = tpIter.next();
+      // If this one is in the past
+      if (!prop.isStoppedAtIntersection()) {
+        tpIter.remove();
+      }
+    }
+    return new ProposalFilterResult(myProposals);
+  }
+
 
 
   /////////////////////////////////
@@ -344,6 +373,11 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    */
   private StatCollector<BasePolicy> statCollector;
 
+  /**
+   * The statistic collector
+   */
+  private BasePolicy.PolicyType policyType;
+
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -357,8 +391,8 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    *                        being created
    * @param requestHandler  the request handler
    */
-  public BasePolicy(V2IManagerCallback im, RequestHandler requestHandler) {
-    this(im, requestHandler, null);
+  public BasePolicy(V2IManagerCallback im, RequestHandler requestHandler, PolicyType policyType) {
+    this(im, requestHandler, null, policyType);
   }
 
   /**
@@ -369,12 +403,15 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    *                        being created
    * @param requestHandler  the request handler
    * @param statCollector   the statistic collector
+   * @param policyType   the type of policy
    */
   public BasePolicy(V2IManagerCallback im,
                     RequestHandler requestHandler,
-                    StatCollector<BasePolicy> statCollector) {
+                    StatCollector<BasePolicy> statCollector,
+                    PolicyType policyType) {
     this.im = im;
     this.statCollector = statCollector;
+    this.policyType = policyType;
     setRequestHandler(requestHandler);
   }
 
@@ -702,6 +739,13 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
   @Override
   public TrackModel getTrackMode() {
     return im.getTrackModel();
+  }
+
+  /**
+   * Return the type of this policy.
+   */
+  public PolicyType getPolicyType() {
+    return policyType;
   }
 
 

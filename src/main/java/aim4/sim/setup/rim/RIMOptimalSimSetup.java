@@ -3,32 +3,32 @@ package aim4.sim.setup.rim;
 import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.driver.aim.pilot.V2IPilot;
-import aim4.im.aim.v2i.batch.RoadBasedReordering;
-import aim4.im.aim.v2i.reservation.ReservationGridManager;
-import aim4.map.aim.GridAIMIntersectionMap;
-import aim4.map.aim.GridMapUtil;
-import aim4.map.aim.GridRIMIntersectionMap;
+import aim4.driver.rim.pilot.V2IPilot;
+import aim4.im.rim.v2i.reservation.ReservationGridManager;
+import aim4.map.BasicRIMIntersectionMap;
+import aim4.map.rim.RimIntersectionMap;
+import aim4.map.rim.RimMapUtil;
 import aim4.sim.Simulator;
-import aim4.sim.setup.aim.AutoDriverOnlySimSetup;
-import aim4.sim.setup.aim.BasicSimSetup;
-import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.rim.RIMOptimalSimulator;
 
 import java.io.File;
 
-public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSetup implements RIMSimSetup {
-
+public class RIMOptimalSimSetup extends BasicSimSetup implements RIMSimSetup {
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
+
+    /**
+     * The time period between the processing times.
+     */
+    public static final double DEFAULT_PROCESSING_INTERVAL = 2.0;  // seconds
 
     /**
      * The traffic type.
      */
     public enum TrafficType {
         UNIFORM_RANDOM,
-        UNIFORM_TURNBASED,
-        HVDIRECTIONAL_RANDOM,
+        UNIFORM_RATIO,
         FILE,
     }
 
@@ -41,24 +41,17 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
     /** Whether the batch mode is on */
     private boolean isBatchMode = false;
     /** The traffic type */
-    private AutoDriverOnlySimSetup.TrafficType trafficType = AutoDriverOnlySimSetup.TrafficType.FILE;
-    /** The traffic level in the horizontal direction */
-    private double hTrafficLevel;
-    /** The traffic level in the vertical direction */
-    private double vTrafficLevel;
+    private TrafficType trafficType = TrafficType.FILE;
     /** The static buffer size */
     private double staticBufferSize = 0.25;
     /** The time buffer for internal tiles */
     private double internalTileTimeBufferSize = 0.1;
-    /** The time buffer for edge tiles */
-    private double edgeTileTimeBufferSize = 0.25;
-    /** Whether the edge time buffer is enabled */
-    private boolean isEdgeTileTimeBufferEnabled = true;
     /** The granularity of the reservation grid */
-    private double granularity = 2.0;
-    /** The processing interval for the batch mode */
-    private double processingInterval = RoadBasedReordering.DEFAULT_PROCESSING_INTERVAL;
-    /** The JSON file with schedules */
+    private double granularity = 6.0;
+    /** The name of the file about the traffic volume */
+    private String trafficVolumeFileName = null;
+
+    //Set Json files
     private File uploadTrafficSchedule;
 
     /////////////////////////////////
@@ -70,7 +63,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      *
      * @param basicSimSetup  the basic simulator setup
      */
-    public AIMCrossIntersectionSimSetup(BasicSimSetup basicSimSetup) {
+    public RIMOptimalSimSetup(BasicSimSetup basicSimSetup) {
         super(basicSimSetup);
     }
 
@@ -79,8 +72,12 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      *
      * @param columns                     the number of columns
      * @param rows                        the number of rows
+     * @param roundaboutDiameter          the diameter of the roundabout
+     * @param entranceExitRadius          the radius of the entrance & exit circles
+     * @param splitFactor                 the number of line lanes in each arc lane
      * @param laneWidth                   the width of lanes
-     * @param speedLimit                  the speed limit
+     * @param laneSpeedLimit              the speed limit of the line lanes
+     * @param roundaboutSpeedLimit        the speed limit of the roundabout
      * @param lanesPerRoad                the number of lanes per road
      * @param medianSize                  the median size
      * @param distanceBetween             the distance between intersections
@@ -88,24 +85,27 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param stopDistBeforeIntersection  the stopping distance before
      *                                    intersections
      */
-    public AIMCrossIntersectionSimSetup(int columns, int rows,
-                                        double laneWidth,
-                                        double speedLimit,
-                                        int lanesPerRoad,
-                                        double medianSize,
-                                        double distanceBetween,
-                                        double trafficLevel,
-                                        double stopDistBeforeIntersection) {
-        super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
+    public RIMOptimalSimSetup(int columns, int rows,
+                              double roundaboutDiameter,
+                              double entranceExitRadius,
+                              int splitFactor,
+                              double laneWidth,
+                              double laneSpeedLimit,
+                              double roundaboutSpeedLimit,
+                              int lanesPerRoad,
+                              double medianSize,
+                              double distanceBetween,
+                              double trafficLevel,
+                              double stopDistBeforeIntersection) {
+        super(columns, rows, roundaboutDiameter, entranceExitRadius, splitFactor, laneWidth, laneSpeedLimit, roundaboutSpeedLimit, lanesPerRoad,
                 medianSize, distanceBetween, trafficLevel,
                 stopDistBeforeIntersection);
     }
-
-
     /////////////////////////////////
     // PUBLIC METHODS
     /////////////////////////////////
 
+    public void setUploadTrafficSchedule(File uploadTrafficSchedule) { this.uploadTrafficSchedule = uploadTrafficSchedule;}
     /**
      * Turn on or off the base line mode.
      *
@@ -115,23 +115,6 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
         isBaseLineMode = b;
     }
 
-    /**
-     * Turn on or off the batch mode.
-     *
-     * @param b  Whether the batch mode is on
-     */
-    public void setIsBatchMode(boolean b) {
-        isBatchMode = b;
-    }
-
-    /**
-     * Set the processing interval in the batch mode
-     *
-     * @param processingInterval  the processing interval
-     */
-    public void setBatchModeProcessingInterval(double processingInterval) {
-        this.processingInterval = processingInterval;
-    }
 
     /**
      * Set the uniform random traffic.
@@ -139,7 +122,7 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param trafficLevel  the traffic level
      */
     public void setUniformRandomTraffic(double trafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.UNIFORM_RANDOM;
+        this.trafficType = TrafficType.UNIFORM_RANDOM;
         this.trafficLevel = trafficLevel;
     }
 
@@ -149,30 +132,19 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
      * @param trafficLevel the traffic level
      */
     public void setUniformTurnBasedTraffic(double trafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.UNIFORM_TURNBASED;
+        this.trafficType = TrafficType.UNIFORM_RATIO;
         this.trafficLevel = trafficLevel;
     }
 
-    /**
-     * Set the directional random traffic.
-     *
-     * @param hTrafficLevel  the traffic level in the horizontal direction
-     * @param vTrafficLevel  the traffic level in the Vertical direction
-     */
-    public void setHVdirectionalRandomTraffic(double hTrafficLevel,
-                                              double vTrafficLevel) {
-        this.trafficType = AutoDriverOnlySimSetup.TrafficType.HVDIRECTIONAL_RANDOM;
-        this.hTrafficLevel = hTrafficLevel;
-        this.vTrafficLevel = vTrafficLevel;
-    }
 
     /**
-     * Set the schedule according to a specification in a file.
+     * Set the traffic volume according to the specification in a file.
      *
-     * @param uploadTrafficSchedule  the file with the schedule
+     * @param trafficVolumeFileName  the file name of the traffic volume
      */
-    public void setUploadTrafficSchedule(File uploadTrafficSchedule) {
-        this.uploadTrafficSchedule = uploadTrafficSchedule;
+    public void setTrafficVolume(String trafficVolumeFileName) {
+        this.trafficType = TrafficType.FILE;
+        this.trafficVolumeFileName = trafficVolumeFileName;
     }
 
     /**
@@ -192,8 +164,6 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
                            double granularity) {
         this.staticBufferSize = staticBufferSize;
         this.internalTileTimeBufferSize = internalTileTimeBufferSize;
-        this.edgeTileTimeBufferSize = edgeTileTimeBufferSize;
-        this.isEdgeTileTimeBufferEnabled = isEdgeTileTimeBufferEnabled;
         this.granularity = granularity;
     }
 
@@ -203,35 +173,32 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        GridRIMIntersectionMap layout = new GridRIMIntersectionMap(currentTime,
+        RimIntersectionMap layout = new RimIntersectionMap(currentTime,
                 numOfColumns,
                 numOfRows,
+                roundaboutDiameter,
+                entranceExitRadius,
+                splitFactor,
                 laneWidth,
-                speedLimit,
+                laneSpeedLimit,
+                roundaboutSpeedLimit,
                 lanesPerRoad,
                 medianSize,
                 distanceBetween);
-        // Set the edge tile time buffer based on the maximum speed limit
-        try {
-            edgeTileTimeBufferSize = Constants.getEdgeTileTimeBufferBasedOnVelocity(speedLimit);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // Set the minimum following distance based on the maximum speed limit
         try {
-            V2IPilot.MINIMUM_FOLLOWING_DISTANCE = Constants.getMinimumFollowingDistanceBasedOnVelocity(speedLimit);
+            V2IPilot.MINIMUM_FOLLOWING_DISTANCE =
+                    Constants.getMinimumFollowingDistanceBasedOnVelocity(Math.max(laneSpeedLimit, roundaboutSpeedLimit));
         } catch (Exception e) {
             e.printStackTrace();
         }
         /* standard */
         ReservationGridManager.Config gridConfig =
                 new ReservationGridManager.Config(SimConfig.TIME_STEP,
-                        SimConfig.GRID_TIME_STEP,
+                        SimConfig.RIM_TIME_STEP,
                         staticBufferSize,
                         internalTileTimeBufferSize,
-                        edgeTileTimeBufferSize,
-                        isEdgeTileTimeBufferEnabled,
                         granularity);  // granularity
 
         /* for demo */
@@ -262,45 +229,41 @@ public class AIMCrossIntersectionSimSetup extends aim4.sim.setup.aim.BasicSimSet
 
         if (!isBaseLineMode) {
             if (isBatchMode) {
-                GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
-                        processingInterval);
+                //TODO: Implement batch mode for rim
+//                RimMapUtil.setBatchManagers(layout, currentTime, gridConfig,
+//                        processingInterval);
             } else {
-                GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+                RimMapUtil.setOptimalProtocolManagers(layout, currentTime, gridConfig);
             }
 
             switch(trafficType) {
                 case UNIFORM_RANDOM:
-                    GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+                    RimMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
                     break;
-                case UNIFORM_TURNBASED:
-                    GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
-                    break;
-                case HVDIRECTIONAL_RANDOM:
-                    GridMapUtil.setDirectionalSpawnPoints(layout,
-                            hTrafficLevel,
-                            vTrafficLevel);
+                case UNIFORM_RATIO:
+                    String trafficLevelVolumeName = "traffic_volumes.csv";
+                    RimMapUtil.setUniformRatioSpawnPoints(layout, trafficLevelVolumeName);
                     break;
                 case FILE:
                     setSpawnSpecs(layout);
                     break;
             }
         } else {
-            GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
-            GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
+            RimMapUtil.setOptimalProtocolManagers(layout, currentTime, gridConfig);
         }
 
 
         V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
                 stopDistBeforeIntersection;
-        return new AutoDriverOnlySimulator(layout);
+        return new RIMOptimalSimulator(layout);
     }
 
-    private void setSpawnSpecs(GridAIMIntersectionMap layout) {
-        assert layout instanceof GridAIMIntersectionMap;
+    private void setSpawnSpecs(BasicRIMIntersectionMap layout) {
+        assert layout instanceof RimIntersectionMap;
         if(uploadTrafficSchedule == null)
-            GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+            RimMapUtil.setUniformRandomSpawnPoints((RimIntersectionMap)layout, trafficLevel);
         else
-            GridMapUtil.setJSONScheduleSpawnSpecGenerator(layout, uploadTrafficSchedule);
+            RimMapUtil.setJSONScheduleSpawnSpecGenerator((RimIntersectionMap)layout, uploadTrafficSchedule);
 
     }
 }

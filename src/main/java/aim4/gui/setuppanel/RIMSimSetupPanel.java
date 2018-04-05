@@ -1,8 +1,9 @@
 package aim4.gui.setuppanel;
 
-import aim4.gui.parampanel.rim.AIMCrossIntersectionParamPanel;
+import aim4.gui.parampanel.rim.AIMCrossOptimalParamPanel;
+import aim4.gui.parampanel.rim.AIMCrossParamPanel;
 import aim4.gui.parampanel.rim.AutoDriverOnlyParamPanel;
-import aim4.gui.parampanel.rim.NoProtocolParamPanel;
+import aim4.gui.parampanel.rim.RIMOptimalProtocolParamPanel;
 import aim4.sim.setup.rim.*;
 
 import javax.swing.*;
@@ -17,10 +18,12 @@ import java.io.File;
 public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     private static final long serialVersionUID = 1L;
 
-    final static String AUTO_DRIVER_ONLY_SETUP_PANEL = "RIM Protocol";
-    final static String NO_PROTOCOL_SETUP_PANEL = "No Protocol";
-    final static String STOP_SIGNS_SETUP_PANEL = "Stop Signs";
-    final static String AIM_CROSS_INTERSECTION_SETUP_PANEL = "AIM Protocol-Cross Intersection";
+    final static String RIM_SETUP_PANEL = "RIM Protocol";
+    final static String RIM_OPTIMAL_SETUP_PANEL = "RIM Optimal Protocol";
+    final static String RIM_STOP_SIGNS_SETUP_PANEL = "RIM Stop Signs Protocol";
+    final static String AIM_CROSS_INTERSECTION_SETUP_PANEL = "AIM Cross Protocol";
+    final static String AIM_CROSS_INTERSECTION_OPTIMAL_SETUP_PANEL = "AIM Optimal Cross Protocol";
+    final static String AIM_CROSS_INTERSECTION_STOP_SIGNS_SETUP_PANEL = "AIM Stop Signs Protocol";
 
     /** The combo box */
     private JComboBox comboBox;
@@ -28,14 +31,18 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     private JPanel cards; //a panel that uses CardLayout
     /** The card layout */
     private CardLayout cardLayout;
-    /** the auto driver only simulation setup panel */
-    private AutoDriverOnlyParamPanel autoDriverOnlySetupPanel;
-    /** The traffic signal setup panel */
-    private NoProtocolParamPanel noProtocolSetupPanel;
-    /** the stop sign simulation setup panel */
-    private AutoDriverOnlyParamPanel stopSignSetupPanel;
+    /** the rim simulation setup panel */
+    private AutoDriverOnlyParamPanel rimSetupPanel;
+    /** The rim optimal simulation setup panel */
+    private RIMOptimalProtocolParamPanel rimOptimalProtocolSetupPanel;
+    /** the rim stop sign simulation setup panel */
+    private AutoDriverOnlyParamPanel rimStopSignSetupPanel;
     /** the aim cross intersection simulation setup panel */
-    private AIMCrossIntersectionParamPanel aimCrossIntersectionSetupPanel;
+    private AIMCrossParamPanel aimCrossSetupPanel;
+    /** the aim cross intersection optimal simulation setup panel */
+    private AIMCrossOptimalParamPanel aimCrossOptimalSetupPanel;
+    /** the rim stop sign simulation setup panel */
+    private AIMCrossParamPanel aimCrossStopSignSetupPanel;
     /** The rim simulation setup panel */
     private BasicSimSetup rimSimSetup;
     /** The aim simulation setup panel */
@@ -56,10 +63,12 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
         comboBoxPane.setBackground(Color.WHITE);
 
         String comboBoxItems[] =
-                { AUTO_DRIVER_ONLY_SETUP_PANEL,
-                        STOP_SIGNS_SETUP_PANEL,
-                        NO_PROTOCOL_SETUP_PANEL,
-                        AIM_CROSS_INTERSECTION_SETUP_PANEL};
+                { RIM_SETUP_PANEL,
+                        RIM_STOP_SIGNS_SETUP_PANEL,
+                        RIM_OPTIMAL_SETUP_PANEL,
+                        AIM_CROSS_INTERSECTION_SETUP_PANEL,
+                        AIM_CROSS_INTERSECTION_OPTIMAL_SETUP_PANEL,
+                        AIM_CROSS_INTERSECTION_STOP_SIGNS_SETUP_PANEL};
         comboBox = new JComboBox(comboBoxItems);
         comboBox.setEditable(false);
         comboBox.addItemListener(this);
@@ -70,14 +79,18 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
         cards = new JPanel(cardLayout);
 
         // add the parameter panels
-        autoDriverOnlySetupPanel = new AutoDriverOnlyParamPanel(rimSimSetup);
-        addParamPanel(autoDriverOnlySetupPanel, AUTO_DRIVER_ONLY_SETUP_PANEL);
-        stopSignSetupPanel = new AutoDriverOnlyParamPanel(rimSimSetup);
-        addParamPanel(stopSignSetupPanel, STOP_SIGNS_SETUP_PANEL);
-        noProtocolSetupPanel = new NoProtocolParamPanel(rimSimSetup);
-        addParamPanel(noProtocolSetupPanel, NO_PROTOCOL_SETUP_PANEL);
-        aimCrossIntersectionSetupPanel = new AIMCrossIntersectionParamPanel(aimSimSetup);
-        addParamPanel(aimCrossIntersectionSetupPanel, AIM_CROSS_INTERSECTION_SETUP_PANEL);
+        rimSetupPanel = new AutoDriverOnlyParamPanel(rimSimSetup);
+        addParamPanel(rimSetupPanel, RIM_SETUP_PANEL);
+        rimStopSignSetupPanel = new AutoDriverOnlyParamPanel(rimSimSetup);
+        addParamPanel(rimStopSignSetupPanel, RIM_STOP_SIGNS_SETUP_PANEL);
+        rimOptimalProtocolSetupPanel = new RIMOptimalProtocolParamPanel(rimSimSetup);
+        addParamPanel(rimOptimalProtocolSetupPanel, RIM_OPTIMAL_SETUP_PANEL);
+        aimCrossSetupPanel = new AIMCrossParamPanel(aimSimSetup);
+        addParamPanel(aimCrossSetupPanel, AIM_CROSS_INTERSECTION_SETUP_PANEL);
+        aimCrossOptimalSetupPanel = new AIMCrossOptimalParamPanel(aimSimSetup);
+        addParamPanel(aimCrossOptimalSetupPanel, AIM_CROSS_INTERSECTION_OPTIMAL_SETUP_PANEL);
+        aimCrossStopSignSetupPanel = new AIMCrossParamPanel(aimSimSetup);
+        addParamPanel(aimCrossStopSignSetupPanel, AIM_CROSS_INTERSECTION_STOP_SIGNS_SETUP_PANEL);
 
         // add the combo box pane and cards pane
         setLayout(new BorderLayout());
@@ -105,89 +118,132 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     public RIMSimSetup getSimSetup() {
         if (comboBox.getSelectedIndex() == 0) {
             AutoDriverOnlySimSetup simSetup = new AutoDriverOnlySimSetup(this.rimSimSetup);
-            simSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
-            simSetup.setRoundaboutDiameter(autoDriverOnlySetupPanel.getRoundaboutDiameter());
-            simSetup.setLaneSpeedLimit(autoDriverOnlySetupPanel.getLaneSpeedLimit());
-            simSetup.setRoundaboutSpeedLimit(autoDriverOnlySetupPanel.getRoundaboutSpeedLimit());
+            simSetup.setTrafficLevel(rimSetupPanel.getTrafficRate());
+            simSetup.setRoundaboutDiameter(rimSetupPanel.getRoundaboutDiameter());
+            simSetup.setLaneSpeedLimit(rimSetupPanel.getLaneSpeedLimit());
+            simSetup.setRoundaboutSpeedLimit(rimSetupPanel.getRoundaboutSpeedLimit());
 //            simSetup.setStopDistBeforeIntersection(
-//                    autoDriverOnlySetupPanel.getStopDistToIntersection());
-            simSetup.setNumOfColumns(autoDriverOnlySetupPanel.getNumOfColumns());
-            simSetup.setNumOfRows(autoDriverOnlySetupPanel.getNumOfRows());
-            simSetup.setLanesPerRoad(autoDriverOnlySetupPanel.getLanesPerRoad());
-            if(autoDriverOnlySetupPanel.uploadTrafficSchedule != null) {
+//                    rimSetupPanel.getStopDistToIntersection());
+            simSetup.setNumOfColumns(rimSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(rimSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(rimSetupPanel.getLanesPerRoad());
+            if(rimSetupPanel.uploadTrafficSchedule != null) {
 
-                autoDriverOnlySetupPanel.uploadTrafficSchedule = new File(autoDriverOnlySetupPanel.uploadTrafficScheduleTextbox.getText());
-                simSetup.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+                rimSetupPanel.uploadTrafficSchedule = new File(rimSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(rimSetupPanel.uploadTrafficSchedule);
 
 
             } else {
-                autoDriverOnlySetupPanel.uploadTrafficSchedule = null;
-                simSetup.setUploadTrafficSchedule(autoDriverOnlySetupPanel.uploadTrafficSchedule);
+                rimSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(rimSetupPanel.uploadTrafficSchedule);
             }
             return simSetup;
         } else if (comboBox.getSelectedIndex() == 1) {
             AutoDriverOnlySimSetup simSetup = new AutoDriverOnlySimSetup(this.rimSimSetup);
-            simSetup.setTrafficLevel(stopSignSetupPanel.getTrafficRate());
-            simSetup.setRoundaboutDiameter(stopSignSetupPanel.getRoundaboutDiameter());
-            simSetup.setLaneSpeedLimit(stopSignSetupPanel.getLaneSpeedLimit());
-            simSetup.setRoundaboutSpeedLimit(stopSignSetupPanel.getRoundaboutSpeedLimit());
+            simSetup.setTrafficLevel(rimStopSignSetupPanel.getTrafficRate());
+            simSetup.setRoundaboutDiameter(rimStopSignSetupPanel.getRoundaboutDiameter());
+            simSetup.setLaneSpeedLimit(rimStopSignSetupPanel.getLaneSpeedLimit());
+            simSetup.setRoundaboutSpeedLimit(rimStopSignSetupPanel.getRoundaboutSpeedLimit());
 //            simSetup.setStopDistBeforeIntersection(
-//                    stopSignSetupPanel.getStopDistToIntersection());
-            simSetup.setNumOfColumns(stopSignSetupPanel.getNumOfColumns());
-            simSetup.setNumOfRows(stopSignSetupPanel.getNumOfRows());
-            simSetup.setLanesPerRoad(stopSignSetupPanel.getLanesPerRoad());
+//                    rimStopSignSetupPanel.getStopDistToIntersection());
+            simSetup.setNumOfColumns(rimStopSignSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(rimStopSignSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(rimStopSignSetupPanel.getLanesPerRoad());
             simSetup.setIsStopSignMode(true);
-            if(stopSignSetupPanel.uploadTrafficSchedule != null) {
+            if(rimStopSignSetupPanel.uploadTrafficSchedule != null) {
 
-                stopSignSetupPanel.uploadTrafficSchedule = new File(stopSignSetupPanel.uploadTrafficScheduleTextbox.getText());
-                simSetup.setUploadTrafficSchedule(stopSignSetupPanel.uploadTrafficSchedule);
+                rimStopSignSetupPanel.uploadTrafficSchedule = new File(rimStopSignSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(rimStopSignSetupPanel.uploadTrafficSchedule);
 
 
             } else {
-                stopSignSetupPanel.uploadTrafficSchedule = null;
-                simSetup.setUploadTrafficSchedule(stopSignSetupPanel.uploadTrafficSchedule);
+                rimStopSignSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(rimStopSignSetupPanel.uploadTrafficSchedule);
             }
             return simSetup;
         } else if (comboBox.getSelectedIndex() == 2) {
-            NoProtocolSimSetup simSetup = new NoProtocolSimSetup(this.rimSimSetup);
-            simSetup.setTrafficLevel(noProtocolSetupPanel.getTrafficRate());
-            simSetup.setRoundaboutDiameter(noProtocolSetupPanel.getRoundaboutDiameter());
-            simSetup.setLaneSpeedLimit(noProtocolSetupPanel.getLaneSpeedLimit());
-            simSetup.setRoundaboutSpeedLimit(noProtocolSetupPanel.getRoundaboutSpeedLimit());
+            RIMOptimalSimSetup simSetup = new RIMOptimalSimSetup(this.rimSimSetup);
+            simSetup.setTrafficLevel(rimOptimalProtocolSetupPanel.getTrafficRate());
+            simSetup.setRoundaboutDiameter(rimOptimalProtocolSetupPanel.getRoundaboutDiameter());
+            simSetup.setLaneSpeedLimit(rimOptimalProtocolSetupPanel.getLaneSpeedLimit());
+            simSetup.setRoundaboutSpeedLimit(rimOptimalProtocolSetupPanel.getRoundaboutSpeedLimit());
 //            simSetup.setStopDistBeforeIntersection(
-//                    noProtocolSetupPanel.getStopDistToIntersection());
-            simSetup.setNumOfColumns(noProtocolSetupPanel.getNumOfColumns());
-            simSetup.setNumOfRows(noProtocolSetupPanel.getNumOfRows());
-            simSetup.setLanesPerRoad(noProtocolSetupPanel.getLanesPerRoad());
-            if(noProtocolSetupPanel.uploadTrafficSchedule != null) {
+//                    rimOptimalProtocolSetupPanel.getStopDistToIntersection());
+            simSetup.setNumOfColumns(rimOptimalProtocolSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(rimOptimalProtocolSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(rimOptimalProtocolSetupPanel.getLanesPerRoad());
+            if(rimOptimalProtocolSetupPanel.uploadTrafficSchedule != null) {
 
-                noProtocolSetupPanel.uploadTrafficSchedule = new File(noProtocolSetupPanel.uploadTrafficScheduleTextbox.getText());
-                simSetup.setUploadTrafficSchedule(noProtocolSetupPanel.uploadTrafficSchedule);
+                rimOptimalProtocolSetupPanel.uploadTrafficSchedule = new File(rimOptimalProtocolSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(rimOptimalProtocolSetupPanel.uploadTrafficSchedule);
 
 
             } else {
-                noProtocolSetupPanel.uploadTrafficSchedule = null;
-                simSetup.setUploadTrafficSchedule(noProtocolSetupPanel.uploadTrafficSchedule);
+                rimOptimalProtocolSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(rimOptimalProtocolSetupPanel.uploadTrafficSchedule);
             }
             return simSetup;
         }else if(comboBox.getSelectedIndex() == 3){
-            AIMCrossIntersectionSimSetup simSetup = new AIMCrossIntersectionSimSetup(this.aimSimSetup);
-            simSetup.setTrafficLevel(aimCrossIntersectionSetupPanel.getTrafficRate());
-            simSetup.setSpeedLimit(aimCrossIntersectionSetupPanel.getSpeedLimit());
+            AIMCrossSimSetup simSetup = new AIMCrossSimSetup(this.aimSimSetup);
+            simSetup.setTrafficLevel(aimCrossSetupPanel.getTrafficRate());
+            simSetup.setSpeedLimit(aimCrossSetupPanel.getSpeedLimit());
             simSetup.setStopDistBeforeIntersection(
-                    aimCrossIntersectionSetupPanel.getStopDistToIntersection());
-            simSetup.setNumOfColumns(aimCrossIntersectionSetupPanel.getNumOfColumns());
-            simSetup.setNumOfRows(aimCrossIntersectionSetupPanel.getNumOfRows());
-            simSetup.setLanesPerRoad(aimCrossIntersectionSetupPanel.getLanesPerRoad());
-            if(aimCrossIntersectionSetupPanel.uploadTrafficSchedule != null) {
+                    aimCrossSetupPanel.getStopDistToIntersection());
+            simSetup.setNumOfColumns(aimCrossSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(aimCrossSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(aimCrossSetupPanel.getLanesPerRoad());
+            if(aimCrossSetupPanel.uploadTrafficSchedule != null) {
 
-                aimCrossIntersectionSetupPanel.uploadTrafficSchedule = new File(aimCrossIntersectionSetupPanel.uploadTrafficScheduleTextbox.getText());
-                simSetup.setUploadTrafficSchedule(aimCrossIntersectionSetupPanel.uploadTrafficSchedule);
+                aimCrossSetupPanel.uploadTrafficSchedule = new File(aimCrossSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(aimCrossSetupPanel.uploadTrafficSchedule);
 
 
             } else {
-                aimCrossIntersectionSetupPanel.uploadTrafficSchedule = null;
-                simSetup.setUploadTrafficSchedule(aimCrossIntersectionSetupPanel.uploadTrafficSchedule);
+                aimCrossSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(aimCrossSetupPanel.uploadTrafficSchedule);
+            }
+            return simSetup;
+
+        } else if(comboBox.getSelectedIndex() == 4){
+            AIMCrossOptimalSimSetup simSetup = new AIMCrossOptimalSimSetup(this.aimSimSetup);
+            simSetup.setTrafficLevel(aimCrossOptimalSetupPanel.getTrafficRate());
+            simSetup.setSpeedLimit(aimCrossOptimalSetupPanel.getSpeedLimit());
+            simSetup.setStopDistBeforeIntersection(
+                    aimCrossOptimalSetupPanel.getStopDistToIntersection());
+            simSetup.setNumOfColumns(aimCrossOptimalSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(aimCrossOptimalSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(aimCrossOptimalSetupPanel.getLanesPerRoad());
+            if(aimCrossOptimalSetupPanel.uploadTrafficSchedule != null) {
+
+                aimCrossOptimalSetupPanel.uploadTrafficSchedule = new File(aimCrossOptimalSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(aimCrossOptimalSetupPanel.uploadTrafficSchedule);
+
+
+            } else {
+                aimCrossOptimalSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(aimCrossOptimalSetupPanel.uploadTrafficSchedule);
+            }
+            return simSetup;
+
+        } else if(comboBox.getSelectedIndex() == 5){
+            AIMCrossSimSetup simSetup = new AIMCrossSimSetup(this.aimSimSetup);
+            simSetup.setTrafficLevel(aimCrossStopSignSetupPanel.getTrafficRate());
+            simSetup.setSpeedLimit(aimCrossStopSignSetupPanel.getSpeedLimit());
+            simSetup.setNumOfColumns(aimCrossStopSignSetupPanel.getNumOfColumns());
+            simSetup.setNumOfRows(aimCrossStopSignSetupPanel.getNumOfRows());
+            simSetup.setLanesPerRoad(aimCrossStopSignSetupPanel.getLanesPerRoad());
+            simSetup.setStopDistBeforeIntersection(
+                    aimCrossStopSignSetupPanel.getStopDistToIntersection());
+            simSetup.setIsStopSignMode(true);
+            if(aimCrossStopSignSetupPanel.uploadTrafficSchedule != null) {
+
+                aimCrossStopSignSetupPanel.uploadTrafficSchedule = new File(aimCrossStopSignSetupPanel.uploadTrafficScheduleTextbox.getText());
+                simSetup.setUploadTrafficSchedule(aimCrossStopSignSetupPanel.uploadTrafficSchedule);
+
+
+            } else {
+                aimCrossStopSignSetupPanel.uploadTrafficSchedule = null;
+                simSetup.setUploadTrafficSchedule(aimCrossStopSignSetupPanel.uploadTrafficSchedule);
             }
             return simSetup;
 
@@ -203,5 +259,13 @@ public class RIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     @Override
     public void itemStateChanged(ItemEvent evt) {
         cardLayout.show(cards, (String)evt.getItem());
+    }
+
+    public BasicSimSetup getRimSimSetup(){
+        return this.rimSimSetup;
+    }
+
+    public aim4.sim.setup.aim.BasicSimSetup getAimSimSetup(){
+        return this.aimSimSetup;
     }
 }

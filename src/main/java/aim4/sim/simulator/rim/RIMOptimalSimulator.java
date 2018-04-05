@@ -36,7 +36,7 @@ import java.util.Queue;
 /**
  * The no protocol simulator for rim.
  */
-public class NoProtocolSimulator implements RIMSimulator {
+public class RIMOptimalSimulator implements RIMSimulator {
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -44,7 +44,7 @@ public class NoProtocolSimulator implements RIMSimulator {
     /**
      * The result of a simulation step.
      */
-    public static class NoProtocolSimulatorSimStepResult implements SimStepResult {
+    public static class RIMOptimalSimulatorSimStepResult implements SimStepResult {
 
         /** The VIN of the completed vehicles in this time step */
         List<Integer> completedVINs;
@@ -54,7 +54,7 @@ public class NoProtocolSimulator implements RIMSimulator {
          *
          * @param completedVINs  the VINs of completed vehicles.
          */
-        public NoProtocolSimulatorSimStepResult(List<Integer> completedVINs) {
+        public RIMOptimalSimulatorSimStepResult(List<Integer> completedVINs) {
             this.completedVINs = completedVINs;
         }
 
@@ -100,10 +100,10 @@ public class NoProtocolSimulator implements RIMSimulator {
      *
      * @param basicRIMIntersectionMap             the map of the simulation
      */
-    public NoProtocolSimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
+    public RIMOptimalSimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
-        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
+        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles, 0);
         this.vehiclesRecord = new ArrayList<VehicleResult>();
 
         currentTime = 0.0;
@@ -123,7 +123,7 @@ public class NoProtocolSimulator implements RIMSimulator {
      * {@inheritDoc}
      */
     @Override
-    public synchronized NoProtocolSimulatorSimStepResult step(double timeStep) {
+    public synchronized RIMOptimalSimulatorSimStepResult step(double timeStep) {
         if (Debug.PRINT_SIMULATOR_STAGE) {
             System.err.printf("--------------------------------------\n");
             System.err.printf("------SIM:spawnVehicles---------------\n");
@@ -149,9 +149,6 @@ public class NoProtocolSimulator implements RIMSimulator {
             System.err.printf("------SIM:moveVehicles---------------\n");
         }
         moveVehicles(timeStep);
-        if (Debug.PRINT_SIMULATOR_STAGE) {
-            System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
-        }
         if (Debug.PRINT_SIMULATOR_STAGE){
             System.err.printf("------SIM:calculateCompletedVehicles---------------\n");
         }
@@ -168,7 +165,7 @@ public class NoProtocolSimulator implements RIMSimulator {
         // debug
         checkClocks();
 
-        return new NoProtocolSimulatorSimStepResult(completedVINs);
+        return new RIMOptimalSimulatorSimStepResult(completedVINs);
     }
 
     /////////////////////////////////
@@ -918,6 +915,10 @@ public class NoProtocolSimulator implements RIMSimulator {
 
     public Result produceResult() {
         return new Result(vehiclesRecord);
+    }
+
+    public int getNoOfVehiclesWhichCouldNotBeSpawned(){
+        return spawnHelper.getNumOfVehicleWhichCouldNotBeSpawned();
     }
     /////////////////////////////////
     // DEBUG
