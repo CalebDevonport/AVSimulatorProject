@@ -1,4 +1,4 @@
-package aim4;
+package aim4.util.rimTestApplets;
 
 import aim4.config.Constants;
 import aim4.config.Debug;

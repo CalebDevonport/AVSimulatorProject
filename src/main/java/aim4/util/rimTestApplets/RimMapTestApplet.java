@@ -1,4 +1,4 @@
-package aim4;
+package aim4.util.rimTestApplets;
 
 import aim4.map.Road;
 import aim4.map.lane.ArcSegmentLane;

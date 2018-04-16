@@ -103,7 +103,7 @@ public class RIMOptimalSimulator implements RIMSimulator {
     public RIMOptimalSimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
-        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles, 0);
+        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
         this.vehiclesRecord = new ArrayList<VehicleResult>();
 
         currentTime = 0.0;
@@ -919,6 +919,10 @@ public class RIMOptimalSimulator implements RIMSimulator {
 
     public int getNoOfVehiclesWhichCouldNotBeSpawned(){
         return spawnHelper.getNumOfVehicleWhichCouldNotBeSpawned();
+    }
+
+    public int getNoOfVehiclesSpawned(){
+        return spawnHelper.getNumOfVehiclesSpawned();
     }
     /////////////////////////////////
     // DEBUG

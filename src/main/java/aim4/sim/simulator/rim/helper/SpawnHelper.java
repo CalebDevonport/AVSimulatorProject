@@ -24,11 +24,13 @@ public class SpawnHelper {
     private BasicRIMIntersectionMap map;
     private Map<Integer, RIMVehicleSimModel> vinToVehicles;
     private int numOfVehicleWhichCouldNotBeSpawned;
+    private int numOfVehiclesSpawned;
 
-    public SpawnHelper(BasicRIMIntersectionMap map, Map<Integer, RIMVehicleSimModel> vinToVehicles, int numOfVehicleWhichCouldNotBeSpawned) {
+    public SpawnHelper(BasicRIMIntersectionMap map, Map<Integer, RIMVehicleSimModel> vinToVehicles) {
         this.map = map;
         this.vinToVehicles = vinToVehicles;
-        this.numOfVehicleWhichCouldNotBeSpawned = numOfVehicleWhichCouldNotBeSpawned;
+        this.numOfVehicleWhichCouldNotBeSpawned = 0;
+        this.numOfVehiclesSpawned = 0;
     }
 
     /**
@@ -65,7 +67,11 @@ public class SpawnHelper {
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
                                 spawnedVehicles.add(vehicle);
+                                numOfVehiclesSpawned++;
                             } // otherwise there is not enough space to slow down so don't spawn this vehicle
+                            else {
+                                numOfVehicleWhichCouldNotBeSpawned++;
+                            }
                         }
                         // Otherwise this is the first time we spawn vehicles
                         else {
@@ -73,9 +79,12 @@ public class SpawnHelper {
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
                             spawnedVehicles.add(vehicle);
+                            numOfVehiclesSpawned++;
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }
+                } else {
+                    numOfVehicleWhichCouldNotBeSpawned++;
                 }
             }
         }
@@ -113,6 +122,7 @@ public class SpawnHelper {
                                 RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
+                                numOfVehiclesSpawned++;
                             } else {
                                 numOfVehicleWhichCouldNotBeSpawned++;
                             }
@@ -122,6 +132,7 @@ public class SpawnHelper {
                             RIMVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec);
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            numOfVehiclesSpawned++;
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }
@@ -267,5 +278,9 @@ public class SpawnHelper {
 
     public int getNumOfVehicleWhichCouldNotBeSpawned() {
         return numOfVehicleWhichCouldNotBeSpawned;
+    }
+
+    public int getNumOfVehiclesSpawned() {
+        return numOfVehiclesSpawned;
     }
 }
