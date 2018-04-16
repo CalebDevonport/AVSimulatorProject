@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1d6a22a0-2aef-4099-920d-da5605b63455" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" afterPath="$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java" />
+      <change beforePath="$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,8 +36,8 @@
       <file leaf-file-name="RimIntersectionMap.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="26" column="3" lean-forward="false" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
+            <state relative-caret-position="400">
+              <caret line="28" column="37" lean-forward="true" selection-start-line="28" selection-start-column="37" selection-end-line="28" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -502,6 +502,24 @@
               <item name="AVSimulatorProject" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="aim4" type="462c0819:PsiDirectoryNode" />
+              <item name="rim" type="462c0819:PsiDirectoryNode" />
+              <item name="driver" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AIM4" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AVSimulatorProject" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="aim4" type="462c0819:PsiDirectoryNode" />
+              <item name="rim" type="462c0819:PsiDirectoryNode" />
+              <item name="im" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AIM4" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AVSimulatorProject" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="results_generation" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -908,13 +926,6 @@
       <option name="presentableId" value="Default" />
       <updated>1516208292727</updated>
     </task>
-    <task id="LOCAL-00008" summary="Complete the arc segment lane (including shape based on line lanes)">
-      <created>1517576972085</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1517576972085</updated>
-    </task>
     <task id="LOCAL-00009" summary="Add a map for RIM and spawn points. Introduce the idea of a road to be constructed of multiple continuous lanes.">
       <created>1517697275882</created>
       <option name="number" value="00009" />
@@ -1251,7 +1262,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523917185991</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Final commit">
+      <created>1523917291736</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1523917291736</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1455,30 +1473,6 @@
           <option name="timeStamp" value="703" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java</url>
-          <line>106</line>
-          <properties />
-          <option name="timeStamp" value="741" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java</url>
-          <line>110</line>
-          <properties />
-          <option name="timeStamp" value="789" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java</url>
-          <line>215</line>
-          <properties />
-          <option name="timeStamp" value="797" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java</url>
-          <line>331</line>
-          <properties />
-          <option name="timeStamp" value="804" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/aim4/driver/aim/coordinator/V2ICoordinator.java</url>
           <line>1337</line>
           <properties />
@@ -1579,12 +1573,6 @@
           <line>700</line>
           <properties />
           <option name="timeStamp" value="1464" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/aim4/rim/driver/V2ICoordinatorTests.java</url>
-          <line>195</line>
-          <properties />
-          <option name="timeStamp" value="1479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/aim4/rim/map/RimIntersectionMapTests.java</url>
@@ -2062,8 +2050,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/aim4/map/rim/RimIntersectionMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="26" column="3" lean-forward="false" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
+        <state relative-caret-position="400">
+          <caret line="28" column="37" lean-forward="true" selection-start-line="28" selection-start-column="37" selection-end-line="28" selection-end-column="37" />
           <folding />
         </state>
       </provider>
