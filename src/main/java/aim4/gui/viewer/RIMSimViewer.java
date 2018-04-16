@@ -33,7 +33,7 @@ public class RIMSimViewer extends SimViewer{
                 new BasicSimSetup(
                 1, // columns
                 1, // rows
-                45.0, // roundabout diameter
+                30.0, // roundabout diameter
                 20.0, // entrance & exit circle radius
                 4, // split factor
                 3.014, // lane width

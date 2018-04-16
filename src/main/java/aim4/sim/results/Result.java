@@ -40,7 +40,8 @@ public class Result implements SimulatorResult{
         return completedVehicles;
     }
 
-    public String produceRIMVsRIMOptimalCSVString(String rimProtocol, Result rimProtocolResult, String optimalProtocol, Result optimalProtocolResult) {
+    public String produceRIMVsRIMOptimalCSVString(String rimProtocol, Result rimProtocolResult, int rimNumOfVehiclesWhichCouldNotBeSpawned, int rimNumOfVehiclesSpawned,
+                                                  String optimalProtocol, Result optimalProtocolResult, int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned, int rimOptimalNumOfVehiclesSpawned) {
         StringBuilder sb = new StringBuilder();
         //Global Stats
         //Append the average delay
@@ -51,7 +52,8 @@ public class Result implements SimulatorResult{
         //Append the throughput and completed vehicles
         sb.append(produceRIMVsRIMOptimalStatsCSVHeader(rimProtocol,optimalProtocol));
         sb.append('\n');
-        sb.append(produceRIMVsRIMOptimalGlobalStatsCSV(rimProtocolResult,optimalProtocolResult));
+        sb.append(produceRIMVsRIMOptimalGlobalStatsCSV(rimProtocolResult,rimNumOfVehiclesWhichCouldNotBeSpawned, rimNumOfVehiclesSpawned,
+                optimalProtocolResult,rimOptimalNumOfVehiclesWhichCouldNotBeSpawned, rimOptimalNumOfVehiclesSpawned));
         sb.append('\n');
         sb.append('\n');
         //Append Vehicles data
@@ -63,12 +65,12 @@ public class Result implements SimulatorResult{
         return sb.toString();
     }
 
-    public String produceChosenDiameterCSVString(String rimProtocol, Result rimProtocolResult, int rimNumOfVehiclesWhichCouldNotBeSpawned,
-                                                 String rimOptimalProtocol, Result rimOptimalRimProtocolResult, int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                                                 String rimStopSignProtocol, Result rimStopSignProtocolResult, int rimStopSignNumOfVehiclesWhichCouldNotBeSpawned,
-                                                 String aimCrossProtocol, Result aimCrossProtocolResult, int aimNumOfVehiclesWhichCouldNotBeSpawned,
-                                                 String aimCrossOptimalProtocol, Result aimCrossOptimalProtocolResult, int aimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                                                 String aimCrossStopSignProtocol, Result aimCrossStopSignProtocolResult, int aimStopSignNumOfVehiclesWhichCouldNotBeSpawned) {
+    public String produceChosenDiameterCSVString(String rimProtocol, Result rimProtocolResult, int rimNumOfVehiclesWhichCouldNotBeSpawned, int rimNumOfVehiclesSpawned,
+                                                 String rimOptimalProtocol, Result rimOptimalRimProtocolResult, int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned, int rimOptimalNumOfVehiclesSpawned,
+                                                 String rimStopSignProtocol, Result rimStopSignProtocolResult, int rimStopSignNumOfVehiclesWhichCouldNotBeSpawned, int rimStopSignNumOfVehiclesSpawned,
+                                                 String aimCrossProtocol, Result aimCrossProtocolResult, int aimNumOfVehiclesWhichCouldNotBeSpawned, int aimNumOfVehiclesSpawned,
+                                                 String aimCrossOptimalProtocol, Result aimCrossOptimalProtocolResult, int aimOptimalNumOfVehiclesWhichCouldNotBeSpawned, int aimOptimalNumOfVehiclesSpawned,
+                                                 String aimCrossStopSignProtocol, Result aimCrossStopSignProtocolResult, int aimStopSignNumOfVehiclesWhichCouldNotBeSpawned, int aimStopSignNumOfVehiclesSpawned) {
         StringBuilder sb = new StringBuilder();
         //Global Stats
         //Append the average delay
@@ -95,12 +97,12 @@ public class Result implements SimulatorResult{
         //Append the completed vehicles and no. of vehicles which could not be spawned
         sb.append(produceChosenDiameterGlobalStatsCSVHeader(rimProtocol,rimOptimalProtocol,rimStopSignProtocol,aimCrossProtocol,aimCrossOptimalProtocol,aimCrossStopSignProtocol));
         sb.append('\n');
-        sb.append(produceChosenDiameterGlobalStatsCSV(rimProtocolResult, rimNumOfVehiclesWhichCouldNotBeSpawned,
-                rimOptimalRimProtocolResult, rimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                rimStopSignProtocolResult, rimStopSignNumOfVehiclesWhichCouldNotBeSpawned,
-                aimCrossProtocolResult, aimNumOfVehiclesWhichCouldNotBeSpawned,
-                aimCrossOptimalProtocolResult, aimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                aimCrossStopSignProtocolResult, aimStopSignNumOfVehiclesWhichCouldNotBeSpawned));
+        sb.append(produceChosenDiameterGlobalStatsCSV(rimProtocolResult, rimNumOfVehiclesWhichCouldNotBeSpawned, rimNumOfVehiclesSpawned,
+                rimOptimalRimProtocolResult, rimOptimalNumOfVehiclesWhichCouldNotBeSpawned, rimOptimalNumOfVehiclesSpawned,
+                rimStopSignProtocolResult, rimStopSignNumOfVehiclesWhichCouldNotBeSpawned, rimStopSignNumOfVehiclesSpawned,
+                aimCrossProtocolResult, aimNumOfVehiclesWhichCouldNotBeSpawned, aimNumOfVehiclesSpawned,
+                aimCrossOptimalProtocolResult, aimOptimalNumOfVehiclesWhichCouldNotBeSpawned, aimOptimalNumOfVehiclesSpawned,
+                aimCrossStopSignProtocolResult, aimStopSignNumOfVehiclesWhichCouldNotBeSpawned, aimStopSignNumOfVehiclesSpawned));
         sb.append('\n');
         sb.append('\n');
 
@@ -143,14 +145,18 @@ public class Result implements SimulatorResult{
 
     public static String produceRIMVsRIMOptimalStatsCSVHeader(String firstProtocol, String secondProtocol) {
         StringBuilder sb = new StringBuilder();
-        sb.append(firstProtocol + "Throughput" );
+        sb.append(firstProtocol + " Total vehicles spawned" );
         sb.append(',');
-        sb.append(firstProtocol + "Completed Vehicles");
+        sb.append(firstProtocol + " Completed Vehicles" );
+        sb.append(',');
+        sb.append(firstProtocol + " Remained Vehicles");
         sb.append(',');
         sb.append(',');
-        sb.append(secondProtocol + "Throughput" );
+        sb.append(secondProtocol +" Total vehicles spawned");
         sb.append(',');
-        sb.append(secondProtocol + "Completed Vehicles");
+        sb.append(secondProtocol +" Completed Vehicles" );
+        sb.append(',');
+        sb.append(secondProtocol + " Remained Vehicles");
 
         return sb.toString();
     }
@@ -158,15 +164,21 @@ public class Result implements SimulatorResult{
     public static String produceChosenDiameterGlobalStatsCSVHeader(String rimProtocol, String rimOptimalProtocol, String rimStopSignProtocol,
                                                                    String aimCrossProtocol, String aimCrossOptimalProtocol, String aimCrossStopSignProtocol) {
         StringBuilder sb = new StringBuilder();
+        sb.append(rimProtocol + " Total vehicles spawned");
+        sb.append(',');
         sb.append(rimProtocol + " Completed Vehicles");
         sb.append(',');
         sb.append(rimProtocol + " Remained Vehicles" );
         sb.append(',');
         sb.append(',');
+        sb.append(rimOptimalProtocol + " Total vehicles spawned");
+        sb.append(',');
         sb.append(rimOptimalProtocol + " Completed Vehicles");
         sb.append(',');
         sb.append(rimOptimalProtocol + " Remained Vehicles" );
         sb.append(',');
+        sb.append(',');
+        sb.append(rimStopSignProtocol + " Total vehicles spawned");
         sb.append(',');
         sb.append(rimStopSignProtocol + " Completed Vehicles" );
         sb.append(',');
@@ -174,15 +186,21 @@ public class Result implements SimulatorResult{
         sb.append(',');
         sb.append(',');
         sb.append(',');
+        sb.append(aimCrossProtocol + " Total vehicles spawned");
+        sb.append(',');
         sb.append(aimCrossProtocol + " Completed Vehicles");
         sb.append(',');
         sb.append(aimCrossProtocol + " Remained Vehicles");
         sb.append(',');
         sb.append(',');
+        sb.append(aimCrossOptimalProtocol + " Total vehicles spawned");
+        sb.append(',');
         sb.append(aimCrossOptimalProtocol + " Completed Vehicles" );
         sb.append(',');
         sb.append(aimCrossOptimalProtocol + " Remained Vehicles");
         sb.append(',');
+        sb.append(',');
+        sb.append(aimCrossStopSignProtocol + " Total vehicles spawned");
         sb.append(',');
         sb.append(aimCrossStopSignProtocol + " Completed Vehicles" );
         sb.append(',');
@@ -191,34 +209,45 @@ public class Result implements SimulatorResult{
         return sb.toString();
     }
 
-    public String produceRIMVsRIMOptimalGlobalStatsCSV(Result firstProtocolResult, Result secondProtocolResult) {
+    public String produceRIMVsRIMOptimalGlobalStatsCSV(Result firstProtocolResult,int rimRemained,int rimTotal,
+                                                       Result secondProtocolResult, int optimalRemained, int optimalTotal) {
         StringBuilder sb = new StringBuilder();
-        sb.append(firstProtocolResult.getThroughput());
+        sb.append(rimTotal);
         sb.append(',');
         sb.append(firstProtocolResult.getCompletedVehicles());
         sb.append(',');
+        sb.append(rimRemained);
         sb.append(',');
-        sb.append(secondProtocolResult.getThroughput());
+        sb.append(',');
+        sb.append(optimalTotal);
         sb.append(',');
         sb.append(secondProtocolResult.getCompletedVehicles());
+        sb.append(',');
+        sb.append(optimalRemained);
 
         return sb.toString();
     }
 
-    public String produceChosenDiameterGlobalStatsCSV(Result rimProtocolResult, int rimRemained, Result rimOptimalProtocolResult, int rimOptimalRemained,
-                                                      Result rimStopSignProtocolResult, int rimStopSignRemained,
-                                                      Result aimCrossProtocolResult, int aimRemained, Result aimCrossOptimalProtocolResult, int aimOptimalRemained,
-                                                      Result aimCrossStopSignsProtocolResult, int aimStopSignsRemained) {
+    public String produceChosenDiameterGlobalStatsCSV(Result rimProtocolResult, int rimRemained, int rimTotal, Result rimOptimalProtocolResult, int rimOptimalRemained, int rimOptimalTotal,
+                                                      Result rimStopSignProtocolResult, int rimStopSignRemained, int rimStopSignTotal,
+                                                      Result aimCrossProtocolResult, int aimRemained, int aimTotal, Result aimCrossOptimalProtocolResult, int aimOptimalRemained, int aimOptimalTotal,
+                                                      Result aimCrossStopSignsProtocolResult, int aimStopSignsRemained, int aimStopSignTotal) {
         StringBuilder sb = new StringBuilder();
+        sb.append(rimTotal);
+        sb.append(',');
         sb.append(rimProtocolResult.getCompletedVehicles());
         sb.append(',');
         sb.append(rimRemained);
         sb.append(',');
         sb.append(',');
+        sb.append(rimOptimalTotal);
+        sb.append(',');
         sb.append(rimOptimalProtocolResult.getCompletedVehicles());
         sb.append(',');
         sb.append(rimOptimalRemained);
         sb.append(',');
+        sb.append(',');
+        sb.append(rimStopSignTotal);
         sb.append(',');
         sb.append(rimStopSignProtocolResult.getCompletedVehicles());
         sb.append(',');
@@ -226,15 +255,21 @@ public class Result implements SimulatorResult{
         sb.append(',');
         sb.append(',');
         sb.append(',');
+        sb.append(aimTotal);
+        sb.append(',');
         sb.append(aimCrossProtocolResult.getCompletedVehicles());
         sb.append(',');
         sb.append(aimRemained);
         sb.append(',');
         sb.append(',');
+        sb.append(aimOptimalTotal);
+        sb.append(',');
         sb.append(aimCrossOptimalProtocolResult.getCompletedVehicles());
         sb.append(',');
         sb.append(aimOptimalRemained);
         sb.append(',');
+        sb.append(',');
+        sb.append(aimStopSignTotal);
         sb.append(',');
         sb.append(aimCrossStopSignsProtocolResult.getCompletedVehicles());
         sb.append(',');
@@ -387,8 +422,7 @@ public class Result implements SimulatorResult{
 
     public String produceRIMVsRIMOptimalVehicleStatsCSV(Result firstProtocolResult, Result secondProtocolResult){
         StringBuilder sb = new StringBuilder();
-        for(VehicleResult vr : firstProtocolResult.getVehicleResults()){
-            int index = firstProtocolResult.getVehicleResults().indexOf(vr);
+        for(VehicleResult vr : firstProtocolResult.getVehicleResults()) {
             sb.append(vr.getVin());
             sb.append(',');
             sb.append(vr.getSpecType());
@@ -407,29 +441,49 @@ public class Result implements SimulatorResult{
             sb.append(',');
 
             VehicleResult matchingVehicle = null;
-            for (VehicleResult match: secondProtocolResult.getVehicleResults()){
-                if (Util.isDoubleEqual(vr.getStartTime(), match.getStartTime())){
+            for (VehicleResult match : secondProtocolResult.getVehicleResults()) {
+                if (Util.isDoubleEqual(vr.getStartTime(), match.getStartTime())) {
                     matchingVehicle = match;
                     break;
                 }
             }
-            sb.append(matchingVehicle.getVin());
-            sb.append(',');
-            sb.append(matchingVehicle.getSpecType());
-            sb.append(',');
-            sb.append(matchingVehicle.getStartTime());
-            sb.append(',');
-            sb.append(matchingVehicle.getFinishTime());
-            sb.append(',');
-            sb.append(matchingVehicle.getFinalVelocity());
-            sb.append(',');
-            sb.append(matchingVehicle.getMaxVelocity());
-            sb.append(',');
-            sb.append(matchingVehicle.getMinVelocity());
-            sb.append(',');
-            sb.append(',');
-            sb.append(vr.getFinishTime() - matchingVehicle.getFinishTime());
-            sb.append('\n');
+            if (matchingVehicle != null) {
+                sb.append(matchingVehicle.getVin());
+                sb.append(',');
+                sb.append(matchingVehicle.getSpecType());
+                sb.append(',');
+                sb.append(matchingVehicle.getStartTime());
+                sb.append(',');
+                sb.append(matchingVehicle.getFinishTime());
+                sb.append(',');
+                sb.append(matchingVehicle.getFinalVelocity());
+                sb.append(',');
+                sb.append(matchingVehicle.getMaxVelocity());
+                sb.append(',');
+                sb.append(matchingVehicle.getMinVelocity());
+                sb.append(',');
+                sb.append(',');
+                sb.append(vr.getFinishTime() - matchingVehicle.getFinishTime());
+                sb.append('\n');
+            } else {
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append(',');
+                sb.append("N/A");
+                sb.append('\n');
+            }
         }
         return sb.toString();
     }
@@ -490,21 +544,40 @@ public class Result implements SimulatorResult{
                     break;
                 }
             }
-            sb.append(rimOptimalMatchingVehicle.getVin());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getSpecType());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getStartTime());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getFinishTime());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getFinalVelocity());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getMaxVelocity());
-            sb.append(',');
-            sb.append(rimOptimalMatchingVehicle.getMinVelocity());
-            sb.append(',');
-            sb.append(vr.getFinishTime() - rimOptimalMatchingVehicle.getFinishTime());
+            if (rimOptimalMatchingVehicle != null) {
+                sb.append(rimOptimalMatchingVehicle.getVin());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getSpecType());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getStartTime());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getFinishTime());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getFinalVelocity());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getMaxVelocity());
+                sb.append(',');
+                sb.append(rimOptimalMatchingVehicle.getMinVelocity());
+                sb.append(',');
+                sb.append(vr.getFinishTime() - rimOptimalMatchingVehicle.getFinishTime());
+            } else {
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+                sb.append(',');
+                sb.append("N/A");
+            }
+
             sb.append(',');
             sb.append(',');
             if (rimStopSignMatchingVehicle != null) {
@@ -522,7 +595,11 @@ public class Result implements SimulatorResult{
                 sb.append(',');
                 sb.append(rimStopSignMatchingVehicle.getMinVelocity());
                 sb.append(',');
-                sb.append(rimStopSignMatchingVehicle.getFinishTime() - rimOptimalMatchingVehicle.getFinishTime());
+                if (rimOptimalMatchingVehicle != null) {
+                    sb.append(rimStopSignMatchingVehicle.getFinishTime() - rimOptimalMatchingVehicle.getFinishTime());
+                } else {
+                    sb.append("N/A");
+                }
             } else {
                 sb.append("N/A");
                 sb.append(',');

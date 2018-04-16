@@ -31,26 +31,25 @@ public class CreateRIMResults {
     private static final double[] ROUNDABOUT_DIAMETER = {30.0, 35.0, 40.0, 45.0};
     private static final double CHOSEN_DIAMETER = 30.0;
     private static final double TIME_LIMIT = 1800;
-    private static final double LANE_SPEED_LIMIT = 15.0;
+    private static final double LANE_SPEED_LIMIT = 25.0;
     private static final double ROUNDABOUT_SPEED_LIMIT = 10.0;
     private static final double STOP_DISTANCE = 1.0;
 
     @Ignore
     public void createRatioTurnBasedSchedule_withTrafficVolumesCsv_savesJsons() {
 
-        for (int i = 0; i < 10; i++) {
-            String trafficLevelVolumeName = "traffic_volumes" + Integer.toString(VOLUMES[i]) + ".csv";
-            double timeLimit = TIME_LIMIT;
-            double laneSpeedLimit = LANE_SPEED_LIMIT;
-            double roundaboutSpeedLimit = ROUNDABOUT_SPEED_LIMIT;
-            for (int j = 0; j < 4; j++) {
-                double roundaboutDiameter = ROUNDABOUT_DIAMETER[j];
+        for (int i = 0; i < VOLUMES.length; i++) {
+            for (int repetition = 1; repetition <= 10; repetition++) {
+                String trafficLevelVolumeName = "traffic_volumes" + Integer.toString(VOLUMES[i]) + ".csv";
+                double timeLimit = TIME_LIMIT;
+                double laneSpeedLimit = LANE_SPEED_LIMIT;
+                double roundaboutSpeedLimit = ROUNDABOUT_SPEED_LIMIT;
                 JSONArray schedule = RimMapUtil.createRatioSpawnSchedule(
                         trafficLevelVolumeName,
                         timeLimit,
                         1,
                         1,
-                        roundaboutDiameter,
+                        CHOSEN_DIAMETER,
                         20,
                         4,
                         3.014,
@@ -60,7 +59,7 @@ public class CreateRIMResults {
                         0,
                         0);
                 try {
-                    saveJSON(schedule, VOLUMES[i]);
+                    saveJSON(schedule, VOLUMES[i], repetition);
                 } catch (IOException ex) {
                     String stackTraceMessage = "";
                     for (StackTraceElement line : ex.getStackTrace())
@@ -81,111 +80,129 @@ public class CreateRIMResults {
                     throw new RuntimeException(e1);
                 }
             }
-
         }
     }
 
     @Ignore
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
         //For every roundabout diameter
-        for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < 4; roundaboutDiameterIndex++) {
+        for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < ROUNDABOUT_DIAMETER.length; roundaboutDiameterIndex++) {
             StringBuilder sb = new StringBuilder();
             //Global Stats for the overall csv
             sb.append("Traffic Volume");
             sb.append(',');
+            sb.append("Repetition No.");
+            sb.append(',');
             sb.append("Average Delay");
             sb.append('\n');
             //For every traffic volume
-            for (int trafficVolumeIndex = 0; trafficVolumeIndex < 10; trafficVolumeIndex++) {
-                File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\" +
-                        Integer.toString(VOLUMES[trafficVolumeIndex]) +
-                        "_15.0ls_10.0rs_1800.0s_unbalanced.json");
-                RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
-                        1, // columns
-                        1, // rows
-                        ROUNDABOUT_DIAMETER[roundaboutDiameterIndex], // roundabout diameter
-                        20.0, // entrance & exit circle radius
-                        4, // split factor
-                        3.014, // lane width
-                        LANE_SPEED_LIMIT, // speed limit
-                        ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
-                        1, // lanes per road
-                        1, // median size
-                        150, // distance between
-                        0.28, // traffic level
-                        1.0 // stop distance before intersection
-                ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
-                        1, // rows
-                        4, // lane width
-                        LANE_SPEED_LIMIT, // speed limit
-                        1, // lanes per road
-                        1, // median size
-                        150, // distance between
-                        0.28, // traffic level
-                        1.0 // stop distance before intersection
-                ));
-                // Set up RIM Simulator
-                AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
-                rimProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
-                rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
-                rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
-                rimProtocolSimSetup.setNumOfColumns(1);
-                rimProtocolSimSetup.setNumOfRows(1);
-                rimProtocolSimSetup.setLanesPerRoad(1);
-                rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
+            for (int trafficVolumeIndex = 0; trafficVolumeIndex < VOLUMES.length; trafficVolumeIndex++) {
+                for (int repetition = 1; repetition <= 10; repetition++) {
+                    File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\volumes\\" +
+                            Integer.toString(VOLUMES[trafficVolumeIndex]) +
+                            "_"+Double.toString(LANE_SPEED_LIMIT)+"ls_10.0rs_1800.0s_unbalanced" + "_" +Integer.toString(repetition)+ ".json");
+                    RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
+                            1, // columns
+                            1, // rows
+                            ROUNDABOUT_DIAMETER[roundaboutDiameterIndex], // roundabout diameter
+                            20.0, // entrance & exit circle radius
+                            4, // split factor
+                            3.014, // lane width
+                            LANE_SPEED_LIMIT, // speed limit
+                            ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
+                            1, // lanes per road
+                            1, // median size
+                            150, // distance between
+                            0.28, // traffic level
+                            1.0 // stop distance before intersection
+                    ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
+                            1, // rows
+                            4, // lane width
+                            LANE_SPEED_LIMIT, // speed limit
+                            1, // lanes per road
+                            1, // median size
+                            150, // distance between
+                            0.28, // traffic level
+                            1.0 // stop distance before intersection
+                    ));
+                    // Set up RIM Simulator
+                    AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
+                    rimProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
+                    rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
+                    rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                    rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
+                    rimProtocolSimSetup.setNumOfColumns(1);
+                    rimProtocolSimSetup.setNumOfRows(1);
+                    rimProtocolSimSetup.setLanesPerRoad(1);
+                    rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-                // Set up rim Optimal policy Simulator
-                RIMOptimalSimSetup rimOptimalProtocolSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
-                rimOptimalProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
-                rimOptimalProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                rimOptimalProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
-                rimOptimalProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
-                rimOptimalProtocolSimSetup.setNumOfColumns(1);
-                rimOptimalProtocolSimSetup.setNumOfRows(1);
-                rimOptimalProtocolSimSetup.setLanesPerRoad(1);
-                rimOptimalProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
+                    // Set up rim Optimal policy Simulator
+                    RIMOptimalSimSetup rimOptimalProtocolSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
+                    rimOptimalProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
+                    rimOptimalProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
+                    rimOptimalProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                    rimOptimalProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
+                    rimOptimalProtocolSimSetup.setNumOfColumns(1);
+                    rimOptimalProtocolSimSetup.setNumOfRows(1);
+                    rimOptimalProtocolSimSetup.setLanesPerRoad(1);
+                    rimOptimalProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-                //Run the rim simulator and store the result
-                Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
-                while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                    rimSimSetup.step(SimConfig.TIME_STEP);
+                    //Run the rim simulator and store the result
+                    Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
+                    while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                        rimSimSetup.step(SimConfig.TIME_STEP);
+                    }
+                    Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
+                    int rimNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                    int rimNumOfVehiclesSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesSpawned();
+
+                    //Run the rim Optimal simulator and store the results
+                    Simulator optimalSimSetup = rimOptimalProtocolSimSetup.getSimulator();
+                    while (optimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                        optimalSimSetup.step(SimConfig.TIME_STEP);
+                    }
+                    Result optimalResult = ((RIMOptimalSimulator) optimalSimSetup).produceResult();
+                    int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNoOfVehiclesWhichCouldNotBeSpawned();
+                    int rimOptimalNumOfVehiclesSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNumOfVehiclesSpawned();
+
+                    // Combine the results in one csv
+                    Result combinedResult = new Result(null);
+                    String combinedCsv = combinedResult.produceRIMVsRIMOptimalCSVString(
+                            "RIM",
+                            rimResult,
+                            rimNumOfVehiclesWhichCouldNotBeSpawned,
+                            rimNumOfVehiclesSpawned,
+                            "RIM-Optimal",
+                            optimalResult,
+                            rimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
+                            rimOptimalNumOfVehiclesSpawned);
+                    List<String> csvResultAsList = new ArrayList<String>();
+                    csvResultAsList.add(combinedCsv);
+
+                    //Save
+                    final JFileChooser fc = new JFileChooser();
+                    fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
+                            + "_" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
+                            "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "s_1800.0s_unbalanced" + "_" +
+                            Integer.toString(repetition)+ ".csv"));
+                    File file = fc.getSelectedFile();
+                    try {
+                        Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
+                    } catch (IOException e1) {
+                        //nothing
+                    }
+
+                    //Append to final overall csv
+                    sb.append(Integer.toString(VOLUMES[trafficVolumeIndex]));
+                    sb.append(',');
+                    sb.append(Integer.toString(repetition));
+                    sb.append(',');
+                    sb.append(calculateAverageDelay(rimResult.getVehicleResults(), rimResult, optimalResult));
+                    sb.append('\n');
                 }
-                Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
-
-                //Run the rim Optimal simulator and store the results
-                Simulator optimalSimSetup = rimOptimalProtocolSimSetup.getSimulator();
-                while (optimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                    optimalSimSetup.step(SimConfig.TIME_STEP);
-                }
-                Result optimalResult = ((RIMOptimalSimulator) optimalSimSetup).produceResult();
-
-                // Combine the results in one csv
-                Result combinedResult = new Result(null);
-                String combinedCsv = combinedResult.produceRIMVsRIMOptimalCSVString("RIM", rimResult, "RIM-Optimal", optimalResult);
-                java.util.List<String> csvResultAsList = new ArrayList<String>();
-                csvResultAsList.add(combinedCsv);
-
-                //Save
-                final JFileChooser fc = new JFileChooser();
-                fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
-                        + "_" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
-                        "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"s_1800.0s_unbalanced" + ".csv"));
-                File file = fc.getSelectedFile();
-                try {
-                    Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
-                } catch (IOException e1) {
-                    //nothing
-                }
-
-                //Append to final overall csv
-                sb.append(Integer.toString(VOLUMES[trafficVolumeIndex]));
-                sb.append(',');
-                sb.append(calculateAverageDelay(rimResult.getVehicleResults(),rimResult, optimalResult));
-                sb.append('\n');
             }
             String finalCSV = sb.toString();
-            java.util.List<String> csvResultAsList = new ArrayList<String>();
+            List<String> csvResultAsList = new ArrayList<String>();
             csvResultAsList.add(finalCSV);
 
             //Save the overall csv
@@ -209,6 +226,8 @@ public class CreateRIMResults {
         //Global Stats for the overall csv
         sb.append("Traffic Volume");
         sb.append(',');
+        sb.append("Repetition");
+        sb.append(',');
         sb.append("(RIM vs. RIM-Optimal) Avg. Delay");
         sb.append(',');
         sb.append("(RIM-StopSign vs. RIM-Optimal) Avg. Delay");
@@ -217,194 +236,277 @@ public class CreateRIMResults {
         sb.append("(AIMCross vs. AIMCross-Optimal) Avg. Delay");
         sb.append(',');
         sb.append("(AIMCross-StopSign vs. AIMCross-Optimal) Avg. Delay");
+        sb.append(',');
+        sb.append(',');
+        sb.append("RIM Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("RIM Completed Vehicles");
+        sb.append(',');
+        sb.append("RIM Remained Vehicles");
+        sb.append(',');
+        sb.append("RIM-Optimal Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("RIM-Optimal Completed Vehicles");
+        sb.append(',');
+        sb.append("RIM-Optimal Remained Vehicles");
+        sb.append(',');
+        sb.append("RIM-StopSign Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("RIM-StopSign Completed Vehicles");
+        sb.append(',');
+        sb.append("RIM-StopSign Remained Vehicles");
+        sb.append(',');
+        sb.append("AIM Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("AIM Completed Vehicles");
+        sb.append(',');
+        sb.append("AIM Remained Vehicles");
+        sb.append(',');
+        sb.append("AIM-Optimal Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("AIM-Optimal Completed Vehicles");
+        sb.append(',');
+        sb.append("AIM-Optimal Remained Vehicles");
+        sb.append(',');
+        sb.append("AIM-StopSign Total Vehicles Spawned");
+        sb.append(',');
+        sb.append("AIM-StopSign Completed Vehicles");
+        sb.append(',');
+        sb.append("AIM-StopSign Remained Vehicles");
         sb.append('\n');
         // For every traffic volume and chosen diameter
-        for (int trafficVolumeIndex = 0; trafficVolumeIndex < 10; trafficVolumeIndex++) {
-            File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\" +
-                    Integer.toString(VOLUMES[trafficVolumeIndex]) +
-                    "_15.0ls_10.0rs_1800.0s_unbalanced.json");
-            RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
-                    1, // columns
-                    1, // rows
-                    CHOSEN_DIAMETER, // roundabout diameter
-                    20.0, // entrance & exit circle radius
-                    4, // split factor
-                    3.014, // lane width
-                    LANE_SPEED_LIMIT, // speed limit
-                    ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
-                    1, // lanes per road
-                    1, // median size
-                    150, // distance between
-                    0.28, // traffic level
-                    1.0 // stop distance before intersection
-            ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
-                    1, // rows
-                    4, // lane width
-                    LANE_SPEED_LIMIT, // speed limit
-                    1, // lanes per road
-                    1, // median size
-                    150, // distance between
-                    0.28, // traffic level
-                    1.0 // stop distance before intersection
-            ));
+        for (int trafficVolumeIndex = 0; trafficVolumeIndex < VOLUMES.length; trafficVolumeIndex++) {
+            for (int repetition = 1; repetition <= 10; repetition++) {
+                File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\volumes\\" +
+                        Integer.toString(VOLUMES[trafficVolumeIndex]) +
+                        "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_10.0rs_1800.0s_unbalanced_"+Integer.toString(repetition)+".json");
+                RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
+                        1, // columns
+                        1, // rows
+                        CHOSEN_DIAMETER, // roundabout diameter
+                        20.0, // entrance & exit circle radius
+                        4, // split factor
+                        3.014, // lane width
+                        LANE_SPEED_LIMIT, // speed limit
+                        ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
+                        1, // lanes per road
+                        1, // median size
+                        150, // distance between
+                        0.28, // traffic level
+                        1.0 // stop distance before intersection
+                ), new aim4.sim.setup.aim.BasicSimSetup(1, // columns
+                        1, // rows
+                        4, // lane width
+                        LANE_SPEED_LIMIT, // speed limit
+                        1, // lanes per road
+                        1, // median size
+                        150, // distance between
+                        0.28, // traffic level
+                        1.0 // stop distance before intersection
+                ));
 
-            // Set up RIM Simulator
-            AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
-            rimProtocolSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
-            rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-            rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
-            rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
-            rimProtocolSimSetup.setNumOfColumns(1);
-            rimProtocolSimSetup.setNumOfRows(1);
-            rimProtocolSimSetup.setLanesPerRoad(1);
-            rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
+                // Set up RIM Simulator
+                AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
+                rimProtocolSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
+                rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
+                rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
+                rimProtocolSimSetup.setNumOfColumns(1);
+                rimProtocolSimSetup.setNumOfRows(1);
+                rimProtocolSimSetup.setLanesPerRoad(1);
+                rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-            // Set up Optimal policy Simulator
-            RIMOptimalSimSetup rimOptimalSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
-            rimOptimalSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
-            rimOptimalSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-            rimOptimalSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
-            rimOptimalSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
-            rimOptimalSimSetup.setNumOfColumns(1);
-            rimOptimalSimSetup.setNumOfRows(1);
-            rimOptimalSimSetup.setLanesPerRoad(1);
-            rimOptimalSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
+                // Set up Optimal policy Simulator
+                RIMOptimalSimSetup rimOptimalSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
+                rimOptimalSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
+                rimOptimalSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
+                rimOptimalSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                rimOptimalSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
+                rimOptimalSimSetup.setNumOfColumns(1);
+                rimOptimalSimSetup.setNumOfRows(1);
+                rimOptimalSimSetup.setLanesPerRoad(1);
+                rimOptimalSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
 
-            // Set up Stop Sign simulator
-            AutoDriverOnlySimSetup stopSignSimulator = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
-            stopSignSimulator.setRoundaboutDiameter(CHOSEN_DIAMETER);
-            stopSignSimulator.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-            stopSignSimulator.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
-            stopSignSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
-            stopSignSimulator.setNumOfColumns(1);
-            stopSignSimulator.setNumOfRows(1);
-            stopSignSimulator.setLanesPerRoad(1);
-            stopSignSimulator.setIsStopSignMode(true);
-            stopSignSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+                // Set up Stop Sign simulator
+                AutoDriverOnlySimSetup stopSignSimulator = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
+                stopSignSimulator.setRoundaboutDiameter(CHOSEN_DIAMETER);
+                stopSignSimulator.setLaneSpeedLimit(LANE_SPEED_LIMIT);
+                stopSignSimulator.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                stopSignSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                stopSignSimulator.setNumOfColumns(1);
+                stopSignSimulator.setNumOfRows(1);
+                stopSignSimulator.setLanesPerRoad(1);
+                stopSignSimulator.setIsStopSignMode(true);
+                stopSignSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-            // Set up AIM Cross Intersection Simulator
-            AIMCrossSimSetup aimCrossIntersectionSimulator = new AIMCrossSimSetup(rimSimSetupPanel.getAimSimSetup());
-            aimCrossIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
-            aimCrossIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
-            aimCrossIntersectionSimulator.setNumOfColumns(1);
-            aimCrossIntersectionSimulator.setNumOfRows(1);
-            aimCrossIntersectionSimulator.setLanesPerRoad(1);
-            aimCrossIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+                // Set up AIM Cross Intersection Simulator
+                AIMCrossSimSetup aimCrossIntersectionSimulator = new AIMCrossSimSetup(rimSimSetupPanel.getAimSimSetup());
+                aimCrossIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
+                aimCrossIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                aimCrossIntersectionSimulator.setNumOfColumns(1);
+                aimCrossIntersectionSimulator.setNumOfRows(1);
+                aimCrossIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-            // Set up AIM Cross Optimal Intersection Simulator
-            AIMCrossOptimalSimSetup aimCrossOptimalIntersectionSimulator = new AIMCrossOptimalSimSetup(rimSimSetupPanel.getAimSimSetup());
-            aimCrossOptimalIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
-            aimCrossOptimalIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
-            aimCrossOptimalIntersectionSimulator.setNumOfColumns(1);
-            aimCrossOptimalIntersectionSimulator.setNumOfRows(1);
-            aimCrossOptimalIntersectionSimulator.setLanesPerRoad(1);
-            aimCrossOptimalIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+                // Set up AIM Cross Optimal Intersection Simulator
+                AIMCrossOptimalSimSetup aimCrossOptimalIntersectionSimulator = new AIMCrossOptimalSimSetup(rimSimSetupPanel.getAimSimSetup());
+                aimCrossOptimalIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
+                aimCrossOptimalIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                aimCrossOptimalIntersectionSimulator.setNumOfColumns(1);
+                aimCrossOptimalIntersectionSimulator.setNumOfRows(1);
+                aimCrossOptimalIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossOptimalIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
-            // Set up AIM Cross Stop Sign Intersection Simulator
-            AIMCrossSimSetup aimCrossStopSignIntersectionSimulator = new AIMCrossSimSetup(rimSimSetupPanel.getAimSimSetup());
-            aimCrossStopSignIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
-            aimCrossStopSignIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
-            aimCrossStopSignIntersectionSimulator.setNumOfColumns(1);
-            aimCrossStopSignIntersectionSimulator.setNumOfRows(1);
-            aimCrossStopSignIntersectionSimulator.setLanesPerRoad(1);
-            aimCrossStopSignIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
-            aimCrossStopSignIntersectionSimulator.setIsStopSignMode(true);
+                // Set up AIM Cross Stop Sign Intersection Simulator
+                AIMCrossSimSetup aimCrossStopSignIntersectionSimulator = new AIMCrossSimSetup(rimSimSetupPanel.getAimSimSetup());
+                aimCrossStopSignIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
+                aimCrossStopSignIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                aimCrossStopSignIntersectionSimulator.setNumOfColumns(1);
+                aimCrossStopSignIntersectionSimulator.setNumOfRows(1);
+                aimCrossStopSignIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossStopSignIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+                aimCrossStopSignIntersectionSimulator.setIsStopSignMode(true);
 
-            //Run RIM simulator
-            Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
-            while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                rimSimSetup.step(SimConfig.TIME_STEP);
+                //Run RIM simulator
+                Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
+                while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    rimSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
+                int rimNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                int rimNumOfVehiclesSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesSpawned();
+
+                //Run Optimal simulator
+                Simulator optimalSimSetup = rimOptimalSimSetup.getSimulator();
+                while (optimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    optimalSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result rimOptimalResult = ((RIMOptimalSimulator) optimalSimSetup).produceResult();
+                int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNoOfVehiclesWhichCouldNotBeSpawned();
+                int rimOptimalNumOfVehiclesSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNumOfVehiclesSpawned();
+
+                //Run Stop Sign simulator
+                Simulator stopSignSimSetup = stopSignSimulator.getSimulator();
+                while (stopSignSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    stopSignSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result rimStopSignResult = ((AutoDriverOnlySimulator) stopSignSimSetup).produceResult();
+                int rimStopSignNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) stopSignSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                int rimStopSignNumOfVehiclesSpawned = ((AutoDriverOnlySimulator) stopSignSimSetup).getNumOfVehiclesSpawned();
+
+                //Run AIM Cross simulator
+                Simulator aimCrossSimSetup = aimCrossIntersectionSimulator.getSimulator();
+                while (aimCrossSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    aimCrossSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result aimCrossResult = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).produceResult();
+                int aimNumOfVehiclesWhichCouldNotBeSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                int aimNumOfVehiclesSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).getNumOfVehiclesSpawned();
+
+                //Run AIM Cross optimal simulator
+                Simulator aimCrossOptimalSimSetup = aimCrossOptimalIntersectionSimulator.getSimulator();
+                while (aimCrossOptimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    aimCrossOptimalSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result aimCrossOptimalResult = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).produceResult();
+                int aimCrossOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                int aimCrossOptimalNumOfVehiclesSpawned = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).getNumOfVehiclesSpawned();
+
+                //Run AIM Cross simulator
+                Simulator aimCrossStopSignSimSetup = aimCrossStopSignIntersectionSimulator.getSimulator();
+                while (aimCrossStopSignSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    aimCrossStopSignSimSetup.step(SimConfig.TIME_STEP);
+                }
+                Result aimCrossStopSignResult = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossStopSignSimSetup).produceResult();
+                int aimStopSignNumOfVehiclesWhichCouldNotBeSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossStopSignSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                int aimStopSignNumOfVehiclesSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossStopSignSimSetup).getNumOfVehiclesSpawned();
+
+
+                Result combinedResult = new Result(null);
+                String combinedCsv = combinedResult.produceChosenDiameterCSVString(
+                        "RIM", rimResult, rimNumOfVehiclesWhichCouldNotBeSpawned, rimNumOfVehiclesSpawned,
+                        "RIM-Optimal", rimOptimalResult, rimOptimalNumOfVehiclesWhichCouldNotBeSpawned, rimOptimalNumOfVehiclesSpawned,
+                        "RIM-StopSign", rimStopSignResult, rimStopSignNumOfVehiclesWhichCouldNotBeSpawned, rimStopSignNumOfVehiclesSpawned,
+                        "AIMCross", aimCrossResult, aimNumOfVehiclesWhichCouldNotBeSpawned, aimNumOfVehiclesSpawned,
+                        "AIMCross-Optimal", aimCrossOptimalResult, aimCrossOptimalNumOfVehiclesWhichCouldNotBeSpawned, aimCrossOptimalNumOfVehiclesSpawned,
+                        "AIMCross-StopSign", aimCrossStopSignResult, aimStopSignNumOfVehiclesWhichCouldNotBeSpawned, aimStopSignNumOfVehiclesSpawned);
+                List<String> csvResultAsList = new ArrayList<String>();
+                csvResultAsList.add(combinedCsv);
+
+                //Save
+                final JFileChooser fc = new JFileChooser();
+                fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\further_entry_point\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
+                        + "_" + Double.toString(CHOSEN_DIAMETER) +
+                        "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_1800.0s_unbalanced_chosenDiameter_" +
+                        Integer.toString(repetition)+ ".csv"));
+                File file = fc.getSelectedFile();
+                try {
+                    Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
+                } catch (IOException e1) {
+                    //nothing
+                }
+
+                //Append to final csv
+                sb.append(Integer.toString(VOLUMES[trafficVolumeIndex]));
+                sb.append(',');
+                sb.append(Integer.toString(repetition));
+                sb.append(',');
+                sb.append(calculateAverageDelay(rimResult.getVehicleResults(), rimResult, rimOptimalResult));
+                sb.append(',');
+                sb.append(calculateAverageDelay(rimStopSignResult.getVehicleResults(), rimStopSignResult, rimOptimalResult));
+                sb.append(',');
+                sb.append(',');
+                sb.append(calculateAverageDelay(aimCrossResult.getVehicleResults(), aimCrossResult, aimCrossOptimalResult));
+                sb.append(',');
+                sb.append(calculateAverageDelay(aimCrossStopSignResult.getVehicleResults(), aimCrossStopSignResult, aimCrossOptimalResult));
+                sb.append(',');
+                sb.append(rimNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(rimResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(rimNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append(',');
+                sb.append(rimOptimalNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(rimOptimalResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(rimOptimalNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append(',');
+                sb.append(rimStopSignNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(rimStopSignResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(rimStopSignNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append(',');
+                sb.append(aimNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(aimCrossResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(aimNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append(',');
+                sb.append(aimCrossOptimalNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(aimCrossOptimalResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(aimCrossOptimalNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append(',');
+                sb.append(aimStopSignNumOfVehiclesSpawned);
+                sb.append(',');
+                sb.append(aimCrossStopSignResult.getCompletedVehicles());
+                sb.append(',');
+                sb.append(aimStopSignNumOfVehiclesWhichCouldNotBeSpawned);
+                sb.append('\n');
             }
-            Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
-            int rimNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-
-            //Run Optimal simulator
-            Simulator optimalSimSetup = rimOptimalSimSetup.getSimulator();
-            while (optimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                optimalSimSetup.step(SimConfig.TIME_STEP);
-            }
-            Result rimOptimalResult = ((RIMOptimalSimulator) optimalSimSetup).produceResult();
-            int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNoOfVehiclesWhichCouldNotBeSpawned();
-
-            //Run Stop Sign simulator
-            Simulator stopSignSimSetup = stopSignSimulator.getSimulator();
-            while (stopSignSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                stopSignSimSetup.step(SimConfig.TIME_STEP);
-            }
-            Result rimStopSignResult = ((AutoDriverOnlySimulator) stopSignSimSetup).produceResult();
-            int rimStopSignNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) stopSignSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-
-            //Run AIM Cross simulator
-            Simulator aimCrossSimSetup = aimCrossIntersectionSimulator.getSimulator();
-            while (aimCrossSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                aimCrossSimSetup.step(SimConfig.TIME_STEP);
-            }
-            Result aimCrossResult = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).produceResult();
-            int aimNumOfVehiclesWhichCouldNotBeSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-
-            //Run AIM Cross optimal simulator
-            Simulator aimCrossOptimalSimSetup = aimCrossOptimalIntersectionSimulator.getSimulator();
-            while (aimCrossOptimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                aimCrossOptimalSimSetup.step(SimConfig.TIME_STEP);
-            }
-            Result aimCrossOptimalResult = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).produceResult();
-            int aimCrossOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-
-            //Run AIM Cross simulator
-            Simulator aimCrossStopSignSimSetup = aimCrossStopSignIntersectionSimulator.getSimulator();
-            while (aimCrossStopSignSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                aimCrossStopSignSimSetup.step(SimConfig.TIME_STEP);
-            }
-            Result aimCrossStopSignResult = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossStopSignSimSetup).produceResult();
-            int aimStopSignNumOfVehiclesWhichCouldNotBeSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossStopSignSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-
-
-
-            Result combinedResult = new Result(null);
-            String combinedCsv = combinedResult.produceChosenDiameterCSVString(
-                    "RIM", rimResult, rimNumOfVehiclesWhichCouldNotBeSpawned,
-                    "RIM-Optimal", rimOptimalResult, rimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                    "RIM-StopSign", rimStopSignResult, rimStopSignNumOfVehiclesWhichCouldNotBeSpawned,
-                    "AIMCross", aimCrossResult, aimNumOfVehiclesWhichCouldNotBeSpawned,
-                    "AIMCross-Optimal", aimCrossOptimalResult, aimCrossOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                    "AIMCross-StopSign", aimCrossStopSignResult, aimStopSignNumOfVehiclesWhichCouldNotBeSpawned);
-            java.util.List<String> csvResultAsList = new ArrayList<String>();
-            csvResultAsList.add(combinedCsv);
-
-            //Save
-            final JFileChooser fc = new JFileChooser();
-            fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
-                    + "_" + Double.toString(CHOSEN_DIAMETER) +
-                    "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced_chosenDiameter" + ".csv"));
-            File file = fc.getSelectedFile();
-            try {
-                Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
-            } catch (IOException e1) {
-                //nothing
-            }
-
-            //Append to final csv
-            sb.append(Integer.toString(VOLUMES[trafficVolumeIndex]));
-            sb.append(',');
-            sb.append(calculateAverageDelay(rimResult.getVehicleResults(),rimResult, rimOptimalResult));
-            sb.append(',');
-            sb.append(calculateAverageDelay(rimStopSignResult.getVehicleResults(),rimStopSignResult, rimOptimalResult));
-            sb.append(',');
-            sb.append(',');
-            sb.append(calculateAverageDelay(aimCrossResult.getVehicleResults(),aimCrossResult, aimCrossOptimalResult));
-            sb.append(',');
-            sb.append(calculateAverageDelay(aimCrossStopSignResult.getVehicleResults(),aimCrossStopSignResult, aimCrossOptimalResult));
-            sb.append('\n');
         }
         String finalCSV = sb.toString();
-        java.util.List<String> csvResultAsList = new ArrayList<String>();
+        List<String> csvResultAsList = new ArrayList<String>();
         csvResultAsList.add(finalCSV);
 
         //Save
         final JFileChooser fc = new JFileChooser();
-        fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Double.toString(CHOSEN_DIAMETER) +
-                "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced_chosen_diameter" + ".csv"));
+        fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\further_entry_point\\" + Double.toString(CHOSEN_DIAMETER) +
+                "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced_chosen_diameter_10repetitions" + ".csv"));
         File file = fc.getSelectedFile();
         try {
             Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
@@ -412,14 +514,13 @@ public class CreateRIMResults {
             //nothing
         }
 
-
     }
 
-    private void saveJSON(JSONArray schedule, int trafficVolume) throws IOException {
+    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition) throws IOException {
         final JFileChooser fc = new JFileChooser();
         String pathExtension = "C:\\Users\\dydi_\\Documents\\" + Integer.toString(trafficVolume) +
                 "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_"
-                + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced";
+                + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced_" + Integer.toString(repetition);
         String jsonString = schedule.toJSONString();
         List<String> writeList = new ArrayList<String>();
         writeList.add(jsonString);

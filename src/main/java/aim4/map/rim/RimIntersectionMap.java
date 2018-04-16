@@ -21,7 +21,9 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * The grid layout map for rim.
+ * The grid layout map for rim. The design can be found here:
+ * https://drive.google.com/file/d/1C5xu8IF-myXM257b444pTfig6p0pOyPS/view?usp=sharing
+ * (open with GeoGebra Geometry tool)
  */
 public class RimIntersectionMap implements BasicRIMIntersectionMap {
     /////////////////////////////////

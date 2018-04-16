@@ -103,7 +103,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
     public AutoDriverOnlySimulator(BasicRIMIntersectionMap basicRIMIntersectionMap) {
         this.basicRIMIntersectionMap = basicRIMIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,RIMVehicleSimModel>();
-        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles, 0);
+        this.spawnHelper = new SpawnHelper(basicRIMIntersectionMap, vinToVehicles);
         this.vehiclesRecord = new ArrayList<VehicleResult>();
 
         currentTime = 0.0;
@@ -893,6 +893,10 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
 
     public int getNumOfVehiclesWhichCouldNotBeSpawned(){
         return spawnHelper.getNumOfVehicleWhichCouldNotBeSpawned();
+    }
+
+    public int getNumOfVehiclesSpawned(){
+        return spawnHelper.getNumOfVehiclesSpawned();
     }
 
     /////////////////////////////////

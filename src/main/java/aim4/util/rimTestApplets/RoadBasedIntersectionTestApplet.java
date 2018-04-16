@@ -1,7 +1,6 @@
-package aim4;
+package aim4.util.rimTestApplets;
 
 import aim4.im.rim.RoadBasedIntersection;
-import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.rim.RimIntersectionMap;
 
@@ -9,7 +8,6 @@ import javax.imageio.ImageIO;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

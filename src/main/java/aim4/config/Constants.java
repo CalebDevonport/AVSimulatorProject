@@ -32,7 +32,8 @@ package aim4.config;
 
 import javafx.util.Pair;
 
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -162,7 +163,7 @@ public final class Constants {
     Map<Pair<Double, Double>, Double> mapVelocityToMinimumFollowingDistances = new HashMap<Pair<Double, Double>, Double>();
 
     mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(0.0, 15.0), 0.5);
-    mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(15.0, 30.0), 0.6);
+    mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(15.0, 30.0), 0.7);
     mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(30.0, 45.0), 0.9);
     mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(45.0, 55.0), 1.1);
     mapVelocityToMinimumFollowingDistances.put(new Pair<Double, Double>(55.0, 65.0), 1.2);

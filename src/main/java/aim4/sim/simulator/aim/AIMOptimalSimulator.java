@@ -91,6 +91,8 @@ public class AIMOptimalSimulator implements AIMSimulator {
     private int numOfCompletedVehicles;
     /** The number of vehicles which could not be spawned*/
     private int numOfVehicleWhichCouldNotBeSpawned;
+    /** The number of vehicles spawned*/
+    private int numOfVehicleSpawned;
     /**
      * The total number of bits transmitted by the completed vehicles
      */
@@ -156,6 +158,7 @@ public class AIMOptimalSimulator implements AIMSimulator {
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
         numOfVehicleWhichCouldNotBeSpawned = 0;
+        numOfVehicleSpawned = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
     }
@@ -367,6 +370,7 @@ public class AIMOptimalSimulator implements AIMSimulator {
                                 AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
                                 VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                                 vinToVehicles.put(vehicle.getVIN(), vehicle);
+                                numOfVehicleSpawned++;
                             } // otherwise there is not enough space to slow down so don't spawn this vehicle
                         }
                         // Otherwise this is the first time we spawn vehicles
@@ -374,6 +378,7 @@ public class AIMOptimalSimulator implements AIMSimulator {
                             AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            numOfVehicleSpawned++;
                         }
                         break; // Only the first vehicle needed. TODO: FIX THIS
                     }
@@ -1155,6 +1160,8 @@ public class AIMOptimalSimulator implements AIMSimulator {
     }
 
     public int getNumOfVehiclesWhichCouldNotBeSpawned(){ return numOfVehicleWhichCouldNotBeSpawned; }
+
+    public int getNumOfVehiclesSpawned(){ return numOfVehicleSpawned; }
 
     protected String resultsToCSV(MergeResult result) {
         StringBuilder sb = new StringBuilder();

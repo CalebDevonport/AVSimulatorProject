@@ -334,7 +334,7 @@ public class RimMapUtil {
 
         //Create SpawnHelper
         Map<Integer, RIMVehicleSimModel> vinToVehicles = new HashMap<Integer, RIMVehicleSimModel>();
-        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles, 0);
+        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
         SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 
         //Create schedule
@@ -393,7 +393,7 @@ public class RimMapUtil {
 
         //Create SpawnHelper
         Map<Integer, RIMVehicleSimModel> vinToVehicles = new HashMap<Integer, RIMVehicleSimModel>();
-        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles, 0);
+        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
         SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 
         //Create schedule
