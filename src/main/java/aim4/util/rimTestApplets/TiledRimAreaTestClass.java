@@ -24,7 +24,7 @@ import aim4.util.TiledRimArea;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.aim.AIMBasicAutoVehicle;
 
-public class TestPaintClass extends JPanel {
+public class TiledRimAreaTestClass extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -45,9 +45,9 @@ public class TestPaintClass extends JPanel {
     private static final double MAP_HEIGHT =  250;
 	
     public static void main(String[] args) {
-		JFrame frame = new JFrame("Mini Tennis");
-		frame.add(new TestPaintClass());
-		frame.setSize(1000, 1000);
+		JFrame frame = new JFrame("TiledRimAreaTestClass");
+		frame.add(new TiledRimAreaTestClass());
+		frame.setSize(1920, 1080);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -199,24 +199,4 @@ public class TestPaintClass extends JPanel {
         }
         buffer.fill(rect);
     }
-    
-    /*@Override
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.RED);
-		g2d.fillOval(0, 0, 30, 30);
-		g2d.drawOval(0, 50, 30, 30);		
-		g2d.fillRect(50, 0, 30, 30);
-		g2d.drawRect(50, 50, 30, 30);
-
-		g2d.draw(new Ellipse2D.Double(0, 100, 30, 30));
-	}*/
-    
-	
-	/*
-	 * public static void main(String[] args) { JFrame frame = new
-	 * JFrame("Mini Tennis"); frame.add(new TestPaintClass()); frame.setSize(300,
-	 * 300); frame.setVisible(true);
-	 * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); }
-	 */
 }
