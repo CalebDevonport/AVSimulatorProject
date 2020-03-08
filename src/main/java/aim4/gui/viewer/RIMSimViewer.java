@@ -274,7 +274,7 @@ public class RIMSimViewer extends SimViewer{
                         rightClickPoint.getX(), rightClickPoint.getY());
                 // print the lane id
                 for (Road r : sim.getMap().getRoads()) {
-                    for (Lane l : r.getContinuousLanes()) {
+                    for (Lane l : r.getAllContinuousLanes()) {
                         if (l.getShape().contains(rightClickPoint)) {
                             System.err.printf("Right click on lane %d\n", l.getId());
                         }

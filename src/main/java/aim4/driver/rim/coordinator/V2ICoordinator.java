@@ -1073,7 +1073,7 @@ public class V2ICoordinator implements Coordinator{
          */
         private Lane getArrivalLane() {
             Road arrivalRoad = ((RoadBasedIntersection)driver.getCurrentRIM().getIntersection()).getRoadByLane(driver.getCurrentLane());
-            return arrivalRoad.getEntryApproachLane();
+            return arrivalRoad.getEntryApproachLane(0);
         }
 
         /**

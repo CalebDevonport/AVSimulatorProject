@@ -49,8 +49,8 @@ public class Road {
   private String name;
   /** The lanes that make up this road, from left to right. */
   private List<Lane> lanes;
-  /** The individual that make up this road, from down to up. */
-  private List<Lane> continuousLanes;
+  /** The individual lanes that make up this road, from down to up, in each main lane from left to right. */
+  private List<List<Lane>> continuousLanes;
   /** The Road that follows this one in the opposite direction. */
   private Road dual;
   /** The Layout of which the Road is a part. */
@@ -87,13 +87,13 @@ public class Road {
   public Road(String name, List<Lane> lanes, BasicMap map) {
     this.name = name;
     this.lanes = new ArrayList<Lane>(lanes);
-    this.continuousLanes = new ArrayList<Lane>();
+    continuousLanes = new ArrayList<List<Lane>>();
     this.map = map;
     // Now set up the proper relationships between them
     if(lanes.size() > 1) {
       for(int i = 0; i < lanes.size() - 1; i++) {
         lanes.get(i).setRightNeighbor(lanes.get(i + 1));
-        lanes.get(i + 1).setLeftNeighbor(lanes.get(i));
+        lanes.get(i + 1).setLeftNeighbor(lanes.get(i)); 
       }
     }
   }
@@ -154,8 +154,22 @@ public class Road {
    *
    * @return the Lanes that make up this Road, in order from down to up
    */
-  public List<Lane> getContinuousLanes() {
+  public List<List<Lane>> getContinuousLanes() {
     return Collections.unmodifiableList(continuousLanes);
+  }
+  
+  public List<Lane> getAllContinuousLanes() {
+	  List<Lane> allContinuousLanes = new ArrayList<Lane>();
+	  for (List<Lane> laneList : this.getContinuousLanes()) {
+		  for(Lane l : laneList) {
+			  allContinuousLanes.add(l);  
+		  }
+	  }
+	  return Collections.unmodifiableList(allContinuousLanes);
+  }
+  
+  public List<Lane> getContinuousLanesForLane(int laneNum) {
+	  return Collections.unmodifiableList(continuousLanes.get(laneNum));
   }
 
   /**
@@ -188,11 +202,11 @@ public class Road {
    *
    * @return the downmost Lane in this Road
    */
-  public Lane getFirstLane() {
+  public Lane getFirstLane(int laneNum) {
     if(continuousLanes.isEmpty()) {
       return null;
     }
-    return continuousLanes.get(0);
+    return continuousLanes.get(laneNum).get(0);
   }
 
   /**
@@ -200,11 +214,11 @@ public class Road {
    *
    * @return the first arc Lane in this Road
    */
-  public Lane getEntryApproachLane() {
+  public Lane getEntryApproachLane(int laneNum) {
     if(continuousLanes.isEmpty()) {
       return null;
     }
-    return continuousLanes.get(1);
+    return continuousLanes.get(laneNum).get(1);
   }
 
   /**
@@ -212,11 +226,11 @@ public class Road {
    *
    * @return the first arc Lane in this Road
    */
-  public Lane getEntryMergingLane() {
+  public Lane getEntryMergingLane(int laneNum) {
     if(continuousLanes.isEmpty()) {
       return null;
     }
-    return continuousLanes.get(2);
+    return continuousLanes.get(laneNum).get(2);
   }
 
   /**
@@ -224,11 +238,11 @@ public class Road {
    *
    * @return the last arc Lane in this Road
    */
-  public Lane getExitApproachLane() {
+  public Lane getExitApproachLane(int laneNum) {
     if(continuousLanes.isEmpty()) {
       return null;
     }
-    return continuousLanes.get(continuousLanes.size() - 2);
+    return continuousLanes.get(laneNum).get(getContinuousLanesForLane(laneNum).size() - 2);
   }
 
   /**
@@ -236,11 +250,11 @@ public class Road {
    *
    * @return the previous last arc Lane in this Road
    */
-  public Lane getExitMergingLane() {
+  public Lane getExitMergingLane(int laneNum) {
     if(continuousLanes.isEmpty()) {
       return null;
     }
-    return continuousLanes.get(continuousLanes.size() - 3);
+    return continuousLanes.get(laneNum).get(getContinuousLanesForLane(laneNum).size() - 3);
   }
 
   /**
@@ -289,15 +303,16 @@ public class Road {
   /**
    * Add a down most lane to this Road.
    *
+   * @param laneNum the horizontal lane to add this lane to
    * @param lane the Lane to add
    */
-  public void addTheUpMostLane(Lane lane) {
-    if(!continuousLanes.isEmpty()) {
-      Lane upMost = continuousLanes.get(continuousLanes.size() - 1);
+  public void addTheUpMostLane(int laneNum, Lane lane) {
+    if(!getContinuousLanesForLane(laneNum).isEmpty()) {
+      Lane upMost = getContinuousLanesForLane(laneNum).get(getContinuousLanesForLane(laneNum).size() - 1);
       upMost.setNextLane(lane);
       lane.setPrevLane(upMost);
     }
-    continuousLanes.add(lane);
+    continuousLanes.get(laneNum).add(lane);
   }
 
   /**
@@ -317,5 +332,11 @@ public class Road {
    */
   public String getName() {
     return name;
+  }
+  
+  public void setUpContinuousLanes(int laneNum) {
+    for(int i = 0; i < laneNum; i++)  {
+      continuousLanes.add(new ArrayList<Lane>());
+    }
   }
 }

@@ -518,7 +518,7 @@ public abstract class Canvas extends JPanel implements ComponentListener,
      */
     protected void drawRoundaboutRoad(Graphics2D bgBuffer, Road road,
                             TexturePaint asphaltTexture) {
-        for (Lane lane : road.getContinuousLanes()) {
+    	for (Lane lane : road.getAllContinuousLanes()) {
             drawLane(bgBuffer, lane, asphaltTexture);
         }
     }

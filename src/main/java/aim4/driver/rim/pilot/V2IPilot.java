@@ -129,7 +129,7 @@ public class V2IPilot {
                     Road departureRoad = ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(rp.getDepartureLane());
 
                     // Means we may have to change the road
-                    ArcSegmentLane firstExitDepartureLane = ((ArcSegmentLane) departureRoad.getExitMergingLane());
+                    ArcSegmentLane firstExitDepartureLane = ((ArcSegmentLane) departureRoad.getExitMergingLane(0));
                     LineSegmentLane firstExitDepartureLineLane = firstExitDepartureLane.getArcLaneDecomposition().get(0);
 
                     if (driver.getCurrentLane().getEndPoint().distance(firstExitDepartureLineLane.getStartPoint()) < 0.001) {
@@ -140,7 +140,7 @@ public class V2IPilot {
 
                     else {
                         // Check if we need to exit at the second roundabout exit
-                        ArcSegmentLane secondExitDepartureLane = ((ArcSegmentLane) departureRoad.getContinuousLanes().get(4));
+                        ArcSegmentLane secondExitDepartureLane = ((ArcSegmentLane) departureRoad.getContinuousLanesForLane(0).get(4));
                         LineSegmentLane secondExitDepartureLineLane = secondExitDepartureLane.getArcLaneDecomposition().get(0);
 
                         if (driver.getCurrentLane().getEndPoint().distance(secondExitDepartureLineLane.getStartPoint()) < 0.001) {

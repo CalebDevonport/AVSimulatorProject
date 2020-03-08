@@ -178,7 +178,7 @@ public class RoadBasedIntersection implements Intersection{
      */
     private void extractLanes(List<Road> roads) {
         for(Road road : roads) {
-            for(Lane lane : road.getContinuousLanes()) {
+            for(Lane lane : road.getAllContinuousLanes()) {
                 lanes.add(lane);
             }
         }
@@ -198,7 +198,7 @@ public class RoadBasedIntersection implements Intersection{
         for (Road road: roads){
             //TODO: Make this dynamic based on map
             for (int index = 1; index <= 7; index ++){
-                areaOfConnection.add(new Area(road.getContinuousLanes().get(index).getShape()));
+                areaOfConnection.add(new Area(road.getContinuousLanesForLane(0).get(index).getShape()));
             }
         }
         this.area = areaOfConnection;
@@ -215,51 +215,56 @@ public class RoadBasedIntersection implements Intersection{
     private void establishPoints(List<Road> roads) {
 
         //Establish entry and approach entry points. This will correspond to first arc lane of every road
-        for (Road road : roads){
-            ArcSegmentLane entryApproachLane = (ArcSegmentLane) road.getEntryApproachLane();
+        for (Road road : roads) {
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+        		ArcSegmentLane entryApproachLane = (ArcSegmentLane) road.getEntryApproachLane(i);
 
-            // Approach entry point
-            this.approachEntryPoints.put(entryApproachLane,
-                    new WayPoint(entryApproachLane.getStartPoint()));
+                // Approach entry point
+                this.approachEntryPoints.put(entryApproachLane,
+                        new WayPoint(entryApproachLane.getStartPoint()));
 
-            // Approach heading corresponds to heading of first Line Lane of the respective arc Lane
-            this.approachEntryHeadings.put(entryApproachLane,
-                    entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
+                // Approach heading corresponds to heading of first Line Lane of the respective arc Lane
+                this.approachEntryHeadings.put(entryApproachLane,
+                        entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
 
-            // Entry point
-            this.entryPoints.put(entryApproachLane,
-                    new WayPoint(entryApproachLane.getStartPoint()));
+                // Entry point
+                this.entryPoints.put(entryApproachLane,
+                        new WayPoint(entryApproachLane.getStartPoint()));
 
-            // Entry heading corresponds to heading of last first Lane of the respective arc Lane
-            this.entryHeadings.put(entryApproachLane,
-                    entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
+                // Entry heading corresponds to heading of last Line Lane of the respective arc Lane
+                this.entryHeadings.put(entryApproachLane,
+                        entryApproachLane.getArcLaneDecomposition().get(0).getInitialHeading());
+        	}
+            
         }
 
         //Establish exit and approach exit points. This will correspond to last arc lane of every road
-        for (Road road : roads){
-            ArcSegmentLane exitApproachLane = (ArcSegmentLane) road.getExitApproachLane();
-
-            // Approach exit point
-            this.approachExitPoints.put(exitApproachLane,
-                    new WayPoint(exitApproachLane.getEndPoint()));
-
-            // Approach heading corresponds to heading of last Line Lane of the respective arc Lane
-            this.approachExitHeadings.put(exitApproachLane,
-                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
-
-            // Exit point
-            this.exitPoints.put(exitApproachLane,
-                    new WayPoint(exitApproachLane.getEndPoint()));
-
-            // Exit heading corresponds to heading of last Line Lane of the respective arc Lane
-            this.exitHeadings.put(exitApproachLane,
-                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+        for (Road road : roads) {
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+	            ArcSegmentLane exitApproachLane = (ArcSegmentLane) road.getExitApproachLane(i);
+	
+	            // Approach exit point
+	            this.approachExitPoints.put(exitApproachLane,
+	                    new WayPoint(exitApproachLane.getEndPoint()));
+	
+	            // Approach heading corresponds to heading of last Line Lane of the respective arc Lane
+	            this.approachExitHeadings.put(exitApproachLane,
+	                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+	
+	            // Exit point
+	            this.exitPoints.put(exitApproachLane,
+	                    new WayPoint(exitApproachLane.getEndPoint()));
+	
+	            // Exit heading corresponds to heading of last Line Lane of the respective arc Lane
+	            this.exitHeadings.put(exitApproachLane,
+	                    exitApproachLane.getArcLaneDecomposition().get(exitApproachLane.getArcLaneDecomposition().size()-1).getInitialHeading());
+        	}
         }
     }
 
     // Get the origin of the intersection given a set of Roads. The origin will be the origin of the inside arcs of every road.
     protected Point2D findOriginOfConnection(List<Road> roads){
-        ArcSegmentLane secondArcLane = (ArcSegmentLane)roads.get(0).getContinuousLanes().get(3);
+        ArcSegmentLane secondArcLane = (ArcSegmentLane)roads.get(0).getContinuousLanesForLane(0).get(3);
         Point2D origin = new Point2D.Double(secondArcLane.getArc().getX() + secondArcLane.getArc().getWidth() / 2,
                 secondArcLane.getArc().getY() + secondArcLane.getArc().getHeight() / 2);
         return origin;
@@ -299,7 +304,7 @@ public class RoadBasedIntersection implements Intersection{
      * Find the minimal circular region that represents the intersection.
      */
     private Ellipse2D findMinimalCircle(Point2D centroid, List<Road> roads) {
-        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanes().get(3);
+        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(0).get(3);
         // The radius of the circle will be the radius of the left border of every inside arc
         double minimalRadius = insideArcLane.leftBorder().getWidth();
         return new Ellipse2D.Double(
@@ -313,7 +318,7 @@ public class RoadBasedIntersection implements Intersection{
      * Find the maximal circular region that represents the intersection.
      */
     private Ellipse2D findMaximalCircle(Point2D centroid, List<Road> roads) {
-        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanes().get(3);
+        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(0).get(3);
         // The radius of the circle will be the radius of the right border of every inside arc
         double maximalRadius = insideArcLane.rightBorder().getWidth();
         return new Ellipse2D.Double(
@@ -379,11 +384,11 @@ public class RoadBasedIntersection implements Intersection{
     public Road getRoadByLane(Lane lane) {
         final Road[] roadByLane = {null};
         for (Road road : roads) {
-            if (road.getContinuousLanes().contains(lane)){
+            if (road.getAllContinuousLanes().contains(lane)){
                 roadByLane[0] = road;
                 break;
             } else {
-                road.getContinuousLanes().forEach(continuousLane -> {
+                road.getAllContinuousLanes().forEach(continuousLane -> {
                     if (continuousLane instanceof ArcSegmentLane) {
                         if (((ArcSegmentLane) continuousLane).getArcLaneDecomposition().contains(lane)) {
                             roadByLane[0] = road;

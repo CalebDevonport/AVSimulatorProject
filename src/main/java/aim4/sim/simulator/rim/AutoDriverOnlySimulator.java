@@ -302,7 +302,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         Map<Lane,SortedMap<Double,RIMVehicleSimModel>> vehicleLists =
                 new HashMap<Lane,SortedMap<Double,RIMVehicleSimModel>>();
         for(Road road : basicRIMIntersectionMap.getRoads()) {
-            for (Lane lane : road.getContinuousLanes()) {
+            for (Lane lane : road.getAllContinuousLanes()) {
                 if (lane instanceof ArcSegmentLane) {
                     ((ArcSegmentLane) lane).getArcLaneDecomposition().forEach(lineSegmentLane -> {
                         vehicleLists.put(lineSegmentLane, new TreeMap<Double,RIMVehicleSimModel>());
@@ -330,7 +330,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
                     vehicleLists.get(lane).put(dst, vehicle);
                     // Now check if this vehicle intersects any other lanes
                     for (Road road : Debug.currentRimMap.getRoads()) {
-                        for (Lane otherLane : road.getContinuousLanes()) {
+                        for (Lane otherLane : road.getAllContinuousLanes()) {
                             if (otherLane.getId() != lane.getId() && otherLane.getShape().getBounds2D().intersects(vehicle.getShape().getBounds2D())) {
                                 if (otherLane instanceof ArcSegmentLane) {
                                     for (LineSegmentLane otherLineLane : ((ArcSegmentLane) otherLane).getArcLaneDecomposition()){

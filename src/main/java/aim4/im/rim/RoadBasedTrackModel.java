@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * A track model for road based intersections
  */
-public class RoadBasedTrackModel implements TrackModel{
+public class RoadBasedTrackModel implements TrackModel {
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -78,7 +78,7 @@ public class RoadBasedTrackModel implements TrackModel{
 
             for(Road exitRoad : intersection.getExitRoads()) {
                 List<Lane> exitLanes = new ArrayList<Lane>();
-                exitLanes.add(exitRoad.getExitApproachLane());
+                exitLanes.add(exitRoad.getExitApproachLane(0));
                 // Now put them in the list for entryLane
                 exitPriorities.put(exitRoad, exitLanes);
             }
@@ -129,8 +129,8 @@ public class RoadBasedTrackModel implements TrackModel{
      */
     @Override
     public double traversalDistance(Road arrival, Road departure) {
-        return traversalDistance(arrival.getEntryApproachLane(),
-                departure.getExitApproachLane());
+        return traversalDistance(arrival.getEntryApproachLane(0),
+                departure.getExitApproachLane(0));
     }
 
     /**
@@ -153,10 +153,10 @@ public class RoadBasedTrackModel implements TrackModel{
             final Road[] arrivalRoad = new Road[1];
             final Road[] departureRoad = new Road[1];
             intersection.getRoads().forEach( road -> {
-                if (road.getContinuousLanes().contains(arrival)) {
+                if (road.getAllContinuousLanes().contains(arrival)) {
                     arrivalRoad[0] = road;
                 }
-                if (road.getContinuousLanes().contains(departure)) {
+                if (road.getAllContinuousLanes().contains(departure)) {
                     departureRoad[0] = road;
                 }
             });
@@ -184,19 +184,19 @@ public class RoadBasedTrackModel implements TrackModel{
                 else if (departureRoad[0].getName() == "1st Avenue N") {
                     // Go two lanes north
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                  // Turn left
                 } else if (departureRoad[0].getName() == "1st Street W") {
                     // Go two lanes north
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Go two lanes west
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                 }
@@ -212,19 +212,19 @@ public class RoadBasedTrackModel implements TrackModel{
                 else if (departureRoad[0].getName() == "1st Street W") {
                     // Go two lanes west
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Turn left
                 } else if (departureRoad[0].getName() == "1st Avenue S") {
                     // Go two lanes west
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Go two lanes south
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                 }
@@ -240,19 +240,19 @@ public class RoadBasedTrackModel implements TrackModel{
                 else if (departureRoad[0].getName() == "1st Avenue S") {
                     // Go two lanes south
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Turn left
                 } else if (departureRoad[0].getName() == "1st Street E") {
                     // Go two lanes south
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Go two lanes east
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                 }
@@ -268,19 +268,19 @@ public class RoadBasedTrackModel implements TrackModel{
                 else if (departureRoad[0].getName() == "1st Street E") {
                     // Go three lanes east
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Turn left
                 } else if (departureRoad[0].getName() == "1st Avenue N") {
                     // Go two lanes east
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) arrivalRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                     // Go two lanes north
                     for (int index = 4; index <= 5; index++){
-                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanes().get(index);
+                        ArcSegmentLane straightLane = (ArcSegmentLane) departureRoad[0].getContinuousLanesForLane(0).get(index);
                         totalDistance += straightLane.getLengthArcLaneDecomposition();
                     }
                 }

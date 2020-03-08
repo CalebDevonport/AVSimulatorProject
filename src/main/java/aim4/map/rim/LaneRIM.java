@@ -406,6 +406,4 @@ public class LaneRIM {
             return totalTime;
         }
     }
-
-
 }
