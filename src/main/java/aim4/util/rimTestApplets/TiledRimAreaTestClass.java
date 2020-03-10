@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
@@ -47,7 +48,7 @@ public class TiledRimAreaTestClass extends JPanel {
     public static void main(String[] args) {
 		JFrame frame = new JFrame("TiledRimAreaTestClass");
 		frame.add(new TiledRimAreaTestClass());
-		frame.setSize(1920, 1080);
+		frame.setSize(1000, 1000);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -68,7 +69,7 @@ public class TiledRimAreaTestClass extends JPanel {
                 0,
                 0);
 
-        double scaleFactor = 8;
+        double scaleFactor = 7;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
@@ -92,7 +93,7 @@ public class TiledRimAreaTestClass extends JPanel {
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
 
         // Create a tiled rim area
-        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getMaximalCircle(), 6);
+        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getMaximalCircle(), 4, roadBasedIntersection.getLaneNum());
 
         tiledRimArea.getAllTilesById().forEach( tile -> {
             bgBuffer.draw(tile.getArea());
@@ -103,51 +104,57 @@ public class TiledRimAreaTestClass extends JPanel {
         // Create a vehicle
 
         // North Road
-        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanes().get(4);
-        Point2D positionOfVehicleFront = new Point2D.Double(
-                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
-                vehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
-
-        // South Road
-        ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanes().get(3);
-        Point2D southPositionOfVehicleFront = new Point2D.Double(
-                southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-                southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        AIMBasicAutoVehicle southVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), southPositionOfVehicleFront,
-                southVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-
-//        // East Road
-//        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanes().get(3);
-//        Point2D positionOfVehicleFront = new Point2D.Double(
-//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-//        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
-//                vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-
-
-//        // West Road
-//        ArcSegmentLane vehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanes().get(7);
-//        Point2D positionOfVehicleFront = new Point2D.Double(
-//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-//                vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-//        AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
-//                vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-
-
-        // Draw occupied lanes
-		
-		  bgBuffer.setPaint(Color.RED);
-		  tiledRimArea.findOccupiedTiles(vehicle.getShape()).forEach( tile -> {
-		  bgBuffer.draw(tile.getArea()); });
-		  tiledRimArea.findOccupiedTiles(southVehicle.getShape()).forEach( tile -> {
-			  bgBuffer.draw(tile.getArea()); });
-		  
-		  // Draw vehicle 
-		  bgBuffer.setPaint(Color.BLACK);
-		  bgBuffer.fill(vehicle.getShape());
-		  bgBuffer.fill(southVehicle.getShape());
+        //ArcSegmentLane northVehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanes().get(4);
+        //Point2D northPositionOfVehicleFront = new Point2D.Double(
+        //        northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+        //        northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        //AIMBasicAutoVehicle northVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), northPositionOfVehicleFront,
+        //        northVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
+        //
+        //// South Road
+        //ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanes().get(3);
+        //Point2D southPositionOfVehicleFront = new Point2D.Double(
+        //        southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+        //        southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        //AIMBasicAutoVehicle southVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), southPositionOfVehicleFront,
+        //        southVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+        //
+        //// East Road
+        //ArcSegmentLane eastVehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanes().get(3);
+        //Point2D eastPositionOfVehicleFront = new Point2D.Double(
+        //        eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+        //        eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        //AIMBasicAutoVehicle eastVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), eastPositionOfVehicleFront,
+        //        eastVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+        //
+        //
+        //// West Road
+        //ArcSegmentLane westVehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanes().get(7);
+        //Point2D westPositionOfVehicleFront = new Point2D.Double(
+        //        westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+        //        westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        //AIMBasicAutoVehicle westVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), westPositionOfVehicleFront,
+        //        westVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+        //
+        //
+        //// Draw occupied lanes
+		//
+		//  bgBuffer.setPaint(Color.RED);
+		//  tiledRimArea.findOccupiedTiles(northVehicle.getShape()).forEach( tile -> {
+		//  bgBuffer.draw(tile.getArea()); });
+		//  tiledRimArea.findOccupiedTiles(southVehicle.getShape()).forEach( tile -> {
+		//	  bgBuffer.draw(tile.getArea()); });
+		//  tiledRimArea.findOccupiedTiles(eastVehicle.getShape()).forEach( tile -> {
+		//	  bgBuffer.draw(tile.getArea()); });
+		//  tiledRimArea.findOccupiedTiles(westVehicle.getShape()).forEach( tile -> {
+		//	  bgBuffer.draw(tile.getArea()); });
+		//  
+		//  // Draw vehicle 
+		//  bgBuffer.setPaint(Color.BLACK);
+		//  bgBuffer.fill(northVehicle.getShape());
+		//  bgBuffer.fill(southVehicle.getShape());
+		//  bgBuffer.fill(eastVehicle.getShape());
+		//  bgBuffer.fill(westVehicle.getShape());
     }
 
     private TexturePaint makeScaledTexture(BufferedImage image, double scale) {

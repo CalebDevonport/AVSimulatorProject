@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * An intersection that is defined by the intersection of a set of roads.
  */
-public class RoadBasedIntersection implements Intersection{
+public class RoadBasedIntersection implements Intersection {
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -398,6 +398,16 @@ public class RoadBasedIntersection implements Intersection{
             }
         }
         return roadByLane[0];
+    }
+    
+    /**
+     * Get the total number of lanes from left to right in this intersection - for usage in TiledRimArea.
+     *
+     * @return the total number of lanes per road for this intersection
+     */
+    @Override
+    public int getLaneNum() {
+    	return roads.get(0).getContinuousLanes().size();
     }
 
     /**

@@ -133,8 +133,8 @@ public class V2IManager extends IntersectionManager implements V2IManagerCallbac
         // properties of the intersection
         super(intersection, trackModel, currentTime, registry);
         // Set up the reservation grid
-        this.tiledRimArea = new TiledRimArea(intersection.getMinimalCircle(), intersection.getMaximalCircle(),
-                config.getGranularity());
+        this.tiledRimArea = new TiledRimArea(intersection.getMinimalCircle(), intersection.getMaximalCircle(), 
+        		config.getGranularity(), intersection.getLaneNum());
         this.reservationGrid = new ReservationGrid(tiledRimArea.getGranularity(), config.getGridTimeStep());
         this.reservationGridManager = new ReservationGridManager(config,
                 intersection,

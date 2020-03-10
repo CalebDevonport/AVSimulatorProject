@@ -73,6 +73,8 @@ public class TiledRimArea {
     private final Ellipse2D maximalCircle;
     /** The factor by which the circle is divided. */
     private final double granularity;
+    /** The number of lanes per road. */
+    private final int laneNum;
     /** A mapping from id to tiles */
     private final ArrayList<Tile> idToTiles;
     /** The number of tiles */
@@ -89,12 +91,13 @@ public class TiledRimArea {
      * @param maximalCircle     the maximal circle of the intersection
      * @param granularity       the factor by which the tiles are divided
      */
-    public TiledRimArea(Ellipse2D minimalCircle, Ellipse2D maximalCircle, double granularity) {
+    public TiledRimArea(Ellipse2D minimalCircle, Ellipse2D maximalCircle, double granularity, int laneNum) {
         this.minimalCircle = minimalCircle;
         this.maximalCircle = maximalCircle;
         this.granularity = granularity;
-        numberOfTiles = (int) granularity * 2;
-        idToTiles = new ArrayList<Tile>((int) granularity * 2);
+        this.laneNum = laneNum;
+        numberOfTiles = (int) granularity * 2 * laneNum;
+        idToTiles = new ArrayList<Tile>(numberOfTiles);
         createTiles();
 
     }
@@ -114,9 +117,10 @@ public class TiledRimArea {
         double maximalRadius = maximalCircle.getWidth() / 2;
 
         // Construct the tiles starting from zero angle
-        for (int id = 0; id < numberOfTiles; id++){
+        for (int id = 0; id < numberOfTiles; id++) {
             Arc2D minimalArc = new Arc2D.Double();
             Arc2D maximalArc = new Arc2D.Double();
+            Arc2D laneMaximalArc = new Arc2D.Double();
 
             // Find starting angle from zero
             double startAngle = id * angle;
@@ -124,6 +128,7 @@ public class TiledRimArea {
             // Find minimal and maximal arc
             minimalArc.setArcByCenter(origin.getX(), origin.getY(), minimalRadius, startAngle, angle, 0);
             maximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius, startAngle + angle, -angle, 0);
+            laneMaximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius + 5, startAngle, angle, 0);
 
             // Create tile shape
             GeneralPath tileShape = new GeneralPath();
@@ -134,7 +139,18 @@ public class TiledRimArea {
             tileShape.append(maximalArc, true);
 
             idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id));
+            
+            if (laneNum == 2) {
+            	GeneralPath tileShape2 = new GeneralPath();
+                tileShape2.moveTo(maximalArc.getEndPoint().getX(), maximalArc.getEndPoint().getY());
+                tileShape2.lineTo(laneMaximalArc.getStartPoint().getX(), laneMaximalArc.getStartPoint().getY());
+                tileShape2.append(laneMaximalArc, false);
+                tileShape2.lineTo(maximalArc.getStartPoint().getX(), maximalArc.getStartPoint().getY());
+                tileShape2.append(maximalArc, true);
+                
 
+                idToTiles.add(new Tile(new Area(tileShape2), startAngle, angle, id));
+            }
         }
 
         //Construct approach & merging entry tiles
@@ -148,7 +164,7 @@ public class TiledRimArea {
 
     private void createEntryTiles(double angle, Road road) {
         // The approach entry lane to be divided
-        ArcSegmentLane approachEntryLane = (ArcSegmentLane) road.getEntryApproachLane();
+        ArcSegmentLane approachEntryLane = (ArcSegmentLane) road.getEntryApproachLane(0);
 
         // The origin of the minimal and maximal circle
         Point2D origin = new Point2D.Double(approachEntryLane.getArc().getCenterX(), approachEntryLane.getArc().getCenterY());
@@ -186,7 +202,7 @@ public class TiledRimArea {
 
     private void createExitTiles(double angle, Road road) {
         // The approach exit lane to be divided
-        ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane();
+        ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane(0);
 
         // The origin of the minimal and maximal circle
         Point2D origin = new Point2D.Double(approachExitLane.getArc().getCenterX(), approachExitLane.getArc().getCenterY());

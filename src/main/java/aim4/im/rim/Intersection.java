@@ -199,5 +199,12 @@ public interface Intersection {
      * @return the turn direction of the vehicle at the next intersection
      */
     TurnDirection calcTurnDirection(Lane currentLane, Lane departureLane);
+    
+    /**
+     * Get the total number of lanes from left to right in this intersection - for usage in TiledRimArea.
+     *
+     * @return the total number of lanes per road for this intersection
+     */
+    public int getLaneNum();
 
 }
