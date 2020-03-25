@@ -210,9 +210,9 @@ public class Road {
   }
 
   /**
-   * Get the first arc Lane in this Road.
+   * Get the first arc Lane in this lane in this Road.
    *
-   * @return the first arc Lane in this Road
+   * @return the first arc Lane in this lane in this Road
    */
   public Lane getEntryApproachLane(int laneNum) {
     if(continuousLanes.isEmpty()) {

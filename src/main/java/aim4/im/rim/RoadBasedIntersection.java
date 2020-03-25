@@ -41,6 +41,11 @@ public class RoadBasedIntersection implements Intersection {
     private Ellipse2D getMinimalCircle;
 
     /**
+     * The central circle that contains this intersection.
+     */
+    private Ellipse2D getCentralCircle;
+    
+    /**
      * The biggest circle that contains this intersection.
      */
     private Ellipse2D getMaximalCircle;
@@ -160,6 +165,8 @@ public class RoadBasedIntersection implements Intersection {
         calcWayPoints();
         // Calculate the minimal circular region
         getMinimalCircle = findMinimalCircle(centroid, roads);
+        // Calculate the central circular region
+        getCentralCircle = findCentralCircle(centroid, roads);
         // Calculate the maximal circular region
         getMaximalCircle = findMaximalCircle(centroid, roads);
 
@@ -313,14 +320,28 @@ public class RoadBasedIntersection implements Intersection {
                 minimalRadius,
                 minimalRadius);
     }
+    
+    /**
+     * Find the central circular region that represents the intersection.
+     */
+    private Ellipse2D findCentralCircle(Point2D centroid, List<Road> roads) {
+        ArcSegmentLane centralArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(0).get(3);
+        // The radius of the circle will be the radius of the right border of every inside arc
+        double centralRadius = centralArcLane.rightBorder().getWidth();
+        return new Ellipse2D.Double(
+                centroid.getX() - centralRadius / 2,
+                centroid.getY() - centralRadius / 2,
+                centralRadius,
+                centralRadius);
+    }
 
     /**
      * Find the maximal circular region that represents the intersection.
      */
     private Ellipse2D findMaximalCircle(Point2D centroid, List<Road> roads) {
-        ArcSegmentLane insideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(0).get(3);
+        ArcSegmentLane outsideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(1).get(3);
         // The radius of the circle will be the radius of the right border of every inside arc
-        double maximalRadius = insideArcLane.rightBorder().getWidth();
+        double maximalRadius = outsideArcLane.rightBorder().getWidth();
         return new Ellipse2D.Double(
                 centroid.getX() - maximalRadius / 2,
                 centroid.getY() - maximalRadius / 2,
@@ -462,9 +483,19 @@ public class RoadBasedIntersection implements Intersection {
     }
 
     /**
+     * Get the central circular region that encloses the intersection.
+     *
+     * @return the central circular region that encloses the intersection
+     */
+    @Override
+    public Ellipse2D getCentralCircle() {
+        return getCentralCircle;
+    }
+    
+    /**
      * Get the maximal circular region that encloses the intersection.
      *
-     * @return the minimal circular region that encloses the intersection
+     * @return the maximal circular region that encloses the intersection
      */
     @Override
     public Ellipse2D getMaximalCircle() {

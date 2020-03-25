@@ -95,14 +95,16 @@ public class RimMapTestClass extends JPanel {
         for (Road road : map.getRoads()) {
             float hue = i/15f;
             bgBuffer.setPaint(Color.getHSBColor(hue, 1.0f,0.8f));
-            for (int index = 1; index <= 7; index++) {
-                ArcSegmentLane vehicleLane = (ArcSegmentLane)road.getContinuousLanes().get(index);
-                Point2D positionOfVehicleFront = new Point2D.Double(
-                        vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-                        vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-                AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
-                        vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-                bgBuffer.fill(vehicle.getShape());
+            for (int j = 0; j < road.getContinuousLanes().size(); j++) {
+            	for (int index = 1; index <= 7; index++) {
+                    ArcSegmentLane vehicleLane = (ArcSegmentLane)road.getContinuousLanesForLane(j).get(index);
+                    Point2D positionOfVehicleFront = new Point2D.Double(
+                            vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                            vehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+                    AIMBasicAutoVehicle vehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), positionOfVehicleFront,
+                            vehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
+                    bgBuffer.fill(vehicle.getShape());
+                }
             }
             i++;
         }
@@ -181,28 +183,33 @@ public class RimMapTestClass extends JPanel {
 
     private void drawRoad(Graphics2D bgBuffer, Road road,
                             TexturePaint asphaltTexture) {
-        // Draw Entry Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(0), asphaltTexture);
+    	
+    	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+            // Draw Entry Line Lane
+    		drawLineLane(bgBuffer, road.getContinuousLanesForLane(i).get(0), asphaltTexture);
 
-        // Draw the Arc Lanes
-        for (int index = 1 ; index <= road.getContinuousLanes().size()-2; index++)
-        drawArcLane(bgBuffer, road.getContinuousLanes().get(index), asphaltTexture);
+            // Draw the Arc Lanes
+            for (int index = 1 ; index <= road.getContinuousLanesForLane(i).size()-2; index++)
+            drawArcLane(bgBuffer, road.getContinuousLanesForLane(i).get(index), asphaltTexture);
 
-        // Draw Exit Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(8), asphaltTexture);
+            // Draw Exit Line Lane
+            drawLineLane(bgBuffer, road.getContinuousLanesForLane(i).get(8), asphaltTexture);
+    	}        
     }
 
     private void drawRoadAsLineLanes(Graphics2D bgBuffer, Road road,
                           TexturePaint asphaltTexture) {
-        // Draw Entry Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(0), asphaltTexture);
-
-        // Draw the Arc Lanes
-        for (int index = 1 ; index <= road.getContinuousLanes().size()-2; index++)
-            drawArcLaneAsLineLanes(bgBuffer, road.getContinuousLanes().get(index), asphaltTexture);
-
-        // Draw Exit Line Lane
-        drawLineLane(bgBuffer, road.getContinuousLanes().get(8), asphaltTexture);
+    	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+	        // Draw Entry Line Lane
+	        drawLineLane(bgBuffer, road.getContinuousLanesForLane(i).get(0), asphaltTexture);
+	
+	        // Draw the Arc Lanes
+	        for (int index = 1 ; index <= road.getContinuousLanesForLane(i).size()-2; index++)
+	            drawArcLaneAsLineLanes(bgBuffer, road.getContinuousLanesForLane(i).get(index), asphaltTexture);
+	
+	        // Draw Exit Line Lane
+	        drawLineLane(bgBuffer, road.getContinuousLanesForLane(i).get(8), asphaltTexture);
+    	}
     }
 
     private void drawLineLane(Graphics2D bgBuffer,

@@ -738,7 +738,10 @@ public class ReservationGridManager implements
             assertVehicleInsideIntersection(testVehicle, areaPlus);
             // Find out which tiles are occupied by the vehicle
             currentIntTime++;  // Record that we've moved forward one time step
-            List<Tile> occupied = tiledRimArea.findOccupiedTiles(testVehicle.getShape(staticBufferSize));
+            List<Tile> occupied = tiledRimArea.findOccupiedTiles(
+            		testVehicle.getSpec().getCornerPoints(
+            				staticBufferSize, testVehicle.getPosition(), testVehicle.getHeading()));
+            
 
             // Make sure none of these tiles are reserved by someone else already
             for(Tile tile : occupied) {

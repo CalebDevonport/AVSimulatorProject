@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
@@ -93,7 +92,9 @@ public class TiledRimAreaTestClass extends JPanel {
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
 
         // Create a tiled rim area
-        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getMaximalCircle(), 4, roadBasedIntersection.getLaneNum());
+        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(),
+        		roadBasedIntersection.getCentralCircle(), roadBasedIntersection.getMaximalCircle(), 
+        		8, roadBasedIntersection.getLaneNum());
 
         tiledRimArea.getAllTilesById().forEach( tile -> {
             bgBuffer.draw(tile.getArea());
@@ -104,57 +105,65 @@ public class TiledRimAreaTestClass extends JPanel {
         // Create a vehicle
 
         // North Road
-        //ArcSegmentLane northVehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanes().get(4);
-        //Point2D northPositionOfVehicleFront = new Point2D.Double(
-        //        northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-        //        northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        //AIMBasicAutoVehicle northVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), northPositionOfVehicleFront,
-        //        northVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
-        //
+        ArcSegmentLane northVehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanesForLane(1).get(4);
+        Point2D northPositionOfVehicleFront = new Point2D.Double(
+                northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        AIMBasicAutoVehicle northVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), northPositionOfVehicleFront,
+                northVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
+        
         //// South Road
-        //ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanes().get(3);
-        //Point2D southPositionOfVehicleFront = new Point2D.Double(
-        //        southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-        //        southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        //AIMBasicAutoVehicle southVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), southPositionOfVehicleFront,
-        //        southVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-        //
+        ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanesForLane(1).get(3);
+        Point2D southPositionOfVehicleFront = new Point2D.Double(
+                southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        AIMBasicAutoVehicle southVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), southPositionOfVehicleFront,
+                southVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
+        
         //// East Road
-        //ArcSegmentLane eastVehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanes().get(3);
-        //Point2D eastPositionOfVehicleFront = new Point2D.Double(
-        //        eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-        //        eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        //AIMBasicAutoVehicle eastVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), eastPositionOfVehicleFront,
-        //        eastVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-        //
-        //
+        ArcSegmentLane eastVehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanesForLane(1).get(3);
+        Point2D eastPositionOfVehicleFront = new Point2D.Double(
+                eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        AIMBasicAutoVehicle eastVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), eastPositionOfVehicleFront,
+                eastVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
+        
+        
         //// West Road
-        //ArcSegmentLane westVehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanes().get(7);
-        //Point2D westPositionOfVehicleFront = new Point2D.Double(
-        //        westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
-        //        westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
-        //AIMBasicAutoVehicle westVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), westPositionOfVehicleFront,
-        //        westVehicleLane.getArcLaneDecomposition().get(0).getInitialHeading(),0,0,0,0, 0);
-        //
-        //
+        ArcSegmentLane westVehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanesForLane(1).get(7);
+        Point2D westPositionOfVehicleFront = new Point2D.Double(
+                westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
+                westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
+        AIMBasicAutoVehicle westVehicle = new AIMBasicAutoVehicle(VehicleSpecDatabase.getVehicleSpecByName("COUPE"), westPositionOfVehicleFront,
+                westVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
+        
+        
         //// Draw occupied lanes
 		//
-		//  bgBuffer.setPaint(Color.RED);
-		//  tiledRimArea.findOccupiedTiles(northVehicle.getShape()).forEach( tile -> {
-		//  bgBuffer.draw(tile.getArea()); });
-		//  tiledRimArea.findOccupiedTiles(southVehicle.getShape()).forEach( tile -> {
-		//	  bgBuffer.draw(tile.getArea()); });
-		//  tiledRimArea.findOccupiedTiles(eastVehicle.getShape()).forEach( tile -> {
-		//	  bgBuffer.draw(tile.getArea()); });
-		//  tiledRimArea.findOccupiedTiles(westVehicle.getShape()).forEach( tile -> {
-		//	  bgBuffer.draw(tile.getArea()); });
-		//  
+		  bgBuffer.setPaint(Color.RED);
+		  Point2D[] pointsNorth = northVehicle.getSpec().getCornerPoints(
+				  0.25, northVehicle.getPosition(), northVehicle.gaugeHeading());
+		  Point2D[] pointsSouth = southVehicle.getSpec().getCornerPoints(
+				  0.25, southVehicle.getPosition(), southVehicle.gaugeHeading());
+		  Point2D[] pointsEast = eastVehicle.getSpec().getCornerPoints(
+				  0.25, eastVehicle.getPosition(), eastVehicle.gaugeHeading());
+		  Point2D[] pointsWest = westVehicle.getSpec().getCornerPoints(
+				  0.25, westVehicle.getPosition(), westVehicle.gaugeHeading());
+		  tiledRimArea.findOccupiedTiles(pointsNorth).forEach( tile -> {
+			  bgBuffer.draw(tile.getArea()); });
+		  tiledRimArea.findOccupiedTiles(pointsSouth).forEach( tile -> {
+			  bgBuffer.draw(tile.getArea()); });
+		  tiledRimArea.findOccupiedTiles(pointsEast).forEach( tile -> {
+			  bgBuffer.draw(tile.getArea()); });
+		  tiledRimArea.findOccupiedTiles(pointsWest).forEach( tile -> {
+			  bgBuffer.draw(tile.getArea()); });
+		  
 		//  // Draw vehicle 
-		//  bgBuffer.setPaint(Color.BLACK);
-		//  bgBuffer.fill(northVehicle.getShape());
-		//  bgBuffer.fill(southVehicle.getShape());
-		//  bgBuffer.fill(eastVehicle.getShape());
-		//  bgBuffer.fill(westVehicle.getShape());
+		  bgBuffer.setPaint(Color.BLACK);
+		  bgBuffer.fill(northVehicle.getShape());
+		  bgBuffer.fill(southVehicle.getShape());
+		  bgBuffer.fill(eastVehicle.getShape());
+		  bgBuffer.fill(westVehicle.getShape());
     }
 
     private TexturePaint makeScaledTexture(BufferedImage image, double scale) {

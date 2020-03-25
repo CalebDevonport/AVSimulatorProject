@@ -45,9 +45,16 @@ public interface Intersection {
     Ellipse2D getMinimalCircle();
 
     /**
+     * Get the central circular region that encloses the intersection.
+     *
+     * @return the central circular region that encloses the intersection
+     */
+    Ellipse2D getCentralCircle();
+    
+    /**
      * Get the maximal circular region that encloses the intersection.
      *
-     * @return the minimal circular region that encloses the intersection
+     * @return the maximal circular region that encloses the intersection
      */
     Ellipse2D getMaximalCircle();
 

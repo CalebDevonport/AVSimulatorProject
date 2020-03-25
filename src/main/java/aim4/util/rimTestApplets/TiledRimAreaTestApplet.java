@@ -74,7 +74,7 @@ public class TiledRimAreaTestApplet extends Applet implements Runnable{
         RoadBasedIntersection roadBasedIntersection = new RoadBasedIntersection(map.getRoads());
 
         // Create a tiled rim area
-        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getMaximalCircle(), 6);
+        TiledRimArea tiledRimArea = new TiledRimArea(roadBasedIntersection.getMinimalCircle(), roadBasedIntersection.getCentralCircle(), 6);
 
         tiledRimArea.getAllTilesById().forEach( tile -> {
             bgBuffer.draw(tile.getArea());
