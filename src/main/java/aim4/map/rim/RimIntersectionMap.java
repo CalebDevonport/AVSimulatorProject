@@ -1486,11 +1486,15 @@ public class RimIntersectionMap implements BasicRIMIntersectionMap {
 
         // Make spawn points only on the first line lane of each road
         for (Road road : horizontalRoads) {
-            horizontalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane(0)));
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+        		horizontalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane(i)));	
+        	}
         }
 
         for (Road road : verticalRoads) {
-            verticalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane(0)));
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+        		verticalSpawnPoints.add(makeSpawnPoint(initTime, road.getFirstLane(i)));	
+        	}
         }
 
         spawnPoints.addAll(horizontalSpawnPoints);

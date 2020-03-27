@@ -67,6 +67,13 @@ public interface Intersection {
     List<Road> getRoads();
 
     /**
+     * Get the Roads incident to the space governed by this intersection by lane it contains.
+     *
+     * @return the roads managed by this intersection.
+     */
+    Road getRoadByLane(Lane lane);
+    
+    /**
      * Get the Lanes incident to the space governed by this intersection.
      *
      * @return  the lanes managed by this intersection.

@@ -204,9 +204,12 @@ public class RoadBasedIntersection implements Intersection {
         Area areaOfConnection = new Area();
         for (Road road: roads){
             //TODO: Make this dynamic based on map
-            for (int index = 1; index <= 7; index ++){
-                areaOfConnection.add(new Area(road.getContinuousLanesForLane(0).get(index).getShape()));
-            }
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+        		for (int index = 1; index <= 7; index ++){
+                    areaOfConnection.add(new Area(road.getContinuousLanesForLane(i).get(index).getShape()));
+                }
+        	}
+            
         }
         this.area = areaOfConnection;
         // todo: take areaPlus different than area

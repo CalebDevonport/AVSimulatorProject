@@ -78,7 +78,9 @@ public class RoadBasedTrackModel implements TrackModel {
 
             for(Road exitRoad : intersection.getExitRoads()) {
                 List<Lane> exitLanes = new ArrayList<Lane>();
-                exitLanes.add(exitRoad.getExitApproachLane(0));
+                for (int i = 0; i < exitRoad.getContinuousLanes().size(); i++) {
+                	 exitLanes.add(exitRoad.getExitApproachLane(i));
+                }
                 // Now put them in the list for entryLane
                 exitPriorities.put(exitRoad, exitLanes);
             }

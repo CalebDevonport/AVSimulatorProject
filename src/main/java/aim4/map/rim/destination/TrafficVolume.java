@@ -81,9 +81,10 @@ public class TrafficVolume {
                 if (road.getName().equals(roadNameTranslation.get(roadName))) {
                     roadToMiddleLanes.put(roadName, new LinkedList<Lane>());
 
-                    Lane lane = road.getFirstLane();
-                    roadToMiddleLanes.get(roadName).add(lane);
-
+                    for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+                    	Lane lane = road.getFirstLane(i);
+                        roadToMiddleLanes.get(roadName).add(lane);
+                    }
                 }
             }
         }
@@ -111,13 +112,15 @@ public class TrafficVolume {
             }
         }
         for (Road road : map.getRoads()) {
-            Lane lane = road.getFirstLane();
-            int laneId = lane.getId();
-            double v =
-                    leftTurnVolumes.get(laneId) +
-                            throughVolumes.get(laneId) +
-                            rightTurnVolumes.get(laneId);
-            totalVolumes.put(laneId, v);
+        	for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+	            Lane lane = road.getFirstLane(i);
+	            int laneId = lane.getId();
+	            double v =
+	                    leftTurnVolumes.get(laneId) +
+	                            throughVolumes.get(laneId) +
+	                            rightTurnVolumes.get(laneId);
+	            totalVolumes.put(laneId, v);
+        	}
         }
     }
 
