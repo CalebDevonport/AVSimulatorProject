@@ -158,7 +158,6 @@ public class RimIntersectionMap implements BasicRIMIntersectionMap {
         rows = 1; //1 set of horizontal roads (E-W)
         this.columns = columns;
         this.rows = rows;
-        lanesPerRoad = 2; // only one lane per road
         widthBetweenOppositeRoads = 0; // borders of roads coincide
         distanceBetween = 0; // the case for multiple intersections is not handled
 

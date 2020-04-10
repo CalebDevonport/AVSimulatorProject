@@ -134,7 +134,6 @@ public class GridRIMIntersectionMap extends GridAIMIntersectionMap implements Ba
         }
         this.columns = columns;
         this.rows = rows;
-        lanesPerRoad = 1; // only one lane per road
         distanceBetween = 0; // the case for multiple intersections is not handled
 
         // Generate the size of the map.

@@ -121,7 +121,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
         add(numOfRowSlider);
 
         lanesPerRoadSlider =
-                new LabeledSlider(1.0, 1,
+                new LabeledSlider(1.0, 2,
                         simSetup.getLanesPerRoad(),
                         1.0, 1.0,
                         "Number of Lanes per Road: %.0f",

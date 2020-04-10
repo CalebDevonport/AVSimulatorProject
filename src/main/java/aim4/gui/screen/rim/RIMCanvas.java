@@ -191,7 +191,9 @@ public class RIMCanvas extends Canvas{
             bgBuffer.setStroke(IM_OUTLINE_STROKE);
             bgBuffer.draw(im.getIntersection().getArea());
             bgBuffer.draw(im.getIntersection().getCentralCircle());
-            bgBuffer.draw(im.getIntersection().getMaximalCircle());
+            if(im.getIntersection().getRoads().get(0).getContinuousLanes().size() > 1) {
+            	bgBuffer.draw(im.getIntersection().getMaximalCircle());	
+            }
         }
 
     }

@@ -83,6 +83,8 @@ public class TiledRimArea {
 	private final ArrayList<Tile> idToTiles;
 	/** The number of tiles */
 	private int numberOfTiles;
+	/** The number of inner tiles */
+	private int numberOfInnerTiles;
 
 	/////////////////////////////////
 	// CLASS CONSTRUCTORS
@@ -92,8 +94,10 @@ public class TiledRimArea {
 	 * Create a tiled area
 	 *
 	 * @param minimalCircle the minimal circle of the intersection
+	 * @param centralCircle the central circle of the intersection
 	 * @param maximalCircle the maximal circle of the intersection
 	 * @param granularity   the factor by which the tiles are divided
+	 * @param laneNum 		the number of lanes per road
 	 */
 	public TiledRimArea(Ellipse2D minimalCircle, Ellipse2D centralCircle, Ellipse2D maximalCircle, double granularity,
 			int laneNum) {
@@ -102,7 +106,8 @@ public class TiledRimArea {
 		this.maximalCircle = maximalCircle;
 		this.granularity = granularity;
 		this.laneNum = laneNum;
-		numberOfTiles = (int) granularity * 2 * laneNum;
+		numberOfInnerTiles = (int) granularity * 2 * laneNum;
+		numberOfTiles = numberOfInnerTiles;
 		idToTiles = new ArrayList<Tile>(numberOfTiles);
 		createTiles();
 	}
@@ -120,11 +125,16 @@ public class TiledRimArea {
 		double minimalRadius = minimalCircle.getWidth() / 2;
 		// The radius of the central circle
 		double centralRadius = centralCircle.getWidth() / 2;
+		
 		// The radius of the maximal circle
-		double maximalRadius = maximalCircle.getWidth() / 2;
+		double maximalRadius = 0;
+		if (maximalCircle != null) {
+			maximalRadius = maximalCircle.getWidth() / 2;
+		}
+		
 
 		// Construct the tiles starting from zero angle
-		for (int id = 0; id < numberOfTiles; id++) {
+		for (int id = 0; id < numberOfInnerTiles / laneNum; id++) {
 			Arc2D minimalArc = new Arc2D.Double();
 			Arc2D centralArc = new Arc2D.Double();
 			Arc2D maximalArc = new Arc2D.Double();
@@ -135,7 +145,6 @@ public class TiledRimArea {
 			// Find minimal and maximal arc
 			minimalArc.setArcByCenter(origin.getX(), origin.getY(), minimalRadius, startAngle, angle, 0);
 			centralArc.setArcByCenter(origin.getX(), origin.getY(), centralRadius, startAngle + angle, -angle, 0);
-			maximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius, startAngle, angle, 0);
 
 			// Create tile shape
 			GeneralPath tileShape = new GeneralPath();
@@ -145,9 +154,10 @@ public class TiledRimArea {
 			tileShape.lineTo(centralArc.getStartPoint().getX(), centralArc.getStartPoint().getY());
 			tileShape.append(centralArc, true);
 
-			idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id));
-
+			idToTiles.add(new Tile(new Area(tileShape), startAngle, angle, id * 2));
+			
 			if (laneNum == 2) {
+				maximalArc.setArcByCenter(origin.getX(), origin.getY(), maximalRadius, startAngle, angle, 0);
 				GeneralPath tileShape2 = new GeneralPath();
 				tileShape2.moveTo(maximalArc.getEndPoint().getX(), maximalArc.getEndPoint().getY());
 				tileShape2.lineTo(centralArc.getStartPoint().getX(), centralArc.getStartPoint().getY());
@@ -155,7 +165,7 @@ public class TiledRimArea {
 				tileShape2.lineTo(maximalArc.getStartPoint().getX(), maximalArc.getStartPoint().getY());
 				tileShape2.append(maximalArc, true);
 
-				idToTiles.add(new Tile(new Area(tileShape2), startAngle, angle, id));
+				idToTiles.add(new Tile(new Area(tileShape2), startAngle, angle, (id * 2) + 1));
 			}
 		}
 
@@ -164,12 +174,56 @@ public class TiledRimArea {
 			createEntryTiles(27.0, road);
 			createExitTiles(27.0, road);
 		}
+		
+//		Tile tile25 = idToTiles.get(25);
+//		Tile tile26 = idToTiles.get(26);
+//		Tile tile48 = idToTiles.get(48);
+		
+		
+//		for (int j = idToTiles.size() - 1; j > -1; j--) {
+//			idToTiles.remove(j);
+//		}
+//		Area newArea = tile25.getArea();
+//		Area area47 = tile47.getArea();
+//		Area newArea2 = newArea;
+//		newArea.intersect(area47);
+////		area47.intersect(newArea);
+//		newArea = newArea2)
+//		tile25.getArea().intersect(tile48.getArea());
+//		Area newArea = tile25.getArea();
+//		idToTiles.add(newArea, 25.0, 25.0, 100);
+		
+//		idToTiles.add(tile47);
+		
+//		idToTiles.add(new Tile(newArea, tile48.startAngle, tile48.angle, idToTiles.get(63).id + 1));
+//		idToTiles.remove(31);
+//		idToTiles.remove(25);
+//		idToTiles.remove(23);
+//		idToTiles.remove(17);
+//		idToTiles.remove(15);
+//		idToTiles.remove(9);
+//		idToTiles.remove(7);
+//		idToTiles.remove(1);
+		
+		
+		
+		
+		
+		
+		
+//		idToTiles.remove(47);
+//		idToTiles.remove(47);
+//		idToTiles.remove(36);
+//		idToTiles.remove(4);
+//		createEntryTiles(27.0, Debug.currentRimMap.getRoads().get(2));
+//		idToTiles.remove(1);
+//		createExitTiles(27.0, road);
 
 	}
 
 	private void createEntryTiles(double angle, Road road) {
 
-		for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+		for (int i = 0; i < laneNum; i++) {
 			// The approach entry lane to be divided
 			ArcSegmentLane approachEntryLane = (ArcSegmentLane) road.getEntryApproachLane(i);
 
@@ -211,7 +265,7 @@ public class TiledRimArea {
 
 	private void createExitTiles(double angle, Road road) {
 
-		for (int i = 0; i < road.getContinuousLanes().size(); i++) {
+		for (int i = 0; i < laneNum; i++) {
 			// The approach exit lane to be divided
 			ArcSegmentLane approachExitLane = (ArcSegmentLane) road.getExitApproachLane(i);
 

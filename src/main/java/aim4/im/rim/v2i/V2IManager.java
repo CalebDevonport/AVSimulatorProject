@@ -135,7 +135,8 @@ public class V2IManager extends IntersectionManager implements V2IManagerCallbac
         // Set up the reservation grid
         this.tiledRimArea = new TiledRimArea(intersection.getMinimalCircle(), intersection.getCentralCircle(), 
         		intersection.getMaximalCircle(), config.getGranularity(), intersection.getLaneNum());
-        this.reservationGrid = new ReservationGrid(tiledRimArea.getGranularity(), config.getGridTimeStep());
+        this.reservationGrid = new ReservationGrid(tiledRimArea.getGranularity(), 
+        											tiledRimArea.getNumberOfTiles(), config.getGridTimeStep());
         this.reservationGridManager = new ReservationGridManager(config,
                 intersection,
                 tiledRimArea,

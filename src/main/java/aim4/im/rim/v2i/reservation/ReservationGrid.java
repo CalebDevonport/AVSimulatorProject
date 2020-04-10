@@ -81,9 +81,9 @@ public class ReservationGrid extends ReservationArray{
      * @param granularity  the granularity of the map
      * @param gridTimeStep  the time step.
      */
-    public ReservationGrid(double granularity, double gridTimeStep) {
+    public ReservationGrid(double granularity, int numberOfTiles, double gridTimeStep) {
         //TODO: Make this depend on the map
-        super(2 * (int) granularity + 16); // 2 tiles per entrance per lane
+        super(numberOfTiles);
         this.granularity = granularity;
         this.gridTimeStep = gridTimeStep;
     }

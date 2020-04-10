@@ -342,6 +342,9 @@ public class RoadBasedIntersection implements Intersection {
      * Find the maximal circular region that represents the intersection.
      */
     private Ellipse2D findMaximalCircle(Point2D centroid, List<Road> roads) {
+    	if (roads.get(0).getContinuousLanes().size() < 2) {
+    		return null;
+    	}
         ArcSegmentLane outsideArcLane = (ArcSegmentLane) roads.get(0).getContinuousLanesForLane(1).get(3);
         // The radius of the circle will be the radius of the right border of every inside arc
         double maximalRadius = outsideArcLane.rightBorder().getWidth();
