@@ -84,8 +84,7 @@ public class TiledRimArea {
 	/** The number of tiles */
 	private int numberOfTiles;
 	/** The number of inner tiles */
-	private int numberOfInnerTiles;
-
+	private int numberOfInnerTiles; 
 	/////////////////////////////////
 	// CLASS CONSTRUCTORS
 	/////////////////////////////////
@@ -174,53 +173,177 @@ public class TiledRimArea {
 			createEntryTiles(27.0, road);
 			createExitTiles(27.0, road);
 		}
-		
-//		Tile tile25 = idToTiles.get(25);
-//		Tile tile26 = idToTiles.get(26);
-//		Tile tile48 = idToTiles.get(48);
-		
-		
-//		for (int j = idToTiles.size() - 1; j > -1; j--) {
-//			idToTiles.remove(j);
+//		if (laneNum == 2) {
+//			formatTiles();	
 //		}
-//		Area newArea = tile25.getArea();
-//		Area area47 = tile47.getArea();
-//		Area newArea2 = newArea;
-//		newArea.intersect(area47);
-////		area47.intersect(newArea);
-//		newArea = newArea2)
-//		tile25.getArea().intersect(tile48.getArea());
-//		Area newArea = tile25.getArea();
-//		idToTiles.add(newArea, 25.0, 25.0, 100);
-		
-//		idToTiles.add(tile47);
-		
-//		idToTiles.add(new Tile(newArea, tile48.startAngle, tile48.angle, idToTiles.get(63).id + 1));
-//		idToTiles.remove(31);
-//		idToTiles.remove(25);
-//		idToTiles.remove(23);
-//		idToTiles.remove(17);
-//		idToTiles.remove(15);
-//		idToTiles.remove(9);
-//		idToTiles.remove(7);
-//		idToTiles.remove(1);
-		
-		
-		
-		
-		
-		
-		
-//		idToTiles.remove(47);
-//		idToTiles.remove(47);
-//		idToTiles.remove(36);
-//		idToTiles.remove(4);
-//		createEntryTiles(27.0, Debug.currentRimMap.getRoads().get(2));
-//		idToTiles.remove(1);
-//		createExitTiles(27.0, road);
-
 	}
 
+	private void formatTiles() {
+		int westEntryInnerNum = 1;
+		int northExitInnerNum = (int) this.granularity - 1;
+		int southEntryInnerNum = (int) this.granularity + 1;
+		int westExitInnerNum = (int) (2 * this.granularity) - 1;
+		int eastEntryInnerNum = (int) (2 * this.granularity) + 1;
+		int southExitInnerNum = (int) (3 * this.granularity) - 1;
+		int northEntryInnerNum = (int) (3 * this.granularity) + 1;
+		int eastExitInnerNum = (int) (4 * this.granularity) - 1;
+		int westEntryExtraInnerNum = 3;
+		int northExitExtraInnerNum = (int) this.granularity - 3;
+		int southEntryExtraInnerNum = (int) this.granularity + 3;
+		int westExitExtraInnerNum = (int) (2 * this.granularity) - 3;
+		int eastEntryExtraInnerNum = (int) (2 * this.granularity) + 3;
+		int southExitExtraInnerNum = (int) (3 * this.granularity) - 3;
+		int northEntryExtraInnerNum = (int) (3 * this.granularity) + 3;
+		int eastExitExtraInnerNum = (int) (4 * this.granularity) - 3;
+		
+		
+		Tile westEntryTile = idToTiles.get(westEntryInnerNum);
+		Area westEntryArea = westEntryTile.getArea();
+		int westEntryNum = this.numberOfInnerTiles + 8; 
+		westEntryArea.subtract(idToTiles.get(westEntryNum).getArea());
+		westEntryArea.subtract(idToTiles.get(westEntryNum + 1).getArea());
+		westEntryArea.subtract(idToTiles.get(westEntryNum + 2).getArea());
+		westEntryArea.subtract(idToTiles.get(westEntryNum + 3).getArea());
+		idToTiles.set(westEntryInnerNum, new Tile(westEntryArea, westEntryTile.getStartAngle(), westEntryTile.startAngle, westEntryTile.id));
+		
+		Tile northExitTile = idToTiles.get(northExitInnerNum);
+		Area northExitArea = northExitTile.getArea();
+		int northExitNum = this.numberOfInnerTiles + 20; 
+		northExitArea.subtract(idToTiles.get(northExitNum).getArea());
+		northExitArea.subtract(idToTiles.get(northExitNum + 1).getArea());
+		northExitArea.subtract(idToTiles.get(northExitNum + 2).getArea());
+		northExitArea.subtract(idToTiles.get(northExitNum + 3).getArea());
+		idToTiles.set(northExitInnerNum, new Tile(northExitArea, northExitTile.getStartAngle(), northExitTile.startAngle, northExitTile.id));
+		
+		Tile southEntryTile = idToTiles.get(southEntryInnerNum);
+		Area southEntryArea = southEntryTile.getArea();
+		int southEntryNum = this.numberOfInnerTiles + 24; 
+		southEntryArea.subtract(idToTiles.get(southEntryNum).getArea());
+		southEntryArea.subtract(idToTiles.get(southEntryNum + 1).getArea());
+		southEntryArea.subtract(idToTiles.get(southEntryNum + 2).getArea());
+		southEntryArea.subtract(idToTiles.get(southEntryNum + 3).getArea());
+		idToTiles.set(southEntryInnerNum, new Tile(southEntryArea, southEntryTile.getStartAngle(), southEntryTile.startAngle, southEntryTile.id));
+		
+		Tile westExitTile = idToTiles.get(westExitInnerNum);
+		Area westExitArea = westExitTile.getArea();
+		int westExitNum = this.numberOfInnerTiles + 12; 
+		westExitArea.subtract(idToTiles.get(westExitNum).getArea());
+		westExitArea.subtract(idToTiles.get(westExitNum + 1).getArea());
+		westExitArea.subtract(idToTiles.get(westExitNum + 2).getArea());
+		westExitArea.subtract(idToTiles.get(westExitNum + 3).getArea());
+		idToTiles.set(westExitInnerNum, new Tile(westExitArea, westExitTile.getStartAngle(), westExitTile.startAngle, westExitTile.id));
+		
+		Tile eastEntryTile = idToTiles.get(eastEntryInnerNum);
+		Area eastEntryArea = eastEntryTile.getArea();
+		int eastEntryNum = this.numberOfInnerTiles; 
+		eastEntryArea.subtract(idToTiles.get(eastEntryNum).getArea());
+		eastEntryArea.subtract(idToTiles.get(eastEntryNum + 1).getArea());
+		eastEntryArea.subtract(idToTiles.get(eastEntryNum + 2).getArea());
+		eastEntryArea.subtract(idToTiles.get(eastEntryNum + 3).getArea());
+		idToTiles.set(eastEntryInnerNum, new Tile(eastEntryArea, eastEntryTile.getStartAngle(), eastEntryTile.startAngle, eastEntryTile.id));
+		
+		Tile southExitTile = idToTiles.get(southExitInnerNum);
+		Area southExitArea = southExitTile.getArea();
+		int southExitNum = this.numberOfInnerTiles + 28; 
+		southExitArea.subtract(idToTiles.get(southExitNum).getArea());
+		southExitArea.subtract(idToTiles.get(southExitNum + 1).getArea());
+		southExitArea.subtract(idToTiles.get(southExitNum + 2).getArea());
+		southExitArea.subtract(idToTiles.get(southExitNum + 3).getArea());
+		idToTiles.set(southExitInnerNum, new Tile(southExitArea, southExitTile.getStartAngle(), southExitTile.startAngle, southExitTile.id));
+		
+		Tile northEntryTile = idToTiles.get(northEntryInnerNum);
+		Area northEntryArea = northEntryTile.getArea();
+		int northEntryNum = this.numberOfInnerTiles + 16; 
+		northEntryArea.subtract(idToTiles.get(northEntryNum).getArea());
+		northEntryArea.subtract(idToTiles.get(northEntryNum + 1).getArea());
+		northEntryArea.subtract(idToTiles.get(northEntryNum + 2).getArea());
+		northEntryArea.subtract(idToTiles.get(northEntryNum + 3).getArea());
+		idToTiles.set(northEntryInnerNum, new Tile(northEntryArea, northEntryTile.getStartAngle(), northEntryTile.startAngle, northEntryTile.id));
+		
+		Tile eastExitTile = idToTiles.get(eastExitInnerNum);
+		Area eastExitArea = eastExitTile.getArea();
+		int eastExitNum = this.numberOfInnerTiles + 4; 
+		eastExitArea.subtract(idToTiles.get(eastExitNum).getArea());
+		eastExitArea.subtract(idToTiles.get(eastExitNum + 1).getArea());
+		eastExitArea.subtract(idToTiles.get(eastExitNum + 2).getArea());
+		eastExitArea.subtract(idToTiles.get(eastExitNum + 3).getArea());
+		idToTiles.set(eastExitInnerNum, new Tile(eastExitArea, eastExitTile.getStartAngle(), eastExitTile.startAngle, eastExitTile.id));
+		
+		if (this.granularity > 6) {
+			Tile westEntryExtraTile = idToTiles.get(westEntryExtraInnerNum);
+			Area westEntryExtraArea = westEntryExtraTile.getArea();
+			int westEntryExtraNum = this.numberOfInnerTiles + 8; 
+			westEntryExtraArea.subtract(idToTiles.get(westEntryExtraNum).getArea());
+			westEntryExtraArea.subtract(idToTiles.get(westEntryExtraNum + 1).getArea());
+			westEntryExtraArea.subtract(idToTiles.get(westEntryExtraNum + 2).getArea());
+			westEntryExtraArea.subtract(idToTiles.get(westEntryExtraNum + 3).getArea());
+			idToTiles.set(westEntryExtraInnerNum, new Tile(westEntryExtraArea, westEntryExtraTile.getStartAngle(), westEntryExtraTile.startAngle, westEntryExtraTile.id));
+			
+			Tile northExitExtraTile = idToTiles.get(northExitExtraInnerNum);
+			Area northExitExtraArea = northExitExtraTile.getArea();
+			int northExitExtraNum = this.numberOfInnerTiles + 20; 
+			northExitExtraArea.subtract(idToTiles.get(northExitExtraNum).getArea());
+			northExitExtraArea.subtract(idToTiles.get(northExitExtraNum + 1).getArea());
+			northExitExtraArea.subtract(idToTiles.get(northExitExtraNum + 2).getArea());
+			northExitExtraArea.subtract(idToTiles.get(northExitExtraNum + 3).getArea());
+			idToTiles.set(northExitExtraInnerNum, new Tile(northExitExtraArea, northExitExtraTile.getStartAngle(), northExitExtraTile.startAngle, northExitExtraTile.id));
+			
+			Tile southEntryExtraTile = idToTiles.get(southEntryExtraInnerNum);
+			Area southEntryExtraArea = southEntryExtraTile.getArea();
+			int southEntryExtraNum = this.numberOfInnerTiles + 24; 
+			southEntryExtraArea.subtract(idToTiles.get(southEntryExtraNum).getArea());
+			southEntryExtraArea.subtract(idToTiles.get(southEntryExtraNum + 1).getArea());
+			southEntryExtraArea.subtract(idToTiles.get(southEntryExtraNum + 2).getArea());
+			southEntryExtraArea.subtract(idToTiles.get(southEntryExtraNum + 3).getArea());
+			idToTiles.set(southEntryExtraInnerNum, new Tile(southEntryExtraArea, southEntryExtraTile.getStartAngle(), southEntryExtraTile.startAngle, southEntryExtraTile.id));
+			
+			Tile westExitExtraTile = idToTiles.get(westExitExtraInnerNum);
+			Area westExitExtraArea = westExitExtraTile.getArea();
+			int westExitExtraNum = this.numberOfInnerTiles + 12; 
+			westExitExtraArea.subtract(idToTiles.get(westExitExtraNum).getArea());
+			westExitExtraArea.subtract(idToTiles.get(westExitExtraNum + 1).getArea());
+			westExitExtraArea.subtract(idToTiles.get(westExitExtraNum + 2).getArea());
+			westExitExtraArea.subtract(idToTiles.get(westExitExtraNum + 3).getArea());
+			idToTiles.add(new Tile(westExitExtraArea, westExitExtraTile.getStartAngle(), westExitExtraTile.startAngle, westExitExtraTile.id));
+			
+			Tile eastEntryExtraTile = idToTiles.get(eastEntryExtraInnerNum);
+			Area eastEntryExtraArea = eastEntryExtraTile.getArea();
+			int eastEntryExtraNum = this.numberOfInnerTiles; 
+			eastEntryExtraArea.subtract(idToTiles.get(eastEntryExtraNum).getArea());
+			eastEntryExtraArea.subtract(idToTiles.get(eastEntryExtraNum + 1).getArea());
+			eastEntryExtraArea.subtract(idToTiles.get(eastEntryExtraNum + 2).getArea());
+			eastEntryExtraArea.subtract(idToTiles.get(eastEntryExtraNum + 3).getArea());
+			idToTiles.set(eastEntryExtraInnerNum, new Tile(eastEntryExtraArea, eastEntryExtraTile.getStartAngle(), eastEntryExtraTile.startAngle, eastEntryExtraTile.id));
+			
+			Tile southExitExtraTile = idToTiles.get(southExitExtraInnerNum);
+			Area southExitExtraArea = southExitExtraTile.getArea();
+			int southExitExtraNum = this.numberOfInnerTiles + 28; 
+			southExitExtraArea.subtract(idToTiles.get(southExitExtraNum).getArea());
+			southExitExtraArea.subtract(idToTiles.get(southExitExtraNum + 1).getArea());
+			southExitExtraArea.subtract(idToTiles.get(southExitExtraNum + 2).getArea());
+			southExitExtraArea.subtract(idToTiles.get(southExitExtraNum + 3).getArea());
+			idToTiles.set(southExitExtraInnerNum, new Tile(southExitExtraArea, southExitExtraTile.getStartAngle(), southExitExtraTile.startAngle, southExitExtraTile.id));
+			
+			Tile northEntryExtraTile = idToTiles.get(northEntryExtraInnerNum);
+			Area northEntryExtraArea = northEntryExtraTile.getArea();
+			int northEntryExtraNum = this.numberOfInnerTiles + 16; 
+			northEntryExtraArea.subtract(idToTiles.get(northEntryExtraNum).getArea());
+			northEntryExtraArea.subtract(idToTiles.get(northEntryExtraNum + 1).getArea());
+			northEntryExtraArea.subtract(idToTiles.get(northEntryExtraNum + 2).getArea());
+			northEntryExtraArea.subtract(idToTiles.get(northEntryExtraNum + 3).getArea());
+			idToTiles.set(northEntryExtraInnerNum, new Tile(northEntryExtraArea, northEntryExtraTile.getStartAngle(), northEntryExtraTile.startAngle, northEntryExtraTile.id));
+			
+			Tile eastExitExtraTile = idToTiles.get(eastExitExtraInnerNum);
+			Area eastExitExtraArea = eastExitExtraTile.getArea();
+			int eastExitExtraNum = this.numberOfInnerTiles + 4; 
+			eastExitExtraArea.subtract(idToTiles.get(eastExitExtraNum).getArea());
+			eastExitExtraArea.subtract(idToTiles.get(eastExitExtraNum + 1).getArea());
+			eastExitExtraArea.subtract(idToTiles.get(eastExitExtraNum + 2).getArea());
+			eastExitExtraArea.subtract(idToTiles.get(eastExitExtraNum + 3).getArea());
+			idToTiles.set(eastExitExtraInnerNum, new Tile(eastExitExtraArea, eastExitExtraTile.getStartAngle(), eastExitExtraTile.startAngle, eastExitExtraTile.id));
+		}
+	}
+	
 	private void createEntryTiles(double angle, Road road) {
 
 		for (int i = 0; i < laneNum; i++) {
