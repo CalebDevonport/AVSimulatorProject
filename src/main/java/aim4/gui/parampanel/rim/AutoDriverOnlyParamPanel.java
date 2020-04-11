@@ -73,7 +73,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
         add(trafficRateSlider);
 
         roundaboutDiameterSlider =
-                new LabeledSlider(30.0, 45.0,
+                new LabeledSlider(30.0, 65.0,
                         simSetup.getRoundaboutDiameter(),
                         35.0, 1.0,
                         "Roundabout diameter: %.0f meters",

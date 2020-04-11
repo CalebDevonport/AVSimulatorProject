@@ -261,7 +261,7 @@ public class AutoDriverOnlySimulator implements RIMSimulator{
         double minDistance = -1.0;
 
         for(Road road : basicRIMIntersectionMap.getRoads()) {
-            for(Lane lane : road.getContinuousLanes()) {
+            for(Lane lane : road.getAllContinuousLanes()) {
                 double d = lane.nearestDistance(pos);
                 if (minLane == null || d < minDistance) {
                     minLane = lane;

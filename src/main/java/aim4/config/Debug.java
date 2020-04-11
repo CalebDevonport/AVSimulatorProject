@@ -267,7 +267,7 @@ public class Debug {
   /**
    * Whether or not the simulator checks for collisions during a simulation.
    */
-  public static final boolean CHECK_FOR_COLLISIONS = false;
+  public static final boolean CHECK_FOR_COLLISIONS = true;
 
 
   /////////////////////////////////
