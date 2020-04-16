@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map;
 
+import aim4.map.lane.ArcSegmentLane;
 import aim4.map.lane.Lane;
 
 import java.util.ArrayList;
@@ -314,6 +315,15 @@ public class Road {
     }
     continuousLanes.get(laneNum).add(lane);
   }
+  
+  public int getLaneIndexFromLane(Lane lane) {
+	  for (int i = 0; i < getContinuousLanes().size(); i++) {
+		  if (getContinuousLanesForLane(i).contains(lane)) {
+			  return i;
+		  }
+	  }
+	  return -1;
+  }
 
   /**
    * Get the name of this Road. An alias for {@link #getName()}.
@@ -338,5 +348,26 @@ public class Road {
     for(int i = 0; i < laneNum; i++)  {
       continuousLanes.add(new ArrayList<Lane>());
     }
+  }
+  
+  public int findLaneIndex(Lane lane) {
+  	int laneIndex = -1;
+  	for (int i = 0; i < this.getAllContinuousLanes().size(); i++) {
+  		if (this.getAllContinuousLanes().get(i).equals(lane)) {
+  			laneIndex = this.getLaneIndexFromLane(lane);
+  			return laneIndex;
+  		}
+  		if (this.getAllContinuousLanes().get(i) instanceof ArcSegmentLane) {
+  			ArcSegmentLane arcLane = ((ArcSegmentLane) this.getAllContinuousLanes().get(i));
+  			for (int j = 0; j < arcLane.getArcLaneDecomposition().size(); j++) {
+  				if (arcLane.getArcLaneDecomposition().get(j).equals(lane)) {
+  					laneIndex = this.getLaneIndexFromLane(arcLane);
+  	    			return laneIndex;
+  				}
+  			}
+  		}
+  	}
+  	
+  	return laneIndex;
   }
 }

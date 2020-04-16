@@ -67,6 +67,9 @@ public class CrashTestDummy extends BasicDriver {
 
         isFinalLane = getCurrentLane() == departureLane;
 
+        Road currentRoad = ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(getCurrentLane());
+        int laneIndex = currentRoad.findLaneIndex(getCurrentLane());
+        
         if (getCurrentLane() instanceof LineSegmentLane && departureLane instanceof ArcSegmentLane) {
             departureLineLane = ((ArcSegmentLane) departureLane).getArcLaneDecomposition().get(0);
             isFinalLane = getCurrentLane().getEndPoint().distance(departureLineLane.getStartPoint()) < 0.001;
@@ -90,7 +93,7 @@ public class CrashTestDummy extends BasicDriver {
                     Road departureRoad = ((RimIntersectionMap) currentRimMap).getRoadByDecompositionLane(departureLane);
 
                     // Means we may have to change the road
-                    ArcSegmentLane firstExitDepartureLane = ((ArcSegmentLane) departureRoad.getExitMergingLane(0));
+                    ArcSegmentLane firstExitDepartureLane = ((ArcSegmentLane) departureRoad.getExitMergingLane(laneIndex));
                     LineSegmentLane firstExitDepartureLineLane = firstExitDepartureLane.getArcLaneDecomposition().get(0);
 
                     if (getCurrentLane().getEndPoint().distance(firstExitDepartureLineLane.getStartPoint()) < 0.001) {
@@ -101,7 +104,7 @@ public class CrashTestDummy extends BasicDriver {
 
                     else {
                         // Check if we need to exit at the second roundabout exit
-                        ArcSegmentLane secondExitDepartureLane = ((ArcSegmentLane) departureRoad.getContinuousLanesForLane(0).get(4));
+                        ArcSegmentLane secondExitDepartureLane = ((ArcSegmentLane) departureRoad.getContinuousLanesForLane(laneIndex).get(4));
                         LineSegmentLane secondExitDepartureLineLane = secondExitDepartureLane.getArcLaneDecomposition().get(0);
 
                         if (getCurrentLane().getEndPoint().distance(secondExitDepartureLineLane.getStartPoint()) < 0.001) {
