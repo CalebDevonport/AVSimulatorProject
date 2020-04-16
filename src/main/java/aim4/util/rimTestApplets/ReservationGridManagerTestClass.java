@@ -20,7 +20,8 @@ import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.aim.AIMBasicAutoVehicle;
 
 import javax.imageio.ImageIO;
-import java.applet.Applet;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -34,7 +35,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ReservationGridManagerTestApplet extends Applet implements Runnable{
+public class ReservationGridManagerTestClass extends JPanel {
+	
     // Roundabout properties
     private static final double MAP_WIDTH =  250;
     private static final double MAP_HEIGHT =  250;
@@ -62,6 +64,14 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
     public static int[] xLeadPoints = new int[1000];
     public static int[] yLeadPoints = new int[1000];
 
+    public static void main(String[] args) {
+		JFrame frame = new JFrame("ReservationGridManagerTestClass");
+		frame.add(new ReservationGridManagerTestClass());
+		frame.setSize(1920, 1080);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+    
     public void paint(Graphics g) {
         // Create the RIM Map
         RimIntersectionMap map = new RimIntersectionMap(
@@ -74,11 +84,11 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                 LANE_WIDTH,
                 LANE_SPEED_LIMIT,
                 ROUNDABOUT_SPEED_LIMIT,
-                1,
+                2,
                 0,
                 0);
 
-        double scaleFactor = 18;
+        double scaleFactor = 14;
         Rectangle2D mapRect = new Rectangle2D.Double(0,0,MAP_WIDTH, MAP_HEIGHT);
         //Create Graphics2D object, cast g as a Graphics2D
         Graphics2D bgBuffer = (Graphics2D) g;
@@ -113,11 +123,11 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
                 roadBasedIntersection.getMinimalCircle(),
                 roadBasedIntersection.getCentralCircle(),
                 roadBasedIntersection.getMaximalCircle(),
-                GRANULARITY, 
+                GRANULARITY,
                 roadBasedIntersection.getLaneNum());
 
         // Assign the tiles times
-        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, SimConfig.GRID_TIME_STEP);
+        ReservationGrid reservationGrid = new ReservationGrid(GRANULARITY, tiledRimArea.getNumberOfTiles(), SimConfig.GRID_TIME_STEP);
 
         // Set arrival and departure lanes
         Lane arrivalLane = getNorthRoad().getEntryApproachLane(0);
@@ -158,7 +168,7 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
         for(Road road : map.getRoads()) {
             Area roadArea = new Area();
             // Find the union of the shapes of the lanes for each road
-            for(Lane lane : road.getContinuousLanes()) {
+            for(Lane lane : road.getAllContinuousLanes()) {
                 // Add the area from each constituent lane
                 roadArea.add(new Area(lane.getShape()));
             }
@@ -301,10 +311,10 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
         Area areaPlus = intersection.getAreaPlus();
         // The following must be true because the test vehicle
         // starts at the entry point of the intersection.
-        assertEquals(intersection.getEntryPoint(arrivalLane).getX(), testVehicle.getPointAtMiddleFront(
-                Constants.DOUBLE_EQUAL_PRECISION).getX(), Constants.DOUBLE_EQUAL_PRECISION);
-        assertEquals(intersection.getEntryPoint(arrivalLane).getY(), testVehicle.getPointAtMiddleFront(
-                Constants.DOUBLE_EQUAL_PRECISION).getY(), Constants.DOUBLE_EQUAL_PRECISION);
+//        assertEquals(intersection.getEntryPoint(arrivalLane).getX(), testVehicle.getPointAtMiddleFront(
+//                Constants.DOUBLE_EQUAL_PRECISION).getX(), Constants.DOUBLE_EQUAL_PRECISION);
+//        assertEquals(intersection.getEntryPoint(arrivalLane).getY(), testVehicle.getPointAtMiddleFront(
+//                Constants.DOUBLE_EQUAL_PRECISION).getY(), Constants.DOUBLE_EQUAL_PRECISION);
 
         // The list of tile-times that will make up this reservation
         List<ReservationGrid.TimeTile> workingList = new ArrayList<>();
@@ -332,7 +342,8 @@ public class ReservationGridManagerTestApplet extends Applet implements Runnable
             // Find out which tiles are occupied by the vehicle
             currentIntTime++;  // Record that we've moved forward one time step
             List<TiledRimArea.Tile> occupied =
-                    tiledRimArea.findOccupiedTiles(testVehicle.getShape(STATIC_BUFFER_SIZE));
+                    tiledRimArea.findOccupiedTiles(testVehicle.getSpec().getCornerPoints(
+                    		testVehicle.getPosition(), testVehicle.getHeading()));
 
             // Make sure none of these tiles are reserved by someone else already
             for(TiledRimArea.Tile tile : occupied) {
