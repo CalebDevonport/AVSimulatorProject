@@ -1,4 +1,4 @@
-package aim4.rim;
+package rim;
 
 import aim4.config.SimConfig;
 import aim4.gui.setuppanel.RIMSimSetupPanel;
@@ -13,6 +13,7 @@ import aim4.sim.simulator.rim.RIMOptimalSimulator;
 import aim4.util.Util;
 import org.json.simple.JSONArray;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import javax.swing.*;
 import java.io.File;
@@ -35,7 +36,7 @@ public class CreateRIMResults {
     private static final double ROUNDABOUT_SPEED_LIMIT = 10.0;
     private static final double STOP_DISTANCE = 1.0;
 
-    @Ignore
+    @Test
     public void createRatioTurnBasedSchedule_withTrafficVolumesCsv_savesJsons() {
 
         for (int i = 0; i < VOLUMES.length; i++) {
@@ -98,7 +99,7 @@ public class CreateRIMResults {
             //For every traffic volume
             for (int trafficVolumeIndex = 0; trafficVolumeIndex < VOLUMES.length; trafficVolumeIndex++) {
                 for (int repetition = 1; repetition <= 10; repetition++) {
-                    File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\volumes\\" +
+                    File uploadTrafficSchedule = new File("C:\\Users\\Caleb\\Documents\\Uni\\volumes\\" +
                             Integer.toString(VOLUMES[trafficVolumeIndex]) +
                             "_"+Double.toString(LANE_SPEED_LIMIT)+"ls_10.0rs_1800.0s_unbalanced" + "_" +Integer.toString(repetition)+ ".json");
                     RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
@@ -150,6 +151,7 @@ public class CreateRIMResults {
                     //Run the rim simulator and store the result
                     Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
                     while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+                    	double time = rimSimSetup.getSimulationTime();
                         rimSimSetup.step(SimConfig.TIME_STEP);
                     }
                     Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
@@ -181,7 +183,7 @@ public class CreateRIMResults {
 
                     //Save
                     final JFileChooser fc = new JFileChooser();
-                    fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
+                    fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
                             + "_" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
                             "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "s_1800.0s_unbalanced" + "_" +
                             Integer.toString(repetition)+ ".csv"));
@@ -207,7 +209,7 @@ public class CreateRIMResults {
 
             //Save the overall csv
             final JFileChooser fc = new JFileChooser();
-            fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
+            fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
                     "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced" + ".csv"));
             File file = fc.getSelectedFile();
             try {
@@ -277,7 +279,7 @@ public class CreateRIMResults {
         // For every traffic volume and chosen diameter
         for (int trafficVolumeIndex = 0; trafficVolumeIndex < VOLUMES.length; trafficVolumeIndex++) {
             for (int repetition = 1; repetition <= 10; repetition++) {
-                File uploadTrafficSchedule = new File("C:\\Users\\dydi_\\Documents\\volumes\\" +
+                File uploadTrafficSchedule = new File("C:\\Users\\Caleb\\Documents\\volumes\\" +
                         Integer.toString(VOLUMES[trafficVolumeIndex]) +
                         "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_10.0rs_1800.0s_unbalanced_"+Integer.toString(repetition)+".json");
                 RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
@@ -436,7 +438,7 @@ public class CreateRIMResults {
 
                 //Save
                 final JFileChooser fc = new JFileChooser();
-                fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\further_entry_point\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
+                fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\further_entry_point\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
                         + "_" + Double.toString(CHOSEN_DIAMETER) +
                         "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_1800.0s_unbalanced_chosenDiameter_" +
                         Integer.toString(repetition)+ ".csv"));
@@ -505,7 +507,7 @@ public class CreateRIMResults {
 
         //Save
         final JFileChooser fc = new JFileChooser();
-        fc.setSelectedFile(new File("C:\\Users\\dydi_\\Documents\\further_entry_point\\" + Double.toString(CHOSEN_DIAMETER) +
+        fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\further_entry_point\\" + Double.toString(CHOSEN_DIAMETER) +
                 "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced_chosen_diameter_10repetitions" + ".csv"));
         File file = fc.getSelectedFile();
         try {
@@ -518,7 +520,7 @@ public class CreateRIMResults {
 
     private void saveJSON(JSONArray schedule, int trafficVolume, int repetition) throws IOException {
         final JFileChooser fc = new JFileChooser();
-        String pathExtension = "C:\\Users\\dydi_\\Documents\\" + Integer.toString(trafficVolume) +
+        String pathExtension = "C:\\Users\\Caleb\\Documents\\Uni\\volumes\\" + Integer.toString(trafficVolume) +
                 "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_"
                 + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced_" + Integer.toString(repetition);
         String jsonString = schedule.toJSONString();
