@@ -28,6 +28,12 @@ public class TrafficVolume {
     private Map<Road, Road> leftTurnRoad;
     /** The right turn road */
     private Map<Road, Road> rightTurnRoad;
+    
+    private Map<String, List<Lane>> roadToMiddleLanes;
+    
+    private Map<String,String> roadNameTranslation;
+    
+    private Map<String, Road> roadNameToRoadObj;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -45,13 +51,13 @@ public class TrafficVolume {
         rightTurnVolumes = new HashMap<Integer, Double>();
         totalVolumes = new HashMap<Integer, Double>();
 
-        Map<String,String> roadNameTranslation = new HashMap<String,String>();
+        this.roadNameTranslation = new HashMap<String,String>();
         roadNameTranslation.put("NB", "1st Avenue N");
         roadNameTranslation.put("SB", "1st Avenue S");
         roadNameTranslation.put("EB", "1st Street E");
         roadNameTranslation.put("WB", "1st Street W");
 
-        Map<String, Road> roadNameToRoadObj = new HashMap<String, Road>();
+        this.roadNameToRoadObj = new HashMap<String, Road>();
         for (String roadName : roadNameTranslation.keySet()) {
             for (Road road : map.getRoads()) {
                 if (road.getName().equals(roadNameTranslation.get(roadName))) {
@@ -88,25 +94,34 @@ public class TrafficVolume {
                 }
             }
         }
+        
+        this.roadToMiddleLanes = roadToMiddleLanes;
 
         for (int i = 1; i < strs.size(); i++) {
             String[] tokens = strs.get(i).split(",");
 
             if (tokens[1].equals("Left")) {
-                for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
-                    leftTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
+            	int laneIndex = Integer.parseInt(tokens[3]);
+            	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+            		Lane lane = roadToMiddleLanes.get(tokens[0]).get(laneIndex);
+            		double volumeVal = Double.parseDouble(tokens[2]);
+            		double probVal = volumeVal / Constants.numOfSecondPerHour;
+                    leftTurnVolumes.put(lane.getId(), probVal);
+            	}
             } else if (tokens[1].equals("Through")) {
-                for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
-                    throughVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
+            	int laneIndex = Integer.parseInt(tokens[3]);
+            	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+	            	Lane lane = roadToMiddleLanes.get(tokens[0]).get(laneIndex);
+	            	throughVolumes.put(lane.getId(),
+	                        Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
+            	}
             } else if (tokens[1].equals("Right")) {
-                for (Lane lane : roadToMiddleLanes.get(tokens[0])) {
-                    rightTurnVolumes.put(lane.getId(),
-                            Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
-                }
+            	int laneIndex = Integer.parseInt(tokens[3]);
+            	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+	            	Lane lane = roadToMiddleLanes.get(tokens[0]).get(laneIndex);
+	            	rightTurnVolumes.put(lane.getId(),
+	                        Double.parseDouble(tokens[2]) / Constants.numOfSecondPerHour);
+            	}
             } else {
                 throw new RuntimeException("Invalid data file.\n");
             }
@@ -213,6 +228,18 @@ public class TrafficVolume {
      */
     public Road getRightTurnRoad(Road road) {
         return rightTurnRoad.get(road);
+    }
+    
+    public Map<String, List<Lane>> getRoadToMiddleLanes() {
+    	return this.roadToMiddleLanes;
+    }
+    
+    public Map<String,String> getRoadNameTranslation() {
+    	return this.roadNameTranslation;
+    }
+    
+    public Map<String, Road> getRoadNameToRoadObj() {
+    	return this.roadNameToRoadObj;
     }
 
     /////////////////////////////////

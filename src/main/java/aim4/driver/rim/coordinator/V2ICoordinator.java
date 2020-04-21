@@ -1062,7 +1062,7 @@ public class V2ICoordinator implements Coordinator{
             // Get the prioritized list of Lanes based on the arrival Lane
             List<Lane> lanePriorities =
                     driver.getCurrentRIM().getSortedDepartureLanes(arrivalLane, departureRoad);
-            assert lanePriorities.size() == 1;
+            assert lanePriorities.size() >= 1;
             return lanePriorities.get(0);
         }
 

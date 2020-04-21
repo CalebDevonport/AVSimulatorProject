@@ -324,6 +324,17 @@ public class Road {
 	  }
 	  return -1;
   }
+  
+  public int getLaneIndexFromLane(int laneId) {
+	  for (int i = 0; i < getContinuousLanes().size(); i++) {
+		  for (Lane lane: getContinuousLanesForLane(i)) {
+			  if (lane.getId() == laneId) {
+				  return i;
+			  }
+		  }
+	  }
+	  return -1;
+  }
 
   /**
    * Get the name of this Road. An alias for {@link #getName()}.
@@ -370,4 +381,14 @@ public class Road {
   	
   	return laneIndex;
   }
+  
+  public Lane getLaneFromId(int laneId) {
+	  for(Lane lane: this.lanes) {
+		  if (lane.getId() == laneId) {
+			  return lane;
+		  }
+	  }
+	  return null;
+  }
+  
 }

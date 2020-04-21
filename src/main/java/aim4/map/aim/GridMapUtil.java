@@ -398,8 +398,12 @@ public class GridMapUtil {
                 Double spawnTime = (Double) jsonSpawn.get("spawnTime");
                 String spawnArrivalRoadName = (String) jsonSpawn.get("arrivalRoadName");
                 String spawnDestinationRoadName = (String) jsonSpawn.get("destinationRoadName");
+                int laneIndex = Integer.parseInt((String) jsonSpawn.get("laneIndex"));
+                Lane spawnPointLane = Debug.currentAimMap.getRoad(spawnPointLaneId).getLaneFromId(spawnPointLaneId);
                 if (Debug.currentAimMap.getRoad(spawnPointLaneId).getName().compareTo(spawnArrivalRoadName) == 0) {
-                    schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));
+                	if (Debug.currentAimMap.getRoad(spawnPointLaneId).getLanes().indexOf(spawnPointLane) == laneIndex) {
+                		schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));	
+                	}
                 }
             }
             return schedule;

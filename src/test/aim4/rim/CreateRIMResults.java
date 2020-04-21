@@ -37,6 +37,69 @@ public class CreateRIMResults {
     private static final double STOP_DISTANCE = 1.0;
 
     @Test
+    public void createWorkingSchedule_withTrafficVolumesCsv_savesJsons() {
+
+    	int laneNum = 2;
+    	
+    	String laneNumString;
+    	if (laneNum == 1) {
+    		laneNumString = "single";
+    	}
+    	else if (laneNum == 2) {
+    		laneNumString = "double";
+    	}
+    	else {
+    		laneNumString = "";
+    	}
+    	
+    	for (int i = 0; i < VOLUMES.length; i++) {
+            for (int repetition = 1; repetition <= 10; repetition++) {
+		        String trafficLevelVolumeName = 
+		        		"traffic_volumes_" + laneNumString + "lane" + Integer.toString(VOLUMES[i]) + ".csv";
+		        double timeLimit = TIME_LIMIT;
+		        double laneSpeedLimit = LANE_SPEED_LIMIT;
+		        double roundaboutSpeedLimit = ROUNDABOUT_SPEED_LIMIT;
+		        JSONArray schedule = RimMapUtil.createWorkingSpawnSchedule(
+		                trafficLevelVolumeName,
+		                timeLimit,
+		                1,
+		                1,
+		                CHOSEN_DIAMETER,
+		                20,
+		                4,
+		                3.014,
+		                laneSpeedLimit,
+		                roundaboutSpeedLimit,
+		                laneNum,
+		                0,
+		                0);
+		        try {
+		            saveJSON(schedule, VOLUMES[i], repetition, laneNumString);
+		        } catch (IOException ex) {
+		            String stackTraceMessage = "";
+		            for (StackTraceElement line : ex.getStackTrace())
+		                stackTraceMessage += line.toString() + "\n";
+		            String errorMessage = String.format(
+		                    "Error Occured whilst saving: %s\nStack Trace:\n%s",
+		                    ex.getLocalizedMessage(),
+		                    stackTraceMessage);
+		            throw new RuntimeException(ex);
+		        } catch (NullPointerException e1) {
+		            String stackTraceMessage = "";
+		            for (StackTraceElement line : e1.getStackTrace())
+		                stackTraceMessage += line.toString() + "\n";
+		            String errorMessage = String.format(
+		                    "Error Occured whilst opening csv file: %s\nStack Trace:\n%s",
+		                    e1.getLocalizedMessage(),
+		                    stackTraceMessage);
+		            throw new RuntimeException(e1);
+		        }
+            }
+    	}
+    }
+    
+    
+    @Ignore
     public void createRatioTurnBasedSchedule_withTrafficVolumesCsv_savesJsons() {
 
         for (int i = 0; i < VOLUMES.length; i++) {
@@ -86,6 +149,20 @@ public class CreateRIMResults {
 
     @Ignore
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
+    	
+    	int laneNum = 2;
+    	
+    	String laneNumString;
+    	if (laneNum == 1) {
+    		laneNumString = "single";
+    	}
+    	else if (laneNum == 2) {
+    		laneNumString = "double";
+    	}
+    	else {
+    		laneNumString = "";
+    	}
+    	
         //For every roundabout diameter
         for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < ROUNDABOUT_DIAMETER.length; roundaboutDiameterIndex++) {
             StringBuilder sb = new StringBuilder();
@@ -99,8 +176,8 @@ public class CreateRIMResults {
             //For every traffic volume
             for (int trafficVolumeIndex = 0; trafficVolumeIndex < VOLUMES.length; trafficVolumeIndex++) {
                 for (int repetition = 1; repetition <= 10; repetition++) {
-                    File uploadTrafficSchedule = new File("C:\\Users\\Caleb\\Documents\\Uni\\volumes\\" +
-                            Integer.toString(VOLUMES[trafficVolumeIndex]) +
+                	File uploadTrafficSchedule = new File("C:\\Users\\Caleb\\Documents\\Uni\\volumes\\" +
+                			laneNumString + "lane_" + Integer.toString(VOLUMES[trafficVolumeIndex]) +
                             "_"+Double.toString(LANE_SPEED_LIMIT)+"ls_10.0rs_1800.0s_unbalanced" + "_" +Integer.toString(repetition)+ ".json");
                     RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
                             1, // columns
@@ -111,7 +188,7 @@ public class CreateRIMResults {
                             3.014, // lane width
                             LANE_SPEED_LIMIT, // speed limit
                             ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
-                            1, // lanes per road
+                            laneNum, // lanes per road
                             1, // median size
                             150, // distance between
                             0.28, // traffic level
@@ -120,7 +197,7 @@ public class CreateRIMResults {
                             1, // rows
                             4, // lane width
                             LANE_SPEED_LIMIT, // speed limit
-                            1, // lanes per road
+                            laneNum, // lanes per road
                             1, // median size
                             150, // distance between
                             0.28, // traffic level
@@ -134,7 +211,7 @@ public class CreateRIMResults {
                     rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                     rimProtocolSimSetup.setNumOfColumns(1);
                     rimProtocolSimSetup.setNumOfRows(1);
-                    rimProtocolSimSetup.setLanesPerRoad(1);
+                    rimProtocolSimSetup.setLanesPerRoad(laneNum);
                     rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
                     // Set up rim Optimal policy Simulator
@@ -145,7 +222,7 @@ public class CreateRIMResults {
                     rimOptimalProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                     rimOptimalProtocolSimSetup.setNumOfColumns(1);
                     rimOptimalProtocolSimSetup.setNumOfRows(1);
-                    rimOptimalProtocolSimSetup.setLanesPerRoad(1);
+                    rimOptimalProtocolSimSetup.setLanesPerRoad(laneNum);
                     rimOptimalProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
                     //Run the rim simulator and store the result
@@ -183,7 +260,9 @@ public class CreateRIMResults {
 
                     //Save
                     final JFileChooser fc = new JFileChooser();
-                    fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
+                    fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\" +
+                    		laneNumString + "lane" + 
+                    		Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
                             + "_" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
                             "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "s_1800.0s_unbalanced" + "_" +
                             Integer.toString(repetition)+ ".csv"));
@@ -209,7 +288,9 @@ public class CreateRIMResults {
 
             //Save the overall csv
             final JFileChooser fc = new JFileChooser();
-            fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
+            fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\" +
+            		laneNumString + "lane" + 
+            		Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
                     "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced" + ".csv"));
             File file = fc.getSelectedFile();
             try {
@@ -518,9 +599,10 @@ public class CreateRIMResults {
 
     }
 
-    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition) throws IOException {
+    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition, String laneNum) throws IOException {
         final JFileChooser fc = new JFileChooser();
-        String pathExtension = "C:\\Users\\Caleb\\Documents\\Uni\\volumes\\" + Integer.toString(trafficVolume) +
+        String pathExtension = "C:\\Users\\Caleb\\Documents\\Uni\\volumes\\"
+        		+ laneNum + "lane_" + Integer.toString(trafficVolume) +
                 "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_"
                 + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced_" + Integer.toString(repetition);
         String jsonString = schedule.toJSONString();
@@ -535,6 +617,10 @@ public class CreateRIMResults {
             path = path.substring(0, path.length()) + ".json";
         }
         Files.write(Paths.get(path), writeList, Charset.forName("UTF-8"));
+    }
+    
+    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition) throws IOException {
+    	saveJSON(schedule, trafficVolume, repetition, "single");
     }
 
     private static String calculateAverageDelay(List<VehicleResult> vehicleResults, Result firstProtocolResult, Result secondProtocolResult) {

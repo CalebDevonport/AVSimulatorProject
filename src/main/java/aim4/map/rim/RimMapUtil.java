@@ -1,5 +1,6 @@
 package aim4.map.rim;
 
+import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.rim.RIMAutoDriver;
@@ -11,6 +12,7 @@ import aim4.im.rim.v2i.policy.AcceptAllPolicy;
 import aim4.im.rim.v2i.policy.BasePolicy;
 import aim4.im.rim.v2i.reservation.ReservationGridManager;
 import aim4.map.Road;
+import aim4.map.lane.Lane;
 import aim4.map.rim.destination.*;
 import aim4.sim.simulator.rim.helper.SensorInputHelper;
 import aim4.sim.simulator.rim.helper.SpawnHelper;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The utility class for RimIntersectionMap.
@@ -131,12 +134,7 @@ public class RimMapUtil {
          */
         public UniformSpawnSpecGenerator(double trafficLevel,
                                          DestinationSelector destinationSelector) {
-            int n = VehicleSpecDatabase.getNumOfSpec();
-            proportion = new ArrayList<Double>(n);
-            double p = 1.0 / n;
-            for(int i=0; i<n; i++) {
-                proportion.add(p);
-            }
+            proportion = getVehicleSpecProportion();
             this.destinationSelector = destinationSelector;
 
             prob = trafficLevel * SimConfig.SPAWN_TIME_STEP;
@@ -272,8 +270,11 @@ public class RimMapUtil {
                 Double spawnTime = (Double) jsonSpawn.get("spawnTime");
                 String spawnArrivalRoadName = (String) jsonSpawn.get("arrivalRoadName");
                 String spawnDestinationRoadName = (String) jsonSpawn.get("destinationRoadName");
+                int laneIndex = Integer.parseInt((String) jsonSpawn.get("laneIndex"));
                 if (Debug.currentRimMap.getRoad(spawnPointLaneId).getName().compareTo(spawnArrivalRoadName) == 0) {
-                    schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));
+                	if(Debug.currentRimMap.getRoad(spawnPointLaneId).getLaneIndexFromLane(spawnPointLaneId) == laneIndex) {
+                		schedule.add(new ScheduledSpawn(specName, spawnTime, spawnArrivalRoadName, spawnDestinationRoadName));	
+                	}
                 }
             }
             return schedule;
@@ -320,6 +321,136 @@ public class RimMapUtil {
         }
 
     }
+    
+ // SPAWN SCHEDULE GENERATOR //
+    @SuppressWarnings("unchecked")
+	public static JSONArray createWorkingSpawnSchedule(String trafficVolumeFileName, double timeLimit, int columns, int rows,
+                                                       double roundaboutDiameter, double entranceExitRadius, int splitFactor,
+                                                       double laneWidth, double laneSpeedLimit, double roundaboutSpeedLimit,
+                                                       int lanesPerRoad, double widthBetweenOppositeRoads, double distanceBetween) {
+        //Create Map to base the schedule on
+        RimIntersectionMap map = new RimIntersectionMap(
+                0, columns, rows, roundaboutDiameter, entranceExitRadius, splitFactor, laneWidth,
+                laneSpeedLimit, roundaboutSpeedLimit, lanesPerRoad, widthBetweenOppositeRoads, distanceBetween);
+        
+        TrafficVolume trafficVolume =
+                TrafficVolume.makeFromFile(map, trafficVolumeFileName);
+        
+        JSONArray schedule = new JSONArray();
+        
+        List<Double> proportion = getVehicleSpecProportion();
+        
+        List<String> strs = null;
+        try {
+            strs = Util.readFileToStrArray(trafficVolumeFileName);
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        if (strs != null) {
+        	for (int i = 1; i < strs.size(); i++) {
+                String[] tokens = strs.get(i).split(",");
+
+                if (tokens[1].equals("Left")) {
+                	int laneIndex = Integer.parseInt(tokens[3]);
+                	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+                		Lane lane = trafficVolume.getRoadToMiddleLanes().get(tokens[0]).get(laneIndex);
+                		
+                		Double spawnNum = Double.parseDouble(tokens[2]);
+                		
+                		for (int z = 0; z < spawnNum; z++) {
+                			double spawnTime = ThreadLocalRandom.current().nextDouble(0, 1800.0);
+                			
+                			int j = Util.randomIndex(proportion);
+                	        VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(j);
+                	        String vehicleName = vehicleSpec.getName();
+                	        
+                			JSONObject scheduledSpawn = new JSONObject();
+                			scheduledSpawn.put("specName", vehicleName);
+                            scheduledSpawn.put("spawnTime", spawnTime);
+                            String arrivalRoadName = trafficVolume.getRoadNameTranslation().get(tokens[0]);
+                            Road arrivalRoad = trafficVolume.getRoadNameToRoadObj().get(tokens[0]);
+                            Road departureRoad = trafficVolume.getLeftTurnRoad(arrivalRoad);
+                            String departureRoadName = departureRoad.getName();
+                            scheduledSpawn.put("arrivalRoadName",arrivalRoadName);
+                            scheduledSpawn.put("destinationRoadName", departureRoadName);
+                            scheduledSpawn.put("laneIndex", tokens[3]);
+                            schedule.add(scheduledSpawn);
+                		}
+                	}
+                }
+                
+                if (tokens[1].equals("Through")) {
+                	int laneIndex = Integer.parseInt(tokens[3]);
+                	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+                		Lane lane = trafficVolume.getRoadToMiddleLanes().get(tokens[0]).get(laneIndex);
+                		
+                		Double spawnNum = Double.parseDouble(tokens[2]);
+                		
+                		for (int z = 0; z < spawnNum; z++) {
+                			double spawnTime = ThreadLocalRandom.current().nextDouble(0, 1800.0);
+                			
+                			int j = Util.randomIndex(proportion);
+                	        VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(j);
+                	        String vehicleName = vehicleSpec.getName();
+                	        
+                			JSONObject scheduledSpawn = new JSONObject();
+                			scheduledSpawn.put("specName", vehicleName);
+                            scheduledSpawn.put("spawnTime", spawnTime);
+                            String arrivalRoadName = trafficVolume.getRoadNameTranslation().get(tokens[0]);
+                            String departureRoadName = arrivalRoadName;
+                            scheduledSpawn.put("arrivalRoadName",arrivalRoadName);
+                            scheduledSpawn.put("destinationRoadName", departureRoadName);
+                            scheduledSpawn.put("laneIndex", tokens[3]);
+                            schedule.add(scheduledSpawn);
+                		}
+                	}
+                }
+                
+                if (tokens[1].equals("Right")) {
+                	int laneIndex = Integer.parseInt(tokens[3]);
+                	if (laneIndex < map.getRoads().get(0).getContinuousLanes().size()) {
+                		Lane lane = trafficVolume.getRoadToMiddleLanes().get(tokens[0]).get(laneIndex);
+                		
+                		Double spawnNum = Double.parseDouble(tokens[2]);
+                		
+                		for (int z = 0; z < spawnNum; z++) {
+                			double spawnTime = ThreadLocalRandom.current().nextDouble(0, 1800.0);
+                			
+                			int j = Util.randomIndex(proportion);
+                	        VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(j);
+                	        String vehicleName = vehicleSpec.getName();
+                	        
+                			JSONObject scheduledSpawn = new JSONObject();
+                			scheduledSpawn.put("specName", vehicleName);
+                            scheduledSpawn.put("spawnTime", spawnTime);
+                            String arrivalRoadName = trafficVolume.getRoadNameTranslation().get(tokens[0]);
+                            Road arrivalRoad = trafficVolume.getRoadNameToRoadObj().get(tokens[0]);
+                            Road departureRoad = trafficVolume.getRightTurnRoad(arrivalRoad);
+                            String departureRoadName = departureRoad.getName();
+                            scheduledSpawn.put("arrivalRoadName",arrivalRoadName);
+                            scheduledSpawn.put("destinationRoadName", departureRoadName);
+                            scheduledSpawn.put("laneIndex", tokens[3]);
+                            schedule.add(scheduledSpawn);
+                		}
+                	}
+                }
+        	}
+        }
+        
+        Collections.sort( schedule, new Comparator<JSONObject>() {
+            private static final String KEY_NAME = "spawnTime";
+
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                Double valA = (Double) a.get(KEY_NAME);
+                Double valB = (Double) b.get(KEY_NAME);
+
+                return valA.compareTo(valB);
+            }
+        });
+        
+        return schedule;
+    }
 
     // SPAWN SCHEDULE GENERATOR //
     public static JSONArray createUniformSpawnSchedule(double trafficLevel, double timeLimit, int columns, int rows,
@@ -352,6 +483,9 @@ public class RimMapUtil {
                     scheduledSpawn.put("spawnTime", currentTime);
                     scheduledSpawn.put("arrivalRoadName",Debug.currentRimMap.getRoad(rimVehicleSimModel.getDriver().getCurrentLane().getId()).getName());
                     scheduledSpawn.put("destinationRoadName", ((RIMAutoDriver) rimVehicleSimModel.getDriver()).getDestination().getName());
+                    scheduledSpawn.put("laneIndex", 
+                    		Debug.currentRimMap.getRoad(rimVehicleSimModel.getDriver().getCurrentLane().getId())
+                    									.getLaneIndexFromLane(rimVehicleSimModel.getDriver().getCurrentLane()));
                     schedule.add(scheduledSpawn);
                 }
             }
@@ -438,5 +572,15 @@ public class RimMapUtil {
 
 
         return schedule;
+    }
+    
+    private static ArrayList<Double> getVehicleSpecProportion() {
+    	int n = VehicleSpecDatabase.getNumOfSpec();
+        ArrayList<Double> proportion = new ArrayList<Double>(n);
+        double p = 1.0 / n;
+        for(int i=0; i<n; i++) {
+            proportion.add(p);
+        }
+        return proportion;
     }
 }

@@ -208,6 +208,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                 double laneSpeedLimit = laneSpeedLimitSlider.getValue();
                 double roundaboutDiameter = roundaboutDiameterSlider.getValue();
                 double roundaboutSpeedLimit = roundaboutSpeedLimitSlider.getValue();
+                int lanesPerRoad = (int) lanesPerRoadSlider.getValue();
                 List<JSONArray> schedules = new ArrayList<JSONArray>();
                 JSONArray schedule = RimMapUtil.createUniformSpawnSchedule(
                         trafficLevel,
@@ -220,7 +221,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                         3.014,
                         laneSpeedLimit,
                         roundaboutSpeedLimit,
-                        1,
+                        lanesPerRoad,
                         0,
                         0);
                 schedules.add(schedule);
@@ -246,6 +247,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                     laneSpeedLimit = laneSpeedLimitSlider.getValue();
                     roundaboutDiameter = roundaboutDiameterSlider.getValue();
                     roundaboutSpeedLimit = roundaboutSpeedLimitSlider.getValue();
+                    lanesPerRoad = (int) lanesPerRoadSlider.getValue();
                     schedules = new ArrayList<JSONArray>();
                     schedule = RimMapUtil.createRatioSpawnSchedule(
                             trafficLevelVolumeName,
@@ -258,7 +260,7 @@ public class AutoDriverOnlyParamPanel extends JPanel implements ActionListener {
                             3.014,
                             laneSpeedLimit,
                             roundaboutSpeedLimit,
-                            1,
+                            lanesPerRoad,
                             0,
                             0);
                     schedules.add(schedule);
