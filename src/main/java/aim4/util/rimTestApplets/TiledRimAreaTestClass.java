@@ -64,7 +64,7 @@ public class TiledRimAreaTestClass extends JPanel {
                 LANE_WIDTH,
                 LANE_SPEED_LIMIT,
                 ROUNDABOUT_SPEED_LIMIT,
-                1,
+                2,
                 0,
                 0);
 
