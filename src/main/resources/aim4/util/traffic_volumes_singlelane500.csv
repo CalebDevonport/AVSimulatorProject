@@ -1,0 +1,13 @@
+Road,Directon,Volume,LaneIndex
+EB,Left,38,0
+EB,Right,38,0
+EB,Through,175,0
+WB,Left,38,0
+WB,Right,38,0
+WB,Through,175,0
+NB,Left,38,0
+NB,Right,38,0
+NB,Through,175,0
+SB,Left,38,0
+SB,Right,38,0
+SB,Through,175,0
