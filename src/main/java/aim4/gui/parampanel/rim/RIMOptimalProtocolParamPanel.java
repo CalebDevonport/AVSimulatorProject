@@ -76,7 +76,7 @@ public class RIMOptimalProtocolParamPanel extends JPanel implements ActionListen
         add(laneSpeedLimitSlider);
 
         roundaboutSpeedLimitSlider =
-                new LabeledSlider(0.0, 10.0,
+                new LabeledSlider(0.0, 13.0,
                         simSetup.getRoundaboutSpeedLimit(),
                         1.0, 1.0,
                         "Roundabout Speed Limit: %.0f meters/second",

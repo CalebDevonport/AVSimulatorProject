@@ -29,14 +29,16 @@ import java.util.List;
  */
 public class CreateRIMResults {
     private static final int[] VOLUMES = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
-    private static final double[] ROUNDABOUT_DIAMETER = {30.0, 35.0, 40.0, 45.0};
+    private static final double[] SINGLE_LANE_ROUNDABOUT_DIAMETER = {30.0, 35.0, 40.0, 45.0};
+    private static final double[] DOUBLE_LANE_ROUNDABOUT_DIAMETER = {50.0, 55.0, 60.0, 65.0};
     private static final double CHOSEN_DIAMETER = 30.0;
     private static final double TIME_LIMIT = 1800;
     private static final double LANE_SPEED_LIMIT = 25.0;
-    private static final double ROUNDABOUT_SPEED_LIMIT = 10.0;
+    private static final double SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT = 11.0;
+    private static final double DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT = 13.0;
     private static final double STOP_DISTANCE = 1.0;
 
-    @Test
+    @Ignore
     public void createWorkingSchedule_withTrafficVolumesCsv_savesJsons() {
 
     	int laneNum = 2;
@@ -52,13 +54,14 @@ public class CreateRIMResults {
     		laneNumString = "";
     	}
     	
+    	double roundaboutSpeedLimit = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT : DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT;
+    	
     	for (int i = 0; i < VOLUMES.length; i++) {
             for (int repetition = 1; repetition <= 10; repetition++) {
 		        String trafficLevelVolumeName = 
 		        		"traffic_volumes_" + laneNumString + "lane" + Integer.toString(VOLUMES[i]) + ".csv";
 		        double timeLimit = TIME_LIMIT;
 		        double laneSpeedLimit = LANE_SPEED_LIMIT;
-		        double roundaboutSpeedLimit = ROUNDABOUT_SPEED_LIMIT;
 		        JSONArray schedule = RimMapUtil.createWorkingSpawnSchedule(
 		                trafficLevelVolumeName,
 		                timeLimit,
@@ -107,7 +110,7 @@ public class CreateRIMResults {
                 String trafficLevelVolumeName = "traffic_volumes" + Integer.toString(VOLUMES[i]) + ".csv";
                 double timeLimit = TIME_LIMIT;
                 double laneSpeedLimit = LANE_SPEED_LIMIT;
-                double roundaboutSpeedLimit = ROUNDABOUT_SPEED_LIMIT;
+                double roundaboutSpeedLimit = SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT;
                 JSONArray schedule = RimMapUtil.createRatioSpawnSchedule(
                         trafficLevelVolumeName,
                         timeLimit,
@@ -147,10 +150,10 @@ public class CreateRIMResults {
         }
     }
 
-    @Ignore
+    @Test
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
     	
-    	int laneNum = 2;
+    	int laneNum = 1;
     	
     	String laneNumString;
     	if (laneNum == 1) {
@@ -163,8 +166,11 @@ public class CreateRIMResults {
     		laneNumString = "";
     	}
     	
+    	double[] roundaboutDiameterArray = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_DIAMETER : DOUBLE_LANE_ROUNDABOUT_DIAMETER;
+    	double roundaboutSpeedLimit = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT : DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT;
+    	
         //For every roundabout diameter
-        for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < ROUNDABOUT_DIAMETER.length; roundaboutDiameterIndex++) {
+    	for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < roundaboutDiameterArray.length; roundaboutDiameterIndex++) {
             StringBuilder sb = new StringBuilder();
             //Global Stats for the overall csv
             sb.append("Traffic Volume");
@@ -182,12 +188,12 @@ public class CreateRIMResults {
                     RIMSimSetupPanel rimSimSetupPanel = new RIMSimSetupPanel(new BasicSimSetup(
                             1, // columns
                             1, // rows
-                            ROUNDABOUT_DIAMETER[roundaboutDiameterIndex], // roundabout diameter
+                            roundaboutDiameterArray[roundaboutDiameterIndex], // roundabout diameter
                             20.0, // entrance & exit circle radius
                             4, // split factor
                             3.014, // lane width
                             LANE_SPEED_LIMIT, // speed limit
-                            ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
+                            roundaboutSpeedLimit, // roundabout speed limit
                             laneNum, // lanes per road
                             1, // median size
                             150, // distance between
@@ -205,9 +211,9 @@ public class CreateRIMResults {
                     ));
                     // Set up RIM Simulator
                     AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
-                    rimProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
+                    rimProtocolSimSetup.setRoundaboutDiameter(roundaboutDiameterArray[roundaboutDiameterIndex]);
                     rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                    rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                    rimProtocolSimSetup.setRoundaboutSpeedLimit(roundaboutSpeedLimit);
                     rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                     rimProtocolSimSetup.setNumOfColumns(1);
                     rimProtocolSimSetup.setNumOfRows(1);
@@ -216,9 +222,9 @@ public class CreateRIMResults {
 
                     // Set up rim Optimal policy Simulator
                     RIMOptimalSimSetup rimOptimalProtocolSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
-                    rimOptimalProtocolSimSetup.setRoundaboutDiameter(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]);
+                    rimOptimalProtocolSimSetup.setRoundaboutDiameter(roundaboutDiameterArray[roundaboutDiameterIndex]);
                     rimOptimalProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                    rimOptimalProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                    rimOptimalProtocolSimSetup.setRoundaboutSpeedLimit(roundaboutSpeedLimit);
                     rimOptimalProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                     rimOptimalProtocolSimSetup.setNumOfColumns(1);
                     rimOptimalProtocolSimSetup.setNumOfRows(1);
@@ -228,7 +234,6 @@ public class CreateRIMResults {
                     //Run the rim simulator and store the result
                     Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
                     while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
-                    	double time = rimSimSetup.getSimulationTime();
                         rimSimSetup.step(SimConfig.TIME_STEP);
                     }
                     Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
@@ -263,8 +268,8 @@ public class CreateRIMResults {
                     fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\" +
                     		laneNumString + "lane" + 
                     		Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
-                            + "_" + Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
-                            "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "s_1800.0s_unbalanced" + "_" +
+                            + "_" + Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) +
+                            "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(roundaboutSpeedLimit) + "s_1800.0s_unbalanced" + "_" +
                             Integer.toString(repetition)+ ".csv"));
                     File file = fc.getSelectedFile();
                     try {
@@ -290,8 +295,8 @@ public class CreateRIMResults {
             final JFileChooser fc = new JFileChooser();
             fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\" +
             		laneNumString + "lane" + 
-            		Double.toString(ROUNDABOUT_DIAMETER[roundaboutDiameterIndex]) +
-                    "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced" + ".csv"));
+            		Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) +
+                    "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(roundaboutSpeedLimit)+"rs_1800.0s_unbalanced" + ".csv"));
             File file = fc.getSelectedFile();
             try {
                 Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
