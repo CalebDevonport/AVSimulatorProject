@@ -2,6 +2,8 @@ package rim;
 
 import aim4.config.SimConfig;
 import aim4.gui.setuppanel.RIMSimSetupPanel;
+import aim4.map.Road;
+import aim4.map.lane.Lane;
 import aim4.map.rim.RimMapUtil;
 import aim4.sim.Simulator;
 import aim4.sim.results.Result;
@@ -11,7 +13,11 @@ import aim4.sim.simulator.aim.AIMOptimalSimulator;
 import aim4.sim.simulator.rim.AutoDriverOnlySimulator;
 import aim4.sim.simulator.rim.RIMOptimalSimulator;
 import aim4.util.Util;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
+
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /*
  Class used to generate the results needed for comparing RIM to AIM.
@@ -140,7 +147,7 @@ public class CreateRIMResults {
         }
     }
     
-    @Test
+    @Ignore
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
     	
     	int laneNum = 1;
@@ -361,7 +368,7 @@ public class CreateRIMResults {
                         4, // split factor
                         3.014, // lane width
                         LANE_SPEED_LIMIT, // speed limit
-                        ROUNDABOUT_SPEED_LIMIT, // roundabout speed limit
+                        roundaboutSpeedLimit, // roundabout speed limit
                         1, // lanes per road
                         1, // median size
                         150, // distance between
@@ -588,7 +595,134 @@ public class CreateRIMResults {
         }
 
     }
-
+    
+    @Test
+    public void QueuedVehicles() {
+    	
+		  int laneNum = 2;
+		  String laneNumString = getLaneNumString(laneNum);
+		  double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
+		  double[] roundaboutDiameterArray = getRoundaboutDiameterArray(laneNum);
+		  int roundaboutDiameterIndex = 3;
+		
+		  StringBuilder sb = new StringBuilder();
+		  sb = appendHeaders(sb);
+      
+		  int[] completedArray = new int[10];
+		  int completed = 0;
+		  int[] remainArray = new int[10];
+		  int remain = 0;
+		  
+		  int trafficVolumeIndex = 0;
+		  while (trafficVolumeIndex < VOLUMES.length) {
+	          for (int repetition = 1; repetition <= 10; repetition++) {		        	  
+	        	  String resultsCSV =  laneNumString + "lane" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour_" +
+	      			Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) + "m_" + Double.toString(LANE_SPEED_LIMIT)+"ls_" + 
+	      			Double.toString(roundaboutSpeedLimit) + "s_1800.0s_unbalanced" + "_" +Integer.toString(repetition)+ ".csv";
+	          
+	          List<String> strs = null;
+	          try {
+	  			strs = Util.readFileToStrArray(resultsCSV);
+	  		} catch (IOException e) {
+	      			// TODO Auto-generated catch block
+	      			e.printStackTrace();
+	  		}
+	          
+	          if (strs != null) {
+	        	  String[] tokens = strs.get(2).split(",");
+	        	  int rimCompleted = (int) Double.parseDouble(tokens[1]);
+	        	  completed += rimCompleted;
+	        	  int rimRemain = (int) Double.parseDouble(tokens[2]);
+	        	  int optimalRemain = (int) Double.parseDouble(tokens[6]);
+	        	  int actualRemain = rimRemain - optimalRemain;
+	        	  remain += actualRemain;
+	          
+	    	      sb = appendRow(
+	    	    		  sb, 
+	    	    		  (int) roundaboutDiameterArray[roundaboutDiameterIndex], 
+	    	    		  VOLUMES[trafficVolumeIndex], 
+	    	    		  repetition, 
+	    	    		  rimCompleted, 
+	    	    		  actualRemain
+		    		  );
+	              }
+	          }
+	          
+        		  completedArray[trafficVolumeIndex] = completed / 10;
+        		  completed = 0;
+	    		  remainArray[trafficVolumeIndex] = remain / 10;
+	    		  remain = 0;
+	    		  trafficVolumeIndex += 1;
+	      }
+		  
+		  if (completed != 0) {
+    		  completedArray[9] = completed / 10;
+    		  completed = 0;
+    	  }
+		  if (remain != 0) {
+    		  remainArray[9] = remain / 10;
+    		  remain = 0;
+    	  }
+		  
+		  sb = appendFinalValues(sb, "Completed Values", completedArray);
+		  sb = appendFinalValues(sb, "Remaining Values", remainArray);
+		  
+		  String CSVString = sb.toString();
+	      
+	      List<String> csvResultAsList = new ArrayList<String>();
+	      csvResultAsList.add(CSVString);
+	      
+	      final JFileChooser fc = new JFileChooser();
+	      fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\Stats\\" + laneNumString + roundaboutDiameterArray[roundaboutDiameterIndex] + ".csv"));
+	      File file = fc.getSelectedFile();
+	      try {
+	          Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
+	      } catch (IOException e1) {
+	          //nothing
+    	      }
+    }
+    
+    private StringBuilder appendHeaders(StringBuilder sb) {
+        //Global Stats
+        sb.append("Diameter");
+        sb.append(',');
+        sb.append("TrafficVolume");
+        sb.append(',');
+        sb.append("Repetition");
+        sb.append(',');
+        sb.append("Completed");
+        sb.append(',');
+        sb.append("Actual queue");
+        sb.append('\n');
+        return sb;
+    }
+    
+    private StringBuilder appendRow(StringBuilder sb, int diameter, int volume, int repetition, int completed, int queue) {
+        //Global Stats
+        sb.append(diameter);
+        sb.append(',');
+        sb.append(volume);
+        sb.append(',');
+        sb.append(volume);
+        sb.append(',');
+        sb.append(completed);
+        sb.append(',');
+        sb.append(queue);
+        sb.append('\n');
+        return sb;
+    }
+    
+    private StringBuilder appendFinalValues(StringBuilder sb, String header, int[] completedArray) {
+    	sb.append('\n');
+    	sb.append(header);
+    	sb.append('\n');
+    	for (int i = 0; i < completedArray.length; i++) {
+    		sb.append(completedArray[i]);
+    		sb.append(',');
+    	}
+    	return sb;
+    }
+    
     private void saveJSON(JSONArray schedule, int trafficVolume, int repetition, int laneNum) throws IOException {
     	String laneNumString = getLaneNumString(laneNum);
     	double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
