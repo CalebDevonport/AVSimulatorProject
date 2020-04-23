@@ -43,18 +43,8 @@ public class CreateRIMResults {
 
     	int laneNum = 2;
     	
-    	String laneNumString;
-    	if (laneNum == 1) {
-    		laneNumString = "single";
-    	}
-    	else if (laneNum == 2) {
-    		laneNumString = "double";
-    	}
-    	else {
-    		laneNumString = "";
-    	}
-    	
-    	double roundaboutSpeedLimit = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT : DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT;
+    	String laneNumString = getLaneNumString(laneNum);
+    	double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
     	
     	for (int i = 0; i < VOLUMES.length; i++) {
             for (int repetition = 1; repetition <= 10; repetition++) {
@@ -77,7 +67,7 @@ public class CreateRIMResults {
 		                0,
 		                0);
 		        try {
-		            saveJSON(schedule, VOLUMES[i], repetition, laneNumString);
+		            saveJSON(schedule, VOLUMES[i], repetition, laneNum);
 		        } catch (IOException ex) {
 		            String stackTraceMessage = "";
 		            for (StackTraceElement line : ex.getStackTrace())
@@ -149,25 +139,16 @@ public class CreateRIMResults {
             }
         }
     }
-
+    
     @Test
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
     	
     	int laneNum = 1;
     	
-    	String laneNumString;
-    	if (laneNum == 1) {
-    		laneNumString = "single";
-    	}
-    	else if (laneNum == 2) {
-    		laneNumString = "double";
-    	}
-    	else {
-    		laneNumString = "";
-    	}
+    	String laneNumString = getLaneNumString(laneNum);
     	
-    	double[] roundaboutDiameterArray = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_DIAMETER : DOUBLE_LANE_ROUNDABOUT_DIAMETER;
-    	double roundaboutSpeedLimit = laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT : DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT;
+    	double roundaboutDiameterArray[] = getRoundaboutDiameterArray(laneNum);
+    	double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
     	
         //For every roundabout diameter
     	for (int roundaboutDiameterIndex = 0; roundaboutDiameterIndex < roundaboutDiameterArray.length; roundaboutDiameterIndex++) {
@@ -310,6 +291,10 @@ public class CreateRIMResults {
 
     @Ignore
     public void allSimulationsForChosenDiameter_withTrafficVolumesCsv_savesJCSVs() {
+    	
+    	int laneNum = 1;
+    	double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
+    	
         StringBuilder sb = new StringBuilder();
         //Global Stats for the overall csv
         sb.append("Traffic Volume");
@@ -397,22 +382,22 @@ public class CreateRIMResults {
                 AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
                 rimProtocolSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
                 rimProtocolSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                rimProtocolSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                rimProtocolSimSetup.setRoundaboutSpeedLimit(roundaboutSpeedLimit);
                 rimProtocolSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                 rimProtocolSimSetup.setNumOfColumns(1);
                 rimProtocolSimSetup.setNumOfRows(1);
-                rimProtocolSimSetup.setLanesPerRoad(1);
+                rimProtocolSimSetup.setLanesPerRoad(laneNum);
                 rimProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
                 // Set up Optimal policy Simulator
                 RIMOptimalSimSetup rimOptimalSimSetup = new RIMOptimalSimSetup(rimSimSetupPanel.getRimSimSetup());
                 rimOptimalSimSetup.setRoundaboutDiameter(CHOSEN_DIAMETER);
                 rimOptimalSimSetup.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                rimOptimalSimSetup.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                rimOptimalSimSetup.setRoundaboutSpeedLimit(roundaboutSpeedLimit);
                 rimOptimalSimSetup.setStopDistBeforeIntersection(STOP_DISTANCE);
                 rimOptimalSimSetup.setNumOfColumns(1);
                 rimOptimalSimSetup.setNumOfRows(1);
-                rimOptimalSimSetup.setLanesPerRoad(1);
+                rimOptimalSimSetup.setLanesPerRoad(laneNum);
                 rimOptimalSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
 
@@ -420,11 +405,11 @@ public class CreateRIMResults {
                 AutoDriverOnlySimSetup stopSignSimulator = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
                 stopSignSimulator.setRoundaboutDiameter(CHOSEN_DIAMETER);
                 stopSignSimulator.setLaneSpeedLimit(LANE_SPEED_LIMIT);
-                stopSignSimulator.setRoundaboutSpeedLimit(ROUNDABOUT_SPEED_LIMIT);
+                stopSignSimulator.setRoundaboutSpeedLimit(roundaboutSpeedLimit);
                 stopSignSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
                 stopSignSimulator.setNumOfColumns(1);
                 stopSignSimulator.setNumOfRows(1);
-                stopSignSimulator.setLanesPerRoad(1);
+                stopSignSimulator.setLanesPerRoad(laneNum);
                 stopSignSimulator.setIsStopSignMode(true);
                 stopSignSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
@@ -434,7 +419,7 @@ public class CreateRIMResults {
                 aimCrossIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
                 aimCrossIntersectionSimulator.setNumOfColumns(1);
                 aimCrossIntersectionSimulator.setNumOfRows(1);
-                aimCrossIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossIntersectionSimulator.setLanesPerRoad(laneNum);
                 aimCrossIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
                 // Set up AIM Cross Optimal Intersection Simulator
@@ -443,7 +428,7 @@ public class CreateRIMResults {
                 aimCrossOptimalIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
                 aimCrossOptimalIntersectionSimulator.setNumOfColumns(1);
                 aimCrossOptimalIntersectionSimulator.setNumOfRows(1);
-                aimCrossOptimalIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossOptimalIntersectionSimulator.setLanesPerRoad(laneNum);
                 aimCrossOptimalIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
 
                 // Set up AIM Cross Stop Sign Intersection Simulator
@@ -452,7 +437,7 @@ public class CreateRIMResults {
                 aimCrossStopSignIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
                 aimCrossStopSignIntersectionSimulator.setNumOfColumns(1);
                 aimCrossStopSignIntersectionSimulator.setNumOfRows(1);
-                aimCrossStopSignIntersectionSimulator.setLanesPerRoad(1);
+                aimCrossStopSignIntersectionSimulator.setLanesPerRoad(laneNum);
                 aimCrossStopSignIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
                 aimCrossStopSignIntersectionSimulator.setIsStopSignMode(true);
 
@@ -526,7 +511,7 @@ public class CreateRIMResults {
                 final JFileChooser fc = new JFileChooser();
                 fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\further_entry_point\\" + Integer.toString(VOLUMES[trafficVolumeIndex])
                         + "_" + Double.toString(CHOSEN_DIAMETER) +
-                        "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_1800.0s_unbalanced_chosenDiameter_" +
+                        "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(roundaboutSpeedLimit) + "rs_1800.0s_unbalanced_chosenDiameter_" +
                         Integer.toString(repetition)+ ".csv"));
                 File file = fc.getSelectedFile();
                 try {
@@ -594,7 +579,7 @@ public class CreateRIMResults {
         //Save
         final JFileChooser fc = new JFileChooser();
         fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\further_entry_point\\" + Double.toString(CHOSEN_DIAMETER) +
-                "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(ROUNDABOUT_SPEED_LIMIT)+"rs_1800.0s_unbalanced_chosen_diameter_10repetitions" + ".csv"));
+                "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(roundaboutSpeedLimit)+"rs_1800.0s_unbalanced_chosen_diameter_10repetitions" + ".csv"));
         File file = fc.getSelectedFile();
         try {
             Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
@@ -604,12 +589,15 @@ public class CreateRIMResults {
 
     }
 
-    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition, String laneNum) throws IOException {
+    private void saveJSON(JSONArray schedule, int trafficVolume, int repetition, int laneNum) throws IOException {
+    	String laneNumString = getLaneNumString(laneNum);
+    	double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
+    	
         final JFileChooser fc = new JFileChooser();
         String pathExtension = "C:\\Users\\Caleb\\Documents\\Uni\\volumes\\"
-        		+ laneNum + "lane_" + Integer.toString(trafficVolume) +
+        		+ laneNumString + "lane_" + Integer.toString(trafficVolume) +
                 "_" + Double.toString(LANE_SPEED_LIMIT) + "ls_"
-                + Double.toString(ROUNDABOUT_SPEED_LIMIT) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced_" + Integer.toString(repetition);
+                + Double.toString(roundaboutSpeedLimit) + "rs_" + Double.toString(TIME_LIMIT) + "s_unbalanced_" + Integer.toString(repetition);
         String jsonString = schedule.toJSONString();
         List<String> writeList = new ArrayList<String>();
         writeList.add(jsonString);
@@ -625,9 +613,29 @@ public class CreateRIMResults {
     }
     
     private void saveJSON(JSONArray schedule, int trafficVolume, int repetition) throws IOException {
-    	saveJSON(schedule, trafficVolume, repetition, "single");
+    	saveJSON(schedule, trafficVolume, repetition, 1);
     }
-
+    
+    private String getLaneNumString(int laneNum) {
+    	if (laneNum == 1) {
+    		return "single";
+    	}
+    	else if (laneNum == 2) {
+    		return "double";
+    	}
+    	else {
+    		return "";
+    	}
+    }
+    
+    private double getRoundaboutSpeedLimit(int laneNum) {
+    	return laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_SPEED_LIMIT : DOUBLE_LANE_ROUNDABOUT_SPEED_LIMIT;
+    }
+    
+    private double[] getRoundaboutDiameterArray(int laneNum) {
+    	return laneNum == 1 ? SINGLE_LANE_ROUNDABOUT_DIAMETER : DOUBLE_LANE_ROUNDABOUT_DIAMETER;
+    }
+    
     private static String calculateAverageDelay(List<VehicleResult> vehicleResults, Result firstProtocolResult, Result secondProtocolResult) {
         double sum = 0.0;
         int count = 0;
