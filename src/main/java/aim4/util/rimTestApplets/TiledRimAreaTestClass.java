@@ -58,13 +58,13 @@ public class TiledRimAreaTestClass extends JPanel {
                 0,
                 1,
                 1,
-                ROUNDABOUT_DIAMETER[3],
+                ROUNDABOUT_DIAMETER[0],
                 ENTRANCE_EXIT_RADIUS,
                 4,
                 LANE_WIDTH,
                 LANE_SPEED_LIMIT,
                 ROUNDABOUT_SPEED_LIMIT,
-                2,
+                1,
                 0,
                 0);
 
@@ -105,7 +105,7 @@ public class TiledRimAreaTestClass extends JPanel {
         // Create a vehicle
 
         // North Road
-        ArcSegmentLane northVehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanesForLane(1).get(4);
+        ArcSegmentLane northVehicleLane = (ArcSegmentLane)map.getRoads().get(2).getContinuousLanesForLane(0).get(4);
         Point2D northPositionOfVehicleFront = new Point2D.Double(
                 northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
                 northVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
@@ -113,7 +113,7 @@ public class TiledRimAreaTestClass extends JPanel {
                 northVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
         
         //// South Road
-        ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanesForLane(1).get(3);
+        ArcSegmentLane southVehicleLane = (ArcSegmentLane)map.getRoads().get(3).getContinuousLanesForLane(0).get(3);
         Point2D southPositionOfVehicleFront = new Point2D.Double(
                 southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
                 southVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
@@ -121,7 +121,7 @@ public class TiledRimAreaTestClass extends JPanel {
                 southVehicleLane.getArcLaneDecomposition().get(2).getInitialHeading(),0,0,0,0, 0);
         
         //// East Road
-        ArcSegmentLane eastVehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanesForLane(1).get(3);
+        ArcSegmentLane eastVehicleLane = (ArcSegmentLane)map.getRoads().get(0).getContinuousLanesForLane(0).get(3);
         Point2D eastPositionOfVehicleFront = new Point2D.Double(
                 eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
                 eastVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());
@@ -130,7 +130,7 @@ public class TiledRimAreaTestClass extends JPanel {
         
         
         //// West Road
-        ArcSegmentLane westVehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanesForLane(1).get(7);
+        ArcSegmentLane westVehicleLane = (ArcSegmentLane)map.getRoads().get(1).getContinuousLanesForLane(0).get(7);
         Point2D westPositionOfVehicleFront = new Point2D.Double(
                 westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getX(),
                 westVehicleLane.getArcLaneDecomposition().get(2).getStartPoint().getY());

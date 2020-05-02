@@ -204,7 +204,7 @@ public class RimIntersectionMap implements BasicRIMIntersectionMap {
         
         
         if (!USE_NEW_GEOMETRY) {
-        	roundaboutRadius = (roundaboutDiameter / 2) - roundaboutWidth;
+        	roundaboutRadius = (roundaboutDiameter / 2) - (lanesPerRoad * roundaboutWidth);
         	b = Math.sqrt(Math.pow(roundaboutRadius + a, 2) - Math.pow(a, 2));
             double d = (roundaboutRadius / (roundaboutRadius + a)) * b;
             double e = b - d - laneWidth - 0.5; // 0.5 buffer needed as entry points would result in front of vehicle getting inside the intersection

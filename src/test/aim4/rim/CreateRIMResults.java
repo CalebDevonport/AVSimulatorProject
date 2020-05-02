@@ -147,10 +147,10 @@ public class CreateRIMResults {
         }
     }
     
-    @Ignore
+    @Test
     public void chooseDiameterSimulations_withTrafficVolumesCsv_savesJCSVs() {
     	
-    	int laneNum = 1;
+    	int laneNum = 2;
     	
     	String laneNumString = getLaneNumString(laneNum);
     	
@@ -178,7 +178,7 @@ public class CreateRIMResults {
                             1, // rows
                             roundaboutDiameterArray[roundaboutDiameterIndex], // roundabout diameter
                             20.0, // entrance & exit circle radius
-                            4, // split factor
+                            8, // split factor
                             3.014, // lane width
                             LANE_SPEED_LIMIT, // speed limit
                             roundaboutSpeedLimit, // roundabout speed limit
@@ -197,6 +197,7 @@ public class CreateRIMResults {
                             0.28, // traffic level
                             1.0 // stop distance before intersection
                     ));
+                    
                     // Set up RIM Simulator
                     AutoDriverOnlySimSetup rimProtocolSimSetup = new AutoDriverOnlySimSetup(rimSimSetupPanel.getRimSimSetup());
                     rimProtocolSimSetup.setRoundaboutDiameter(roundaboutDiameterArray[roundaboutDiameterIndex]);
@@ -219,14 +220,32 @@ public class CreateRIMResults {
                     rimOptimalProtocolSimSetup.setLanesPerRoad(laneNum);
                     rimOptimalProtocolSimSetup.setUploadTrafficSchedule(uploadTrafficSchedule);
 
+                    // Set up AIM Cross Intersection Simulator
+                    AIMCrossSimSetup aimCrossIntersectionSimulator = new AIMCrossSimSetup(rimSimSetupPanel.getAimSimSetup());
+                    aimCrossIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
+                    aimCrossIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                    aimCrossIntersectionSimulator.setNumOfColumns(1);
+                    aimCrossIntersectionSimulator.setNumOfRows(1);
+                    aimCrossIntersectionSimulator.setLanesPerRoad(laneNum);
+                    aimCrossIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+
+                    // Set up AIM Cross Optimal Intersection Simulator
+                    AIMCrossOptimalSimSetup aimCrossOptimalIntersectionSimulator = new AIMCrossOptimalSimSetup(rimSimSetupPanel.getAimSimSetup());
+                    aimCrossOptimalIntersectionSimulator.setSpeedLimit(LANE_SPEED_LIMIT);
+                    aimCrossOptimalIntersectionSimulator.setStopDistBeforeIntersection(STOP_DISTANCE);
+                    aimCrossOptimalIntersectionSimulator.setNumOfColumns(1);
+                    aimCrossOptimalIntersectionSimulator.setNumOfRows(1);
+                    aimCrossOptimalIntersectionSimulator.setLanesPerRoad(laneNum);
+                    aimCrossOptimalIntersectionSimulator.setUploadTrafficSchedule(uploadTrafficSchedule);
+                    
                     //Run the rim simulator and store the result
                     Simulator rimSimSetup = rimProtocolSimSetup.getSimulator();
                     while (rimSimSetup.getSimulationTime() < (TIME_LIMIT)) {
                         rimSimSetup.step(SimConfig.TIME_STEP);
                     }
-                    Result rimResult = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
-                    int rimNumOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
-                    int rimNumOfVehiclesSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesSpawned();
+                    Result result = ((AutoDriverOnlySimulator) rimSimSetup).produceResult();
+                    int numOfVehiclesWhichCouldNotBeSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+                    int numOfVehiclesSpawned = ((AutoDriverOnlySimulator) rimSimSetup).getNumOfVehiclesSpawned();
 
                     //Run the rim Optimal simulator and store the results
                     Simulator optimalSimSetup = rimOptimalProtocolSimSetup.getSimulator();
@@ -234,29 +253,48 @@ public class CreateRIMResults {
                         optimalSimSetup.step(SimConfig.TIME_STEP);
                     }
                     Result optimalResult = ((RIMOptimalSimulator) optimalSimSetup).produceResult();
-                    int rimOptimalNumOfVehiclesWhichCouldNotBeSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNoOfVehiclesWhichCouldNotBeSpawned();
-                    int rimOptimalNumOfVehiclesSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNumOfVehiclesSpawned();
+                    int optimalNumOfVehiclesWhichCouldNotBeSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNoOfVehiclesWhichCouldNotBeSpawned();
+                    int optimalNumOfVehiclesSpawned = ((RIMOptimalSimulator) optimalSimSetup).getNumOfVehiclesSpawned();
+                    
+//                  //Run AIM Cross simulator
+//                    Simulator aimCrossSimSetup = aimCrossIntersectionSimulator.getSimulator();
+//                    while (aimCrossSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+//                        aimCrossSimSetup.step(SimConfig.TIME_STEP);
+//                    }
+//                    Result result = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).produceResult();
+//                    int numOfVehiclesWhichCouldNotBeSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+//                    int numOfVehiclesSpawned = ((aim4.sim.simulator.aim.AutoDriverOnlySimulator) aimCrossSimSetup).getNumOfVehiclesSpawned();
+//
+//                    //Run AIM Cross optimal simulator
+//                    Simulator aimCrossOptimalSimSetup = aimCrossOptimalIntersectionSimulator.getSimulator();
+//                    while (aimCrossOptimalSimSetup.getSimulationTime() < (TIME_LIMIT)) {
+//                        aimCrossOptimalSimSetup.step(SimConfig.TIME_STEP);
+//                    }
+//                    Result optimalResult = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).produceResult();
+//                    int optimalNumOfVehiclesWhichCouldNotBeSpawned = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).getNumOfVehiclesWhichCouldNotBeSpawned();
+//                    int optimalNumOfVehiclesSpawned = ((AIMOptimalSimulator) aimCrossOptimalSimSetup).getNumOfVehiclesSpawned();
+                    
 
                     // Combine the results in one csv
                     Result combinedResult = new Result(null);
                     String combinedCsv = combinedResult.produceRIMVsRIMOptimalCSVString(
                             "RIM",
-                            rimResult,
-                            rimNumOfVehiclesWhichCouldNotBeSpawned,
-                            rimNumOfVehiclesSpawned,
+                            result,
+                            numOfVehiclesWhichCouldNotBeSpawned,
+                            numOfVehiclesSpawned,
                             "RIM-Optimal",
                             optimalResult,
-                            rimOptimalNumOfVehiclesWhichCouldNotBeSpawned,
-                            rimOptimalNumOfVehiclesSpawned);
+                            optimalNumOfVehiclesWhichCouldNotBeSpawned,
+                            optimalNumOfVehiclesSpawned);
                     List<String> csvResultAsList = new ArrayList<String>();
                     csvResultAsList.add(combinedCsv);
 
                     //Save
                     final JFileChooser fc = new JFileChooser();
-                    fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\" +
+                    fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\Project\\Results\\Double_Lane\\New_Geometry\\Granularity8\\65m\\" +
                     		laneNumString + "lane" + 
-                    		Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour"
-                            + "_" + Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) +
+                    		Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour" +
+                            "_" + Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) +
                             "m_" + Double.toString(LANE_SPEED_LIMIT) + "ls_" + Double.toString(roundaboutSpeedLimit) + "s_1800.0s_unbalanced" + "_" +
                             Integer.toString(repetition)+ ".csv"));
                     File file = fc.getSelectedFile();
@@ -271,7 +309,7 @@ public class CreateRIMResults {
                     sb.append(',');
                     sb.append(Integer.toString(repetition));
                     sb.append(',');
-                    sb.append(calculateAverageDelay(rimResult.getVehicleResults(), rimResult, optimalResult));
+                    sb.append(calculateAverageDelay(result.getVehicleResults(), result, optimalResult));
                     sb.append('\n');
                 }
             }
@@ -281,7 +319,7 @@ public class CreateRIMResults {
 
             //Save the overall csv
             final JFileChooser fc = new JFileChooser();
-            fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\" +
+            fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\Project\\Results\\Double_Lane\\New_Geometry\\Granularity8\\" +
             		laneNumString + "lane" + 
             		Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) +
                     "m_"+Double.toString(LANE_SPEED_LIMIT)+"ls_"+Double.toString(roundaboutSpeedLimit)+"rs_1800.0s_unbalanced" + ".csv"));
@@ -596,14 +634,15 @@ public class CreateRIMResults {
 
     }
     
-    @Test
-    public void QueuedVehicles() {
+    //Need to put all csv's in src/main/java/resources/aim4/util for Util.readFileToStrArray to pick them up
+    @Ignore
+    public void CalculateCompletedAndQueuedAveragesFromCSVs() {
     	
 		  int laneNum = 2;
 		  String laneNumString = getLaneNumString(laneNum);
 		  double roundaboutSpeedLimit = getRoundaboutSpeedLimit(laneNum);
 		  double[] roundaboutDiameterArray = getRoundaboutDiameterArray(laneNum);
-		  int roundaboutDiameterIndex = 3;
+		  int roundaboutDiameterIndex = 0;
 		
 		  StringBuilder sb = new StringBuilder();
 		  sb = appendHeaders(sb);
@@ -612,12 +651,15 @@ public class CreateRIMResults {
 		  int completed = 0;
 		  int[] remainArray = new int[10];
 		  int remain = 0;
+		  double[] averageDelayArray = new double[10];
+		  double averageDelay = 0;
 		  
 		  int trafficVolumeIndex = 0;
 		  while (trafficVolumeIndex < VOLUMES.length) {
 	          for (int repetition = 1; repetition <= 10; repetition++) {		        	  
-	        	  String resultsCSV =  laneNumString + "lane" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour_" +
-	      			Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) + "m_" + Double.toString(LANE_SPEED_LIMIT)+"ls_" + 
+	        	  String resultsCSV =  laneNumString + "lane" + Integer.toString(VOLUMES[trafficVolumeIndex]) + "veh_lane_hour" +
+	      			"_" + Double.toString(roundaboutDiameterArray[roundaboutDiameterIndex]) + 
+	      			"m_" + Double.toString(LANE_SPEED_LIMIT)+"ls_" + 
 	      			Double.toString(roundaboutSpeedLimit) + "s_1800.0s_unbalanced" + "_" +Integer.toString(repetition)+ ".csv";
 	          
 	          List<String> strs = null;
@@ -645,6 +687,10 @@ public class CreateRIMResults {
 	    	    		  rimCompleted, 
 	    	    		  actualRemain
 		    		  );
+	    	      
+	    	      tokens = strs.get(0).split(",");
+	    	      double delay = Double.parseDouble(tokens[1]);
+	    	      averageDelay += delay;
 	              }
 	          }
 	          
@@ -652,20 +698,15 @@ public class CreateRIMResults {
         		  completed = 0;
 	    		  remainArray[trafficVolumeIndex] = remain / 10;
 	    		  remain = 0;
+	    		  averageDelayArray[trafficVolumeIndex] = averageDelay / 10;
+	    		  averageDelay = 0;
 	    		  trafficVolumeIndex += 1;
 	      }
 		  
-		  if (completed != 0) {
-    		  completedArray[9] = completed / 10;
-    		  completed = 0;
-    	  }
-		  if (remain != 0) {
-    		  remainArray[9] = remain / 10;
-    		  remain = 0;
-    	  }
 		  
 		  sb = appendFinalValues(sb, "Completed Values", completedArray);
 		  sb = appendFinalValues(sb, "Remaining Values", remainArray);
+		  sb = appendFinalValues(sb, "Delay values", averageDelayArray);
 		  
 		  String CSVString = sb.toString();
 	      
@@ -673,7 +714,7 @@ public class CreateRIMResults {
 	      csvResultAsList.add(CSVString);
 	      
 	      final JFileChooser fc = new JFileChooser();
-	      fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\JCSV\\Stats\\" + laneNumString + roundaboutDiameterArray[roundaboutDiameterIndex] + ".csv"));
+	      fc.setSelectedFile(new File("C:\\Users\\Caleb\\Documents\\Uni\\Project\\Results\\Double_Lane\\New_Geometry\\Granularity8\\" + laneNumString + roundaboutDiameterArray[roundaboutDiameterIndex] + ".csv"));
 	      File file = fc.getSelectedFile();
 	      try {
 	          Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
@@ -713,6 +754,17 @@ public class CreateRIMResults {
     }
     
     private StringBuilder appendFinalValues(StringBuilder sb, String header, int[] completedArray) {
+    	sb.append('\n');
+    	sb.append(header);
+    	sb.append('\n');
+    	for (int i = 0; i < completedArray.length; i++) {
+    		sb.append(completedArray[i]);
+    		sb.append(',');
+    	}
+    	return sb;
+    }
+    
+    private StringBuilder appendFinalValues(StringBuilder sb, String header, double[] completedArray) {
     	sb.append('\n');
     	sb.append(header);
     	sb.append('\n');

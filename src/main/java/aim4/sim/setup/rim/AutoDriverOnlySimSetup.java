@@ -52,7 +52,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements RIMSimSetup
     /** The time buffer for internal tiles */
     private double internalTileTimeBufferSize = 0.1;
     /** The granularity of the reservation grid */
-    private double granularity = 4.0;
+    private double granularity = 8.0;
     /** The name of the file about the traffic volume */
     private String trafficVolumeFileName = null;
 
