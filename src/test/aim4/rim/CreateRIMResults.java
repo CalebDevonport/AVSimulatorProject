@@ -634,7 +634,7 @@ public class CreateRIMResults {
 
     }
     
-    //Need to put all csv's in src/main/java/resources/aim4/util for Util.readFileToStrArray to pick them up
+    //Need to put all csv's in src/main/resources/aim4/util for Util.readFileToStrArray to pick them up
     @Ignore
     public void CalculateCompletedAndQueuedAveragesFromCSVs() {
     	
